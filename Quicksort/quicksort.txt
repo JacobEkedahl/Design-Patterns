@@ -1,2 +1,0 @@
-size threshold time cores iterations
-10000000 10000 658.42377 4 10

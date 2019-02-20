@@ -25,7 +25,7 @@ public class Task1 {
     /**
      * @param args the command line arguments
      */
-    static int MAX_THRESHOLD = 100000;
+    static int MAX_THRESHOLD = 10100;
     static int MIN_THRESHOLD = 100;
     static int INTERVAL = 1000;
     public static int THRESHOLD = 10000;
@@ -37,7 +37,7 @@ public class Task1 {
 
     public static int ITERATIONS = 15;
     public static int START_INDEX = 5;
-    public static int SIZE_ARRAY = (int) 10000000;
+    public static int SIZE_ARRAY = (int) 100000;
 
     static long totalTime = 0;
     static int cores;
@@ -45,36 +45,37 @@ public class Task1 {
     static String output_file = "quicksort";
 
     public static void main(String[] args) throws InterruptedException, IOException {
-        cores = Runtime.getRuntime().availableProcessors();
+        cores = 1;//Runtime.getRuntime().availableProcessors();
+        output_file += "_" + cores;
         prepareFile(output_file);
         System.out.println("cores: " + cores);
-
         start_task(QUICKSORT);
     }
 
     private static void start_task(int type) throws InterruptedException {
-        // for (int j = MIN_THRESHOLD; j < MAX_THRESHOLD; j += INTERVAL) {
-        //   THRESHOLD = j;
+        for (int j = MIN_THRESHOLD; j < MAX_THRESHOLD; j += INTERVAL) {
+            THRESHOLD = j;
 
-        for (int i = 0; i < ITERATIONS; i++) {
-            float[] arr = gen_random_arr(SIZE_ARRAY);
-            switch (type) {
-                case ARRAY_SORT:
-                    array_sort(arr, i);
-                    break;
-                case QUICKSORT:
-                    parallel_quicksort(arr, i, cores);
-                    break;
+            for (int i = 0; i < ITERATIONS; i++) {
+                float[] arr = gen_random_arr(SIZE_ARRAY);
+                switch (type) {
+                    case ARRAY_SORT:
+                        array_sort(arr, i);
+                        break;
+                    case QUICKSORT:
+                        parallel_quicksort(arr, i, cores);
+                        break;
+                }
+                System.gc();
             }
-            System.gc();
-        }
 
-        int totalRecordings = ITERATIONS - START_INDEX;
-        float average = (float) totalTime / totalRecordings / 1000000;
-        System.out.println("average of " + totalRecordings + " runs: " + average + " ms" + ", threshold: " + THRESHOLD);
-        saveResult(THRESHOLD, average, cores, totalRecordings, output_file);
-        System.gc();
-        //  }
+            int totalRecordings = ITERATIONS - START_INDEX;
+            float average = (float) totalTime / totalRecordings / 1000000;
+            System.out.println("average of " + totalRecordings + " runs: " + average + " ms" + ", threshold: " + THRESHOLD);
+            saveResult(THRESHOLD, average, cores, totalRecordings, output_file);
+            System.gc();
+            totalTime = 0;
+        }
     }
 
     private static void array_sort(float arr[], int currIndex) {
