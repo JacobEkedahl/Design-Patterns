@@ -29,12 +29,17 @@ public class Quicksort {
     
     private static void quicksort(float[] arr, int low, int high) {
         
-        if (low < high) {
+        while (low < high) {
             //pi is partitioning index
             int pi = partition(arr, low, high);
             
-            quicksort(arr, low, pi-1);
-            quicksort(arr, pi+1, high);
+            if (pi -low < high - pi) {
+                quicksort(arr, low, pi-1);
+                low = pi + 1;
+            } else {
+                quicksort(arr, pi +1, high);
+                high = pi - 1;
+            }
         }
     }
     
