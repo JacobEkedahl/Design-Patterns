@@ -6,6 +6,7 @@
 package quicksort;
 
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  *
@@ -30,8 +31,8 @@ public class Quicksort {
     private static void quicksort(float[] arr, int low, int high) {
         
         while (low < high) {
-            //pi is partitioning index
-            int pi = partition(arr, low, high);
+            //pi is partitioning index, random partition improves average complexity
+            int pi = parition_random(arr, low, high);
             
             if (pi -low < high - pi) {
                 quicksort(arr, low, pi-1);
@@ -67,6 +68,13 @@ public class Quicksort {
         //swap arr[i+1] and arr[high]
         swap(arr, i+1, high);
         return (i+1);
+    }
+    
+    static Random random = new Random();
+    private static int parition_random(float[] arr, int low, int high) {
+        int r = random.nextInt((high-low) + 1) + low;
+        swap(arr, r, low);
+        return partition(arr, low, high);
     }
     
     private static void swap(float[] arr, int i, int j) {
