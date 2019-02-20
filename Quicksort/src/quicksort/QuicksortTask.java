@@ -31,12 +31,13 @@ public class QuicksortTask extends RecursiveAction {
     protected void compute() {
         if (high - low < Task1.THRESHOLD) {
             //pi is partitioning index
-            int pi = partition_random(arr, low, high);
+            int pi = partition_plain(arr, low, high);
 
             invokeAll(new QuicksortTask(arr, low, pi - 1),
                     new QuicksortTask(arr, pi + 1, high));
         } else {
-            quicksort(arr, low, high);
+            Arrays.parallelSort(arr, low, high);
+           // quicksort(arr, low, high);
         }
     }
 

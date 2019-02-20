@@ -22,35 +22,58 @@ public class Task1 {
     static int MAX_THRESHOLD = 100000;
     static int MIN_THRESHOLD = 100;
     static int INTERVAL = 1000;
-    public static int THRESHOLD = 1000;
+    public static int THRESHOLD = 10000;
     int currentCoreIndex = 1;
+    static final int QUICKSORT = 0;
+    static final int ARRAY_SORT = 1;
 
-    public static int ITERATIONS = 25;
+    public static int ITERATIONS = 255;
     public static int START_INDEX = 5;
-    public static int SIZE_ARRAY = (int) 1000000;
+    public static int SIZE_ARRAY = (int) 10000000;
 
     static long totalTime = 0;
     static int cores;
+
     public static void main(String[] args) throws InterruptedException {
         cores = Runtime.getRuntime().availableProcessors();
-        start_task();
+        start_task(ARRAY_SORT);
     }
 
-    private static void start_task() {
-       // for (int j = MIN_THRESHOLD; j < MAX_THRESHOLD; j += INTERVAL) {
-         //   THRESHOLD = j;
-            
-            for (int i = 0; i < ITERATIONS; i++) {
-                float[] arr = gen_random_arr(SIZE_ARRAY);
-                parallel_quicksort(arr, i, cores);
-                System.gc();
-            }
+    private static void start_task(int type) {
+        // for (int j = MIN_THRESHOLD; j < MAX_THRESHOLD; j += INTERVAL) {
+        //   THRESHOLD = j;
 
-            int totalRecordings = ITERATIONS - START_INDEX;
-            float average = (float) totalTime / totalRecordings / 1000000;
-            System.out.println("average of " + totalRecordings + " runs: " + average + " ms" + ", threshold: " + THRESHOLD);
+        for (int i = 0; i < ITERATIONS; i++) {
+            float[] arr = gen_random_arr(SIZE_ARRAY);
+            switch (type) {
+                case ARRAY_SORT:
+                    array_sort(arr, i);
+                    break;
+                case QUICKSORT:
+                    parallel_quicksort(arr, i, cores);
+                    break;
+            }
             System.gc();
-      //  }
+        }
+
+        int totalRecordings = ITERATIONS - START_INDEX;
+        float average = (float) totalTime / totalRecordings / 1000000;
+        System.out.println("average of " + totalRecordings + " runs: " + average + " ms" + ", threshold: " + THRESHOLD);
+        System.gc();
+        //  }
+    }
+    
+    private static void array_sort(float arr[], int currIndex) {
+        long startTime = System.nanoTime();
+        Arrays.parallelSort(arr);
+        long endTime = System.nanoTime();
+
+        long elapsedTime = endTime - startTime;
+        if (currIndex - 1 >= START_INDEX) {
+            totalTime += elapsedTime;
+        }
+        
+        System.out.println("time: " + elapsedTime + ", is sorted: " + isSorted(arr));
     }
 
     private static void parallel_quicksort(float[] arr, int currIndex, int cores) {
