@@ -5,6 +5,12 @@
  */
 package quicksort;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.ForkJoinPool;
@@ -24,22 +30,29 @@ public class Task1 {
     static int INTERVAL = 1000;
     public static int THRESHOLD = 10000;
     int currentCoreIndex = 1;
+
+    //set the type of sorting to use inside start_task method
     static final int QUICKSORT = 0;
     static final int ARRAY_SORT = 1;
 
-    public static int ITERATIONS = 255;
+    public static int ITERATIONS = 15;
     public static int START_INDEX = 5;
     public static int SIZE_ARRAY = (int) 10000000;
 
     static long totalTime = 0;
     static int cores;
 
-    public static void main(String[] args) throws InterruptedException {
+    static String output_file = "quicksort";
+
+    public static void main(String[] args) throws InterruptedException, IOException {
         cores = Runtime.getRuntime().availableProcessors();
-        start_task(ARRAY_SORT);
+        prepareFile(output_file);
+        System.out.println("cores: " + cores);
+
+        start_task(QUICKSORT);
     }
 
-    private static void start_task(int type) {
+    private static void start_task(int type) throws InterruptedException {
         // for (int j = MIN_THRESHOLD; j < MAX_THRESHOLD; j += INTERVAL) {
         //   THRESHOLD = j;
 
@@ -59,20 +72,21 @@ public class Task1 {
         int totalRecordings = ITERATIONS - START_INDEX;
         float average = (float) totalTime / totalRecordings / 1000000;
         System.out.println("average of " + totalRecordings + " runs: " + average + " ms" + ", threshold: " + THRESHOLD);
+        saveResult(THRESHOLD, average, cores, totalRecordings, output_file);
         System.gc();
         //  }
     }
-    
+
     private static void array_sort(float arr[], int currIndex) {
         long startTime = System.nanoTime();
         Arrays.parallelSort(arr);
         long endTime = System.nanoTime();
 
         long elapsedTime = endTime - startTime;
-        if (currIndex - 1 >= START_INDEX) {
+        if (currIndex >= START_INDEX) {
             totalTime += elapsedTime;
         }
-        
+
         System.out.println("time: " + elapsedTime + ", is sorted: " + isSorted(arr));
     }
 
@@ -85,7 +99,7 @@ public class Task1 {
         long endTime = System.nanoTime();
 
         long elapsedTime = endTime - startTime;
-        if (currIndex - 1 >= START_INDEX) {
+        if (currIndex >= START_INDEX) {
             totalTime += elapsedTime;
         }
 
@@ -113,5 +127,26 @@ public class Task1 {
         }
 
         return arr;
+    }
+
+    public static void saveResult(int threshold, float time, int cores, int totalRecordings, String output) {
+        PrintWriter pw;
+        try {
+            pw = new PrintWriter(new BufferedWriter(new FileWriter(output + ".txt", true)));
+
+            pw.println();
+            pw.print(SIZE_ARRAY + " " + threshold + " " + time + " " + cores + " " + totalRecordings);
+            pw.flush();
+            pw.close();
+
+        } catch (Exception ex) {
+            // do nothing
+        }
+    }
+
+    public static void prepareFile(String output) throws IOException {
+        Writer fileWriter = new FileWriter(output + ".txt");
+        fileWriter.write("size threshold time cores iterations");
+        fileWriter.close();
     }
 }
