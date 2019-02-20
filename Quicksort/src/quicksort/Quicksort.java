@@ -18,7 +18,7 @@ public class Quicksort {
      * @param args the command line arguments
      */
     public static int THRESHOLD_INSERTION = 10;
-    public static int ITERATIONS = 15;
+    public static int ITERATIONS = 1005;
     public static int START_INDEX = 5;
 
     static long totalTime = 0;
@@ -38,7 +38,8 @@ public class Quicksort {
 
     private static void start(float[] arr, int currIndex) {
         long startTime = System.nanoTime();
-        quicksort_insertion(arr, 0, arr.length - 1);
+        quicksort(arr,0,arr.length-1);
+        //shellSort(arr);
         long endTime = System.nanoTime();
         long elapsedTime = endTime - startTime;
         if (currIndex - 1 >= START_INDEX) {
@@ -72,6 +73,30 @@ public class Quicksort {
         }
     }
 
+     public static void shellSort(float[] a){
+        int gap = a.length/2;
+
+        while(gap > 0){
+            for(int index = gap ; index < a.length ; index++){
+                float data = a[index];
+                int dataIndex = index;
+                while(dataIndex > gap-1 && data < a[dataIndex-gap]){
+                    a[dataIndex] = a[dataIndex-gap];
+                    dataIndex-=gap;
+                }
+                a[dataIndex] = data;
+            }
+            if(gap==2){
+                gap = 1;
+            }
+            else{
+                gap = (int) (gap/2.2);
+            }
+        }
+
+    }
+    
+    
     //pick random item as pivot
     private static void quicksort_insertion(float[] arr, int low, int high) {
         if (arr.length <= THRESHOLD_INSERTION) {
