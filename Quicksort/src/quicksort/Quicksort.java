@@ -20,7 +20,6 @@ public class Quicksort {
     public static int THRESHOLD_INSERTION = 10;
 
     public static void main(String[] args) {
-        // TODO code application logic here
         float[] arr = gen_random_arr(10000);
         quicksort_insertion(arr, 0, arr.length-1);
         String res = Arrays.toString(arr);
@@ -37,19 +36,17 @@ public class Quicksort {
     }
 
     //invoke when arr is below threshold (eg 10)
-    //[3,5,1,2] -> [3,5,1,2] -> 
-    //j = 1, key = 1, arr[j] = 5 = [3,5,5,2] -> [3,3,5,2] -> [1,3,5,2]...
+    //implementation of binary insertionsort
     private static void insertionsort(float[] arr, int low, int high) {
         for (int i = low + 1; i <= high; i++) {
             float key = arr[i];
-            int j = i - 1;
-
-            while (j >= 0 && arr[j] > key) {
-                arr[j + 1] = arr[j];
-                j = j - 1;
-            }
-
-            arr[j + 1] = key;
+            
+            //find location to insert using binary search
+            int j = Math.abs(Arrays.binarySearch(arr, low, high, key));
+            
+            //shifting arr to one location right
+            System.arraycopy(arr, j, arr, j+1, i-1);
+            arr[j] = key;
         }
     }
 
