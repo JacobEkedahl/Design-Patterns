@@ -18,20 +18,31 @@ public class Quicksort {
      * @param args the command line arguments
      */
     public static int THRESHOLD_INSERTION = 10;
+    public static int ITERATIONS = 15;
+    public static int START_INDEX = 5;
+    
 
     public static void main(String[] args) {
         float[] arr = gen_random_arr(10000);
-        quicksort_insertion(arr, 0, arr.length-1);
-        String res = Arrays.toString(arr);
-        System.out.println("res: " + res);
+        start(arr);
     }
-    
+
+    private static void start(float[] arr) {
+        long startTime = System.nanoTime();
+        quicksort_insertion(arr, 0, arr.length - 1);
+        long endTime = System.nanoTime();
+        long elapsedTime = endTime - startTime;
+        String res = Arrays.toString(arr);
+        System.out.println("time elapsed: " + (float) elapsedTime / 1000000 + " ms");
+
+    }
+
     private static float[] gen_random_arr(int size) {
         float[] arr = new float[size];
         for (int i = 0; i < size; i++) {
             arr[i] = random.nextFloat() * 100;
         }
-        
+
         return arr;
     }
 
@@ -40,12 +51,12 @@ public class Quicksort {
     private static void insertionsort(float[] arr, int low, int high) {
         for (int i = low + 1; i <= high; i++) {
             float key = arr[i];
-            
+
             //find location to insert using binary search
             int j = Math.abs(Arrays.binarySearch(arr, low, high, key));
-            
+
             //shifting arr to one location right
-            System.arraycopy(arr, j, arr, j+1, i-1);
+            System.arraycopy(arr, j, arr, j + 1, i - 1);
             arr[j] = key;
         }
     }
