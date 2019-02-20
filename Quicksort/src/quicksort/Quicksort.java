@@ -20,21 +20,32 @@ public class Quicksort {
     public static int THRESHOLD_INSERTION = 10;
     public static int ITERATIONS = 15;
     public static int START_INDEX = 5;
-    
+
+    static long totalTime = 0;
 
     public static void main(String[] args) {
-        float[] arr = gen_random_arr(10000);
-        start(arr);
+
+        for (int i = 0; i < ITERATIONS; i++) {
+            float[] arr = gen_random_arr(10000);
+            start(arr, i);
+            System.gc();
+        }
+        
+        int totalRecordings = ITERATIONS - START_INDEX;
+        float average = (float) totalTime / totalRecordings / 1000000;
+        System.out.println("average of " + totalRecordings + " runs: " + average + " ms");
     }
 
-    private static void start(float[] arr) {
+    private static void start(float[] arr, int currIndex) {
         long startTime = System.nanoTime();
         quicksort_insertion(arr, 0, arr.length - 1);
         long endTime = System.nanoTime();
         long elapsedTime = endTime - startTime;
+        if (currIndex - 1 >= START_INDEX) {
+            totalTime += elapsedTime;
+        }
         String res = Arrays.toString(arr);
-        System.out.println("time elapsed: " + (float) elapsedTime / 1000000 + " ms");
-
+        System.out.println("(#" + currIndex + ") time elapsed: " + (float) elapsedTime / 1000000 + " ms");
     }
 
     private static float[] gen_random_arr(int size) {
