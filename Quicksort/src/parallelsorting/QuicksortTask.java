@@ -6,10 +6,10 @@
 package parallelsorting;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Random;
+import static java.util.concurrent.ForkJoinTask.invokeAll;
 import java.util.concurrent.RecursiveAction;
-import java.util.concurrent.RecursiveTask;
+import parallelsorting.Task1;
 
 /**
  *
@@ -36,7 +36,7 @@ public class QuicksortTask extends RecursiveAction {
             invokeAll(new QuicksortTask(arr, low, pi - 1),
                     new QuicksortTask(arr, pi + 1, high));
         } else {
-            Arrays.parallelSort(arr, low, high);
+            Arrays.parallelSort(arr, low, high+1);
            // quicksort(arr, low, high);
         }
     }
@@ -120,5 +120,4 @@ public class QuicksortTask extends RecursiveAction {
 
         System.out.println(res);
     }
-
 }
