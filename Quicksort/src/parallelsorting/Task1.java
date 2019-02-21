@@ -27,7 +27,7 @@ public class Task1 {
     /**
      * @param args the command line arguments
      */
-    static int MAX_THRESHOLD = 11000;
+    static int MAX_THRESHOLD = 10100;
     static int MIN_THRESHOLD = 100;
     static int INTERVAL = 500;
     public static int THRESHOLD = 1000;
@@ -41,7 +41,7 @@ public class Task1 {
 
     public static int ITERATIONS = 10;
     public static int START_INDEX = 5;
-    public static int SIZE_ARRAY = (int) 1000000;
+    public static int SIZE_ARRAY = (int) 100000000;
 
     static long totalTime = 0;
     static int cores;
@@ -53,8 +53,8 @@ public class Task1 {
         cores = Runtime.getRuntime().availableProcessors();
         initMap();
         System.out.println("cores: " + cores);
-        //findOptimalThreshold(QUICKSORT);
-         record_cores();
+        findOptimalThreshold(QUICKSORT);
+        record_cores();
     }
 
     private static void initMap() {
@@ -102,7 +102,7 @@ public class Task1 {
     private static void record_cores() throws InterruptedException, IOException {
         prepareFile("arraysort parallelsort mergesort quicksort cores", output_file);
         int totalCores = cores;
-        
+
         for (int core = 1; core <= totalCores; core++) {
             cores = core;
             float[] arr = gen_random_arr(SIZE_ARRAY);
@@ -116,9 +116,19 @@ public class Task1 {
         }
     }
 
+    private static void findOptimalThreshold(int type) throws InterruptedException {
+        for (int j = MIN_THRESHOLD; j <= MAX_THRESHOLD; j += INTERVAL) {
+            THRESHOLD = j;
+            start_task(null, type);
+
+            printAvg();
+            initMap();
+        }
+    }
+
     private static void save_result() {
         saveResult(getAvg(ARRAY_SORT), getAvg(ARRAY_PARALLELSORT),
-                    getAvg(MERGESORT), getAvg(QUICKSORT), cores, output_file);
+                getAvg(MERGESORT), getAvg(QUICKSORT), cores, output_file);
     }
 
     private static void printAvg() {
@@ -135,17 +145,6 @@ public class Task1 {
         float currVal = totalTimes.get(type);
         float avg = currVal / totalRecordings / 1000000;
         return avg;
-    }
-
-    private static void findOptimalThreshold(int type) throws InterruptedException {
-        float arr[] = gen_random_arr(SIZE_ARRAY);
-        for (int j = MIN_THRESHOLD; j <= MAX_THRESHOLD; j += INTERVAL) {
-            THRESHOLD = j;
-            start_task(arr, type);
-
-            printAvg();
-            initMap();
-        }
     }
 
     private static void array_parallel_sort(float arr[], int currIndex) {
