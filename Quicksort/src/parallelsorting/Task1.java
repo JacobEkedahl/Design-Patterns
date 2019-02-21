@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
+import static parallelsorting.Task1.MIN_THRESHOLD;
 
 /**
  *
@@ -25,61 +26,62 @@ public class Task1 {
     /**
      * @param args the command line arguments
      */
-    static int MAX_THRESHOLD = 20;
-    static int MIN_THRESHOLD = 10;
-    static int INTERVAL = 5;
+    static int MAX_THRESHOLD = 10100;
+    static int MIN_THRESHOLD = 100;
+    static int INTERVAL = 500;
     public static int THRESHOLD = 10000;
-
-    
-    int currentCoreIndex = 1;
 
     //set the type of sorting to use inside start_task method
     static final int QUICKSORT = 0;
     static final int ARRAY_SORT = 1;
     static final int MERGESORT = 2;
 
-    public static int ITERATIONS = 15;
+    public static int ITERATIONS = 1005;
     public static int START_INDEX = 5;
-    public static int SIZE_ARRAY = (int) 100000;
+    public static int SIZE_ARRAY = (int) 100000000;
 
     static long totalTime = 0;
     static int cores;
-
-    static String output_file = "mergesort";
+    static String output_file = "quicksort_try2";
 
     public static void main(String[] args) throws InterruptedException, IOException {
-        cores =Runtime.getRuntime().availableProcessors();
+        cores = Runtime.getRuntime().availableProcessors();
         output_file += "_" + cores;
         prepareFile(output_file);
         System.out.println("cores: " + cores);
-        start_task(MERGESORT);
+        findOptimalThreshold(QUICKSORT);
     }
 
     private static void start_task(int type) throws InterruptedException {
+
+        for (int i = 0; i < ITERATIONS; i++) {
+            System.gc();
+            float[] arr = gen_random_arr(SIZE_ARRAY);
+            switch (type) {
+                case ARRAY_SORT:
+                    array_sort(arr, i);
+                    break;
+                case QUICKSORT:
+                    parallel_quicksort(arr, i, cores);
+                    break;
+                case MERGESORT:
+                    parallel_mergesort(arr, i, cores);
+            }
+            System.gc();
+        }
+
+        int totalRecordings = ITERATIONS - START_INDEX;
+        float average = (float) totalTime / totalRecordings / 1000000;
+        System.out.println("average of " + totalRecordings + " runs: " + average + " ms" + ", threshold: " + THRESHOLD);
+        saveResult(THRESHOLD, average, cores, totalRecordings, output_file);
+        System.gc();
+        totalTime = 0;
+    }
+
+    private static void findOptimalThreshold(int type) throws InterruptedException {
         for (int j = MIN_THRESHOLD; j <= MAX_THRESHOLD; j += INTERVAL) {
             THRESHOLD = j;
-
-            for (int i = 0; i < ITERATIONS; i++) {
-                float[] arr = gen_random_arr(SIZE_ARRAY);
-                switch (type) {
-                    case ARRAY_SORT:
-                        array_sort(arr, i);
-                        break;
-                    case QUICKSORT:
-                        parallel_quicksort(arr, i, cores);
-                        break;
-                    case MERGESORT:
-                        parallel_mergesort(arr,i,cores);
-                }
-                System.gc();
-            }
-
-            int totalRecordings = ITERATIONS - START_INDEX;
-            float average = (float) totalTime / totalRecordings / 1000000;
-            System.out.println("average of " + totalRecordings + " runs: " + average + " ms" + ", threshold: " + THRESHOLD);
-            saveResult(THRESHOLD, average, cores, totalRecordings, output_file);
-            System.gc();
-            totalTime = 0;
+            start_task(type);
         }
     }
 
@@ -112,7 +114,7 @@ public class Task1 {
         pool.shutdown();
         System.out.println("time: " + elapsedTime + ", is sorted: " + isSorted(arr));
     }
-    
+
     private static void parallel_mergesort(float[] arr, int currIndex, int cores) {
         ForkJoinPool pool = new ForkJoinPool(cores);
         MergeTask rootTask = new MergeTask(arr, 0, arr.length - 1);
