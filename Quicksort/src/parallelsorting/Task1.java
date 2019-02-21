@@ -11,11 +11,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static parallelsorting.Task1.MIN_THRESHOLD;
 
 /**
@@ -46,15 +50,25 @@ public class Task1 {
     static long totalTime = 0;
     static int cores;
     static String output_file = "cores_sorting";
+    static String data_float = "raw_feed";
 
     static HashMap<Integer, Long> totalTimes = new HashMap<Integer, Long>();
+    static HashMap<Integer, List<Float>> rawData = new HashMap<Integer,List<Float>>();
+    static HashMap<Integer, Float> raw = new HashMap<Integer,Float>();
 
     public static void main(String[] args) throws InterruptedException, IOException {
         cores = Runtime.getRuntime().availableProcessors();
+        initRawDataList();
         initMap();
         System.out.println("cores: " + cores);
         //findOptimalThreshold(QUICKSORT);
-         record_cores();
+        record_cores();
+    }
+     private static void initRawDataList() {
+        for(int i = QUICKSORT ; i <= ARRAY_PARALLELSORT ; i++){
+            rawData.put(i, new ArrayList<Float>());
+        }
+      //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     private static void initMap() {
@@ -62,10 +76,9 @@ public class Task1 {
             totalTimes.put(i, (long) 0);
         }
     }
-
+    
     private static void start_task(float[] input_arr, int type) throws InterruptedException {
         for (int i = 0; i < ITERATIONS; i++) {
-
             //whether or not we use the same input for all iterations
             float[] arr;
             if (input_arr == null) {
@@ -81,6 +94,7 @@ public class Task1 {
                     break;
                 case QUICKSORT:
                     parallel_quicksort(arr, i, cores);
+                    sample(cores);
                     break;
                 case MERGESORT:
                     parallel_mergesort(arr, i, cores);
@@ -101,6 +115,7 @@ public class Task1 {
 
     private static void record_cores() throws InterruptedException, IOException {
         prepareFile("arraysort parallelsort mergesort quicksort cores", output_file);
+        prepareFile("arraysort parallelsort mergesort quicksort cores",data_float);
         int totalCores = cores;
         
         for (int core = 1; core <= totalCores; core++) {
@@ -110,17 +125,22 @@ public class Task1 {
                 start_task(arr, i);
             }
 
+            //sasave_data();
             save_result();
             printAvg();
             initMap();
         }
+        saveRaw(data_float);
     }
 
     private static void save_result() {
         saveResult(getAvg(ARRAY_SORT), getAvg(ARRAY_PARALLELSORT),
                     getAvg(MERGESORT), getAvg(QUICKSORT), cores, output_file);
+       
     }
 
+    
+    
     private static void printAvg() {
         for (int type : totalTimes.keySet()) {
             float avg = getAvg(type);
@@ -129,7 +149,11 @@ public class Task1 {
             }
         }
     }
-
+    
+    private static void getStandardDeviation(int type){
+        // totalTimes.get(type);
+    }
+   
     private static float getAvg(int type) {
         int totalRecordings = ITERATIONS - START_INDEX;
         float currVal = totalTimes.get(type);
@@ -158,6 +182,7 @@ public class Task1 {
             long currVal = totalTimes.get(ARRAY_PARALLELSORT);
             long newVal = currVal + elapsedTime;
             totalTimes.put(ARRAY_PARALLELSORT, newVal);
+            rawData.get(ARRAY_PARALLELSORT).add((float)newVal/1000000);
         }
 
         //  System.out.println("time: " + elapsedTime + ", is sorted: " + isSorted(arr));
@@ -173,6 +198,7 @@ public class Task1 {
             long currVal = totalTimes.get(ARRAY_SORT);
             long newVal = currVal + elapsedTime;
             totalTimes.put(ARRAY_SORT, newVal);
+            rawData.get(ARRAY_SORT).add((float)newVal/1000000);
         }
 
         //  System.out.println("time: " + elapsedTime + ", is sorted: " + isSorted(arr));
@@ -191,6 +217,8 @@ public class Task1 {
             long currVal = totalTimes.get(QUICKSORT);
             long newVal = currVal + elapsedTime;
             totalTimes.put(QUICKSORT, newVal);
+            rawData.get(QUICKSORT).add((float)newVal/1000000);
+           // raw.put(QUICKSORT, (float)newVal);
         }
 
         pool.shutdown();
@@ -210,6 +238,7 @@ public class Task1 {
             long currVal = totalTimes.get(MERGESORT);
             long newVal = currVal + elapsedTime;
             totalTimes.put(MERGESORT, newVal);
+            rawData.get(MERGESORT).add((float)newVal/1000000);
         }
 
         pool.shutdown();
@@ -237,12 +266,35 @@ public class Task1 {
 
         return arr;
     }
-
+    
+    private static void saveRaw(String output){
+        /**
+         *  saveResult(getAvg(ARRAY_SORT), getAvg(ARRAY_PARALLELSORT),
+                    getAvg(MERGESORT), getAvg(QUICKSORT), cores, output_file);
+         */
+        
+        try {
+            System.out.println("size " + rawData.get(ARRAY_SORT).size() + " " + rawData.get(ARRAY_PARALLELSORT).size()
+                    +" " + rawData.get(MERGESORT).size() + " " + rawData.get(QUICKSORT).size());
+            PrintWriter pw;
+            
+            pw = new PrintWriter(new BufferedWriter(new FileWriter(output + ".txt", true)));
+            pw.println();
+            for(int i = 0 ; i < rawData.get(0).size() ; i++){
+                pw.println(rawData.get(ARRAY_SORT).get(i) + " " + rawData.get(ARRAY_PARALLELSORT).get(i) + " " +
+                        rawData.get(MERGESORT).get(i)  + " " + rawData.get(QUICKSORT).get(i) + " " + cores);
+                pw.flush();
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Task1.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+    }
     public static void saveResult(float timeSort, float timeParallel, float timeMerge, float timeQuick, int cores, String output) {
         PrintWriter pw;
         try {
             pw = new PrintWriter(new BufferedWriter(new FileWriter(output + ".txt", true)));
-
             pw.println();
             pw.print(timeSort + " " + timeParallel + " " + timeMerge + " " + timeQuick + " " + cores);
             pw.flush();
@@ -258,4 +310,12 @@ public class Task1 {
         fileWriter.write(message);
         fileWriter.close();
     }
+
+    private static void sample(int core) {
+        System.out.println("CORE: " + core);
+        ArrayList<Float> list= (ArrayList<Float>) rawData.get(QUICKSORT);
+        System.out.println(list.toString());
+    }
+
+   
 }
