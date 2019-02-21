@@ -53,7 +53,7 @@ public class Task1 {
     }
 
     private static void start_task(int type) throws InterruptedException {
-        for (int j = MIN_THRESHOLD; j <= MAX_THRESHOLD; j += INTERVAL) {
+        for (int j = MIN_THRESHOLD; j < MAX_THRESHOLD; j += INTERVAL) {
             THRESHOLD = j;
 
             for (int i = 0; i < ITERATIONS; i++) {
