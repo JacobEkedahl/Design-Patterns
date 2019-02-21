@@ -23,20 +23,18 @@ public class MergeTask extends RecursiveAction {
 
     @Override
     protected void compute() {
-        if(stop - start < Task1.THRESHOLD){
+        if(start - stop < Task1.THRESHOLD){
             ParallelMerge.mergeSort(array);
             
         }
         else{
-          //  System.out.println("making workers");
+            System.out.println("making workers");
             int mid = (start+stop)/2;
             MergeTask worker1 = new MergeTask(array,start,mid);
             MergeTask worker2 = new MergeTask(array,mid+1,stop);
             worker1.fork();
-            worker2.fork();
-            
-            
-            //ParallelMerge.merge(worker1.join(), worker2.join(), array);
+            worker2.compute();
+            worker1.join();
         }
 
 
