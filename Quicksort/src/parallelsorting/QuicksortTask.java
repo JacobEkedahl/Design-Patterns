@@ -18,6 +18,7 @@ import parallelsorting.Task1;
 //sorting inline, do not need to return value
 public class QuicksortTask extends RecursiveAction {
 
+    private static final int THRESHOLD = 1000;
     private float[] arr;
     private final int low, high;
 
