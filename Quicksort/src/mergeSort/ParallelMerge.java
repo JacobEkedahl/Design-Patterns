@@ -18,7 +18,7 @@ import static parallelsorting.Task1.SIZE_ARRAY;
 
 public class ParallelMerge {
  
-    private static void merge(float[] a ,float[] b, float[] c) {
+    public static void merge(float[] a ,float[] b, float[] c) {
         int indexa = 0, indexb = 0, indexc = 0;
         while (indexa < a.length && indexb < b.length) {
             if (a[indexa] <= b[indexb]) {
