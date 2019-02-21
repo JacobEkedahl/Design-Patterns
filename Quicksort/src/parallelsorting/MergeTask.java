@@ -35,9 +35,5 @@ public class MergeTask extends RecursiveAction {
             worker2.compute();
             worker1.join();
         }
-
-
-
-
     }
 }
