@@ -18,16 +18,32 @@ import parallelsorting.SortingAlgos.*;
  * @author Jacob
  */
 public class MainMeasurement {
-    public static int SIZE_ARRAY = (int) 10000000;
+
+    public static int SIZE_ARRAY = (int) 1000000;
     static String output_file = "cores_sorting";
 
     public static void main(String[] args) throws InterruptedException, IOException {
-        record();
+        //record();
+        int res = findThresholdMerge();
+        int resQuick = findThresholdQuick();
+        System.out.println("merge: " + res + ", quick: " + resQuick);
+    }
+
+    private static int findThresholdMerge() {
+        Sorter sorter = new Sorter();
+        float[] arr = gen_random_arr(SIZE_ARRAY);
+        return sorter.findOptimalThreshold(new MergeTask(arr, 0, arr.length - 1));
+    }
+
+    private static int findThresholdQuick() {
+        Sorter sorter = new Sorter();
+        float[] arr = gen_random_arr(SIZE_ARRAY);
+        return sorter.findOptimalThreshold(new QuicksortTask(arr, 0, arr.length - 1));
     }
 
     private static void record() throws IOException {
         int cores = Runtime.getRuntime().availableProcessors();
-        String msg = "Standard Parallel MergeSort Quicksort Cores";
+        String msg = "arraysort parallelsort mergesort quicksort Cores";
         prepareFile(msg, output_file);
         Sorter sorter = new Sorter();
 
@@ -41,6 +57,7 @@ public class MainMeasurement {
     }
 
     static Random random = new Random();
+
     private static float[] gen_random_arr(int size) {
         float[] arr = new float[size];
         for (int i = 0; i < size; i++) {

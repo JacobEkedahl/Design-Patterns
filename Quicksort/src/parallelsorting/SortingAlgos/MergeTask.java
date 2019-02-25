@@ -64,8 +64,10 @@ public class MergeTask extends RecursiveAction implements SortingStrategy {
         long currTotal = 0;
         int totalRuns = MAXITER - STARTITER;
         int cores = Runtime.getRuntime().availableProcessors();
+        System.out.println("MergeSort threshold");
+        System.out.println("average,threshold");
 
-        for (int i = 100; i <= 100000; i += 100) {
+        for (int i = 100; i <= 100000; i += 1000) {
             for (int j = 1; j <= MAXITER; j++) {
                 System.gc();
                 ForkJoinPool pool = new ForkJoinPool(cores);
@@ -86,7 +88,8 @@ public class MergeTask extends RecursiveAction implements SortingStrategy {
             
             long avg = currTotal / totalRuns;
             
-            System.out.println("avg: " + avg + ", min: " + minVal + ", i:" + i + ", currmin: " + currMin);
+            System.out.println(avg +"," + i);
+       //     System.out.println("avg + ", min: " + minVal + ", i:" + i + ", currmin: " + currMin);
             if (avg < minVal) {
                 minVal = avg;
                 currMin = i;
