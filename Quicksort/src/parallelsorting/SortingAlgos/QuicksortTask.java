@@ -3,42 +3,120 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package parallelsorting;
+package parallelsorting.SortingAlgos;
 
 import java.util.Arrays;
 import java.util.Random;
+import java.util.concurrent.ForkJoinPool;
 import static java.util.concurrent.ForkJoinTask.invokeAll;
 import java.util.concurrent.RecursiveAction;
-import parallelsorting.Task1;
 
 /**
  *
  * @author Jacob
  */
 //sorting inline, do not need to return value
-public class QuicksortTask extends RecursiveAction {
+public class QuicksortTask extends RecursiveAction implements SortingStrategy {
 
-    private static final int THRESHOLD = 1000;
+    private static final int MAXITER = 15;
+    private static final int STARTITER = 5;
+    
+    private int threshold = 600;
     private float[] arr;
     private final int low, high;
 
-    QuicksortTask(float[] arr, int low, int high) {
+    public QuicksortTask(float[] arr, int low, int high) {
         this.low = low;
         this.high = high;
         this.arr = arr;
     }
 
+    public QuicksortTask(float[] arr, int low, int high, int threshold) {
+        this.low = low;
+        this.high = high;
+        this.arr = arr;
+        this.threshold = threshold;
+    }
+
+    @Override
+    public int findOptimalThreshold() {
+        int currMin = Integer.MAX_VALUE;
+        long minVal = Long.MAX_VALUE;
+        long currTotal = 0;
+        int totalRuns = MAXITER - STARTITER;
+        int cores = Runtime.getRuntime().availableProcessors();
+
+        for (int i = 100; i <= 100000; i += 100) {
+            for (int j = 1; j <= MAXITER; j++) {
+                System.gc();
+                ForkJoinPool pool = new ForkJoinPool(cores);
+                QuicksortTask rootTask = new QuicksortTask((float[]) arr.clone(), 0, arr.length - 1, i);
+
+                long startTime = System.nanoTime();
+                pool.invoke(rootTask);
+                long endTime = System.nanoTime();
+
+                long elapsedTime = endTime - startTime;
+                if (j >= STARTITER) {
+                    currTotal += elapsedTime;
+                }
+
+                pool.shutdown();
+                System.gc();
+            }
+
+            long avg = currTotal / totalRuns;
+
+            System.out.println("avg: " + avg + ", min: " + minVal + ", i:" + i + ", currmin: " + currMin);
+            if (avg < minVal) {
+                minVal = avg;
+                currMin = i;
+            }
+            currTotal = 0;
+        }
+
+        return currMin;
+    }
+
+    @Override
+    public void messure(int cores) {
+        System.out.println("Quicksort");
+        System.out.println("time cores");
+        for (int i = 0; i < 15; i++) {
+            System.gc();
+            ForkJoinPool pool = new ForkJoinPool(cores);
+            QuicksortTask rootTask = new QuicksortTask((float[]) arr.clone(), 0, arr.length - 1);
+
+            long startTime = System.nanoTime();
+            pool.invoke(rootTask);
+            long endTime = System.nanoTime();
+
+            long elapsedTime = endTime - startTime;
+            if (i >= 4) {
+                System.out.println(elapsedTime + " " + cores);
+            }
+
+            pool.shutdown();
+            System.gc();
+        }
+    }
+
+    @Override
+    public void sort() {
+        this.compute();
+    }
+
     @Override
     protected void compute() {
-        if (high - low < Task1.THRESHOLD) {
+        if (high - low < threshold) {
             //pi is partitioning index
             int pi = partition_plain(arr, low, high);
 
             invokeAll(new QuicksortTask(arr, low, pi - 1),
                     new QuicksortTask(arr, pi + 1, high));
         } else {
-            Arrays.parallelSort(arr, low, high+1);
-           // quicksort(arr, low, high);
+            Arrays.parallelSort(arr, low, high + 1);
+            // quicksort(arr, low, high);
         }
     }
 
@@ -99,8 +177,8 @@ public class QuicksortTask extends RecursiveAction {
         return (i + 1);
     }
 
-    
     static Random random = new Random();
+
     private int partition_random(float[] arr, int low, int high) {
         int r = random.nextInt((high - low) + 1) + low;
         swap(arr, r, low);
@@ -120,5 +198,16 @@ public class QuicksortTask extends RecursiveAction {
         }
 
         System.out.println(res);
+    }
+
+    @Override
+    public boolean isSorted() {
+        for (int i = 0; i < arr.length - 1; i++) {
+            if (arr[i + 1] < arr[i]) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
