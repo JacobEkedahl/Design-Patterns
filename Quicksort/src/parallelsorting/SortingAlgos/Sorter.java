@@ -19,8 +19,8 @@ public class Sorter {
         sortingAlgorithm.sort();
     }
 
-    public void messurePerformance(SortingStrategy sortingAlgorithm, int cores) {
-        sortingAlgorithm.messure(cores);
+    public long messurePerformance(SortingStrategy sortingAlgorithm, int cores) {
+        return sortingAlgorithm.messure(cores);
     }
     
     public int findOptimalThreshold(SortingStrategy sortingAlgorithm) {

@@ -15,8 +15,6 @@ import java.util.concurrent.ForkJoinPool;
 public class StandardSort implements SortingStrategy {
 
     float[] arr;
-    private static final int MAXITER = 15;
-    private static final int STARTITER = 5;
 
     public StandardSort(float[] arr) {
         this.arr = arr;
@@ -28,24 +26,15 @@ public class StandardSort implements SortingStrategy {
     }
 
     @Override
-    public void messure(int cores) {
-        System.out.println("Standard sort");
-        System.out.println("time cores");
-
-        for (int i = 1; i <= MAXITER; i++) {
-            float[] copyArr = (float[]) arr.clone();
-            System.gc();
-            long startTime = System.nanoTime();
-            Arrays.sort(copyArr);
-            long endTime = System.nanoTime();
-            long elapsedTime = endTime - startTime;
-
-            if (i >= STARTITER) {
-                System.out.println(elapsedTime + " " + cores);
-            }
-
-            System.gc();
-        }
+    public long messure(int cores) {
+        float[] copyArr = (float[]) arr.clone();
+        System.gc();
+        long startTime = System.nanoTime();
+        Arrays.sort(copyArr);
+        long endTime = System.nanoTime();
+        long elapsedTime = endTime - startTime;
+        
+        return elapsedTime;
     }
 
     @Override

@@ -18,9 +18,6 @@ import java.util.concurrent.RecursiveAction;
 //sorting inline, do not need to return value
 public class QuicksortTask extends RecursiveAction implements SortingStrategy {
 
-    private static final int MAXITER = 15;
-    private static final int STARTITER = 5;
-    
     private int threshold = 600;
     private float[] arr;
     private final int low, high;
@@ -43,11 +40,13 @@ public class QuicksortTask extends RecursiveAction implements SortingStrategy {
         int currMin = Integer.MAX_VALUE;
         long minVal = Long.MAX_VALUE;
         long currTotal = 0;
-        int totalRuns = MAXITER - STARTITER;
+        int totalRuns = 15 - 5;
         int cores = Runtime.getRuntime().availableProcessors();
+        System.out.println("Quicksort threshold");
+        System.out.println("average,threshold");
 
-        for (int i = 100; i <= 100000; i += 100) {
-            for (int j = 1; j <= MAXITER; j++) {
+        for (int i = 100; i <= 100000; i += 1000) {
+            for (int j = 1; j <= 15; j++) {
                 System.gc();
                 ForkJoinPool pool = new ForkJoinPool(cores);
                 QuicksortTask rootTask = new QuicksortTask((float[]) arr.clone(), 0, arr.length - 1, i);
@@ -57,7 +56,7 @@ public class QuicksortTask extends RecursiveAction implements SortingStrategy {
                 long endTime = System.nanoTime();
 
                 long elapsedTime = endTime - startTime;
-                if (j >= STARTITER) {
+                if (j >= 5) {
                     currTotal += elapsedTime;
                 }
 
@@ -67,7 +66,8 @@ public class QuicksortTask extends RecursiveAction implements SortingStrategy {
 
             long avg = currTotal / totalRuns;
 
-            System.out.println("avg: " + avg + ", min: " + minVal + ", i:" + i + ", currmin: " + currMin);
+            System.out.println(avg + "," + i);
+            //System.out.println("avg: " + avg + ", min: " + minVal + ", i:" + i + ", currmin: " + currMin);
             if (avg < minVal) {
                 minVal = avg;
                 currMin = i;
@@ -79,26 +79,19 @@ public class QuicksortTask extends RecursiveAction implements SortingStrategy {
     }
 
     @Override
-    public void messure(int cores) {
-        System.out.println("Quicksort");
-        System.out.println("time cores");
-        for (int i = 0; i < 15; i++) {
-            System.gc();
-            ForkJoinPool pool = new ForkJoinPool(cores);
-            QuicksortTask rootTask = new QuicksortTask((float[]) arr.clone(), 0, arr.length - 1);
+    public long messure(int cores) {
+        System.gc();
+        ForkJoinPool pool = new ForkJoinPool(cores);
+        QuicksortTask rootTask = new QuicksortTask((float[]) arr.clone(), 0, arr.length - 1);
 
-            long startTime = System.nanoTime();
-            pool.invoke(rootTask);
-            long endTime = System.nanoTime();
+        long startTime = System.nanoTime();
+        pool.invoke(rootTask);
+        long endTime = System.nanoTime();
 
-            long elapsedTime = endTime - startTime;
-            if (i >= 4) {
-                System.out.println(elapsedTime + " " + cores);
-            }
+        long elapsedTime = endTime - startTime;
 
-            pool.shutdown();
-            System.gc();
-        }
+        pool.shutdown();
+        return elapsedTime;
     }
 
     @Override

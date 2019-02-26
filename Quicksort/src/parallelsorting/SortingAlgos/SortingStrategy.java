@@ -11,7 +11,7 @@ import java.util.concurrent.RecursiveAction;
 
  public interface SortingStrategy {
      public void sort();
-     public void messure(int cores);
+     public long messure(int cores);
      public boolean isSorted();
 
     /**
