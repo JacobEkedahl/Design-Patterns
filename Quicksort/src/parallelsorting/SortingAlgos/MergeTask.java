@@ -15,7 +15,7 @@ import java.util.concurrent.RecursiveAction;
  */
 public class MergeTask extends RecursiveAction implements SortingStrategy {
 
-    private int threshold = 2100;
+    private int threshold = 55100;
 
     private final float[] arr;
     private final int low, high;

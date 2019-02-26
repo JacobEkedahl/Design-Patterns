@@ -18,7 +18,7 @@ import java.util.concurrent.RecursiveAction;
 //sorting inline, do not need to return value
 public class QuicksortTask extends RecursiveAction implements SortingStrategy {
 
-    private int threshold = 600;
+    private int threshold = 21100;
     private float[] arr;
     private final int low, high;
 
