@@ -1,4 +1,4 @@
-filename = 'cores_sorting.txt';
+filename = 'mergesort_1.txt';
 delimiterIn = ' ';
 headerlines = 1;
 FULLDATA = importdata(filename,delimiterIn,headerlines);
@@ -33,7 +33,6 @@ for k = 1:row
     end
     if rem(k,NUMiterations)==0
         meanAs = mean(mArraySort);
-        disp(mArraySort);
         stdDevsAs = std(mArraySort);
         SEMAS = stdDevsAs / sqrt(length(mArraySort));
         ConAS = SEMAS  * tinv(0.975, length(mArraySort)-1);
@@ -112,9 +111,9 @@ for k = 1:row
         
        
         mParallelSort = [];
-        mArraySort = [];
-        mMergeSort = [];
-        mQuickSort = [];
+        mArraySort    = [];
+        mMergeSort    = [];
+        mQuickSort    = [];
 
         
 
