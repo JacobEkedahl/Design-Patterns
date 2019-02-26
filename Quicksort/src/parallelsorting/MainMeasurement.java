@@ -19,14 +19,17 @@ import parallelsorting.SortingAlgos.*;
  */
 public class MainMeasurement {
 
-    public static int SIZE_ARRAY = (int) 1000000;
+    public static final int SIZE_ARRAY = (int) 100000000;
+    private static final int MAXITER = 15;
+    private static final int STARTITER = 5;
+
     static String output_file = "cores_sorting";
 
     public static void main(String[] args) throws InterruptedException, IOException {
-        //record();
-        int res = findThresholdMerge();
-        int resQuick = findThresholdQuick();
-        System.out.println("merge: " + res + ", quick: " + resQuick);
+        record();
+//        int res = findThresholdMerge();
+//        int resQuick = findThresholdQuick();
+//        System.out.println("merge: " + res + ", quick: " + resQuick);
     }
 
     private static int findThresholdMerge() {
@@ -43,16 +46,22 @@ public class MainMeasurement {
 
     private static void record() throws IOException {
         int cores = Runtime.getRuntime().availableProcessors();
-        String msg = "arraysort parallelsort mergesort quicksort Cores";
+        String msg = "arraysort parallelsort mergesort quicksort cores";
         prepareFile(msg, output_file);
         Sorter sorter = new Sorter();
 
         for (int i = 1; i <= cores; i++) {
-            float[] arr = gen_random_arr(SIZE_ARRAY);
-            sorter.messurePerformance(new StandardParallelSort(arr), i);
-            sorter.messurePerformance(new MergeTask(arr, 0, arr.length - 1), i);
-            sorter.messurePerformance(new QuicksortTask(arr, 0, arr.length - 1), i);
-            sorter.messurePerformance(new StandardSort(arr), i);
+            for (int j = 1; j <= MAXITER; j++) {
+                float[] arr = gen_random_arr(SIZE_ARRAY);
+                long standParallel = sorter.messurePerformance(new StandardParallelSort(arr), i);
+                long merge = sorter.messurePerformance(new MergeTask(arr, 0, arr.length - 1), i);
+                long quick = sorter.messurePerformance(new QuicksortTask(arr, 0, arr.length - 1), i);
+                long stand = sorter.messurePerformance(new StandardSort(arr), i);
+
+                if (j > STARTITER) {
+                    saveResult(stand, standParallel, merge, quick, i, output_file);
+                }
+            }
         }
     }
 

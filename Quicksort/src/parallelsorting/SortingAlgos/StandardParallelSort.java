@@ -27,24 +27,15 @@ public class StandardParallelSort implements SortingStrategy {
     }
 
     @Override
-    public void messure(int cores) {
-        System.out.println("Parallel sort");
-        System.out.println("time cores");
+    public long messure(int cores) {
+        float[] copyArr = (float[]) arr.clone();
+        System.gc();
+        long startTime = System.nanoTime();
+        Arrays.parallelSort(copyArr);
+        long endTime = System.nanoTime();
+        long elapsedTime = endTime - startTime;
 
-        for (int i = 1; i <= MAXITER; i++) {
-            float[] copyArr = (float[]) arr.clone();
-            System.gc();
-            long startTime = System.nanoTime();
-            Arrays.parallelSort(copyArr);
-            long endTime = System.nanoTime();
-            long elapsedTime = endTime - startTime;
-
-            if (i >= STARTITER) {
-                System.out.println(elapsedTime + " " + cores);
-            }
-
-            System.gc();
-        }
+        return elapsedTime;
     }
 
     @Override
