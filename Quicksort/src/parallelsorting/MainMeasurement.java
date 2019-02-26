@@ -23,7 +23,7 @@ public class MainMeasurement {
     private static final int MAXITER = 15;
     private static final int STARTITER = 5;
 
-    static String output_file = "cores_sorting";
+    static String output_file = "final_result";
 
     public static void main(String[] args) throws InterruptedException, IOException {
         record();
@@ -61,7 +61,9 @@ public class MainMeasurement {
                 if (j > STARTITER) {
                     saveResult(stand, standParallel, merge, quick, i, output_file);
                 }
+                
             }
+            System.out.println("core " + i + " completed..");
         }
     }
 
