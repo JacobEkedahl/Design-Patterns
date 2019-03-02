@@ -16,7 +16,7 @@ public class ModelLine extends Shape {
     }
 
     @Override
-    void drawShape() {
+    public void drawShape() {
         Line l = new javafx.scene.shape.Line();
         
         l.setStartX(getFromX());

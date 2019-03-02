@@ -16,7 +16,7 @@ public class Polygon extends Shape {
     }
 
     @Override
-    void drawShape() {
+    public void drawShape() {
         Rectangle r = new Rectangle();
         r.setX(getFromX());
         r.setY(getFromY());

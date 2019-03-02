@@ -16,7 +16,7 @@ public class ModelCircle extends Shape {
     }
 
     @Override
-    void drawShape() {
+     public void drawShape() {
       Circle circle = new Circle();
       
       float fromX = getFromX();

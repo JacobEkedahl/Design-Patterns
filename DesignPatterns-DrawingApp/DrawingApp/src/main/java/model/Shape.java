@@ -52,7 +52,7 @@ public abstract class Shape {
         return toY;
     }
     
-    abstract void drawShape();
+    public abstract void drawShape();
     
     @Override
     public String toString() {
