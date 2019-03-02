@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package model;
+import javafx.scene.shape.*;
 
 /**
  *
@@ -16,6 +17,13 @@ public class Polygon extends Shape {
 
     @Override
     void drawShape() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Rectangle r = new Rectangle();
+        r.setX(getFromX());
+        r.setY(getFromY());
+        r.setWidth(getToX()-getFromX());
+        r.setHeight(getToY()-getToX());
+       // r.setArcWidth(20);
+      //  r.setArcHeight(20);
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
