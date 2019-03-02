@@ -5,6 +5,8 @@
  */
 package model;
 
+import javafx.scene.canvas.GraphicsContext;
+
 /**
  *
  * @author Jacob
@@ -20,7 +22,7 @@ public abstract class Shape {
         this.toY = toY;
     }
     
-    final void draw() {
+    final void draw(GraphicsContext gc) {
         
     }
     
