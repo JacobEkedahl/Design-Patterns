@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 package model;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 
 /**
@@ -11,19 +13,14 @@ import javafx.scene.shape.*;
  * @author Jacob
  */
 public class ModelLine extends Shape {
-    public ModelLine(float fromX, float fromY, float toX, float toY) {
-        super(fromX, fromY, toX, toY);
+    public ModelLine(float fromX, float fromY, float toX, float toY, Color col, float strokeWidth) {
+        super(fromX, fromY, toX, toY, col, strokeWidth);
     }
 
     @Override
-    void drawShape() {
-        Line l = new javafx.scene.shape.Line();
-        
-        l.setStartX(getFromX());
-        l.setStartY(getFromY());
-        l.setEndX(getToX());
-        l.setEndY(getToY());
-        
-       
+    void drawShape(GraphicsContext gc) {
+        gc.setStroke(super.getCol());
+        gc.setLineWidth(super.getStrokeWidth());
+        gc.strokeLine(40, 10, 10, 40);
     }
 }

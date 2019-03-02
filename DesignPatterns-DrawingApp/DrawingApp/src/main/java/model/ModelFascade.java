@@ -28,6 +28,10 @@ public class ModelFascade {
 
         return fascadeInstance;
     }
+    
+    public void clearDrawing() {
+        drawing.clear();
+    }
 
     public void addShape() {
         //placeholder code for testing

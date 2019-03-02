@@ -6,6 +6,7 @@
 package model;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 /**
  *
@@ -14,17 +15,39 @@ import javafx.scene.canvas.GraphicsContext;
 public abstract class Shape {
     private float fromX, fromY;
     private float toX, toY;
+    private Color col;
+    private float strokeWidth;
 
-    public Shape(float fromX, float fromY, float toX, float toY) {
+    public Shape(float fromX, float fromY, float toX, float toY, Color col, float strokeWidth) {
         this.fromX = fromX;
         this.fromY = fromY;
         this.toX = toX;
         this.toY = toY;
+        this.col = col;
+        this.strokeWidth = strokeWidth;
     }
     
     final void draw(GraphicsContext gc) {
         
     }
+
+    public Color getCol() {
+        return col;
+    }
+
+    public void setCol(Color col) {
+        this.col = col;
+    }
+
+    public float getStrokeWidth() {
+        return strokeWidth;
+    }
+
+    public void setStrokeWidth(float strokeWidth) {
+        this.strokeWidth = strokeWidth;
+    }
+    
+    
     
     public void setStart(float fromX, float fromY) {
         this.fromX = fromX;
@@ -52,7 +75,7 @@ public abstract class Shape {
         return toY;
     }
     
-    abstract void drawShape();
+    abstract void drawShape(GraphicsContext gc);
     
     @Override
     public String toString() {

@@ -22,4 +22,8 @@ public class Drawing {
         //notify observers
         shapes.add(shape);
     }
+    
+    public void clear() {
+        shapes = new ArrayList<>();
+    }
 }
