@@ -4,6 +4,9 @@
  * and open the template in the editor.
  */
 package model;
+
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 
 /**
@@ -11,19 +14,17 @@ import javafx.scene.shape.*;
  * @author Jacob
  */
 public class Polygon extends Shape {
-    public Polygon(float fromX, float fromY, float toX, float toY) {
-        super(fromX, fromY, toX, toY);
+
+    public Polygon(float fromX, float fromY, float toX, float toY, Color col, float strokeWidth) {
+        super(fromX, fromY, toX, toY, col, strokeWidth);
     }
 
     @Override
-    void drawShape() {
-        Rectangle r = new Rectangle();
-        r.setX(getFromX());
-        r.setY(getFromY());
-        r.setWidth(getToX()-getFromX());
-        r.setHeight(getToY()-getToX());
-       // r.setArcWidth(20);
-      //  r.setArcHeight(20);
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    void drawShape(GraphicsContext gc) {
+        gc.setStroke(super.getCol());
+        gc.setLineWidth(super.getStrokeWidth());
+        gc.strokePolygon(new double[]{super.getFromX(), super.getFromY(), super.getToX(), super.getToY()},
+                new double[]{210, 210, 240, 240}, 4);
     }
+
 }

@@ -7,6 +7,8 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 /**
  *
@@ -14,11 +16,21 @@ import java.util.List;
  */
 public class ModelFascade {
 
+    private String shapeToDraw;
     private Drawing drawing;
     private static ModelFascade fascadeInstance = null;
+    private double fromX;
+    private double fromY;
+    private double toX;
+    private double toY;
+    private Color col;
+    private double strokeWidth;
 
     private ModelFascade() {
+        col = Color.BLACK;
+        strokeWidth = 5;
         drawing = new Drawing();
+        shapeToDraw = "Circle";
     }
 
     public static ModelFascade getInstance() {
@@ -28,15 +40,32 @@ public class ModelFascade {
 
         return fascadeInstance;
     }
-    
+
+    public void setFrom(double fromX, double fromY) {
+        this.fromX = fromX;
+        this.fromY = fromY;
+    }
+
+    public void setTo(double toX, double toY) {
+        this.toX = toX;
+        this.toY = toY;
+    }
+
+    public void drawCircle(GraphicsContext gc) {
+        ModelCircle circle = new ModelCircle(fromX, fromY, toX, toY, col, strokeWidth);
+        circle.drawShape(gc);
+    }
+
     public void clearDrawing() {
         drawing.clear();
     }
 
-    public void addShape() {
-        //placeholder code for testing
-        ModelCircle circle = new ModelCircle(40, 40, 100, 100);
-        drawing.addShape(circle);
+    public void addShape(GraphicsContext gc) {
+        if (shapeToDraw == "Circle") {
+            ModelCircle circle = new ModelCircle(fromX, fromY, toX, toY, col, strokeWidth);
+            circle.drawShape(gc);
+            drawing.addShape(circle);
+        }
     }
 
 }

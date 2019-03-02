@@ -21,6 +21,6 @@ public class ModelLine extends Shape {
     void drawShape(GraphicsContext gc) {
         gc.setStroke(super.getCol());
         gc.setLineWidth(super.getStrokeWidth());
-        gc.strokeLine(40, 10, 10, 40);
+        gc.strokeLine(super.getFromX(), super.getFromY(), super.getToX(), super.getToY());
     }
 }

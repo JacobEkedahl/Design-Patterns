@@ -9,30 +9,45 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseDragEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import static javafx.scene.paint.Color.color;
+import model.ModelCircle;
+import model.ModelFascade;
 
 public class FXMLController implements Initializable {
 
     @FXML
     private Canvas canvas;
+    ModelFascade model;
 
     @FXML
-    private void drawCircle() {
+    private void drawCircle(MouseEvent event) {
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.setStroke(Color.BLUE);
-        gc.setLineWidth(5);
-        gc.strokeLine(40, 10, 10, 40);
+        
+        double fromX = event.getSceneX();
+        double fromY = event.getSceneY();
+        model.setFrom(fromX, fromY);
+        double toX = fromX + 50;
+        double toY = fromY + 50;
+        model.setTo(toX, toY);
+        model.addShape(canvas.getGraphicsContext2D());
     }
     
     @FXML
     private void saveFrom(MouseDragEvent event) {
-        
+        double fromX = event.getSceneX();
+        double fromY = event.getSceneY();
+        model.setFrom(fromX, fromY);
     }
     
     @FXML
     private void saveTo(MouseDragEvent event) {
-        
+        double toX = event.getSceneX();
+        double toY = event.getSceneY();
+        model.setTo(toX, toY);
+        //model.draw("Circle", canvas.getGraphicsContext2D());
+        //model.addShape();
     }
 
     @FXML
@@ -46,6 +61,7 @@ public class FXMLController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         System.out.println("init controller");
         // TODO
+        model = ModelFascade.getInstance();
         
     }
 }

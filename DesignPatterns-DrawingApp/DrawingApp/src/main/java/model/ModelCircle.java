@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 package model;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 
 /**
@@ -11,25 +13,14 @@ import javafx.scene.shape.*;
  * @author Jacob
  */
 public class ModelCircle extends Shape {
-    public ModelCircle(float fromX, float fromY, float toX, float toY) {
-        super(fromX, fromY, toX, toY);
+    public ModelCircle(double fromX, double fromY, double toX, double toY, Color col, double strokeWidth) {
+        super(fromX, fromY, toX, toY, col, strokeWidth);
     }
 
     @Override
-    void drawShape() {
-      Circle circle = new Circle();
-      
-      float fromX = getFromX();
-      float fromY = getFromY();
-      
-      float a = getFromX() - getToX();
-      float b = getFromY() - getToY();
-      
-      float pyth = (float)Math.sqrt((a*a) + (b*b));
-      
-      circle.setCenterX(fromX);
-      circle.setCenterY(fromY);
-      circle.setRadius(pyth);
-      
+    void drawShape(GraphicsContext gc) {
+        gc.setStroke(super.getCol());
+        gc.setLineWidth(super.getStrokeWidth());
+        gc.strokeOval(super.getFromX(), super.getFromY(), super.getToX(), super.getToY());
     }
 }

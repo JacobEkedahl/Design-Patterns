@@ -13,12 +13,12 @@ import javafx.scene.paint.Color;
  * @author Jacob
  */
 public abstract class Shape {
-    private float fromX, fromY;
-    private float toX, toY;
+    private double fromX, fromY;
+    private double toX, toY;
     private Color col;
-    private float strokeWidth;
+    private double strokeWidth;
 
-    public Shape(float fromX, float fromY, float toX, float toY, Color col, float strokeWidth) {
+    public Shape(double fromX, double fromY, double toX, double toY, Color col, double strokeWidth) {
         this.fromX = fromX;
         this.fromY = fromY;
         this.toX = toX;
@@ -39,39 +39,39 @@ public abstract class Shape {
         this.col = col;
     }
 
-    public float getStrokeWidth() {
+    public double getStrokeWidth() {
         return strokeWidth;
     }
 
-    public void setStrokeWidth(float strokeWidth) {
+    public void setStrokeWidth(double strokeWidth) {
         this.strokeWidth = strokeWidth;
     }
     
     
     
-    public void setStart(float fromX, float fromY) {
+    public void setStart(double fromX, double fromY) {
         this.fromX = fromX;
         this.fromY = fromY;
     }
     
-    public void setEnd(float toX, float toY) {
+    public void setEnd(double toX, double toY) {
         this.toX = toX;
         this.toY = toY;
     }
 
-    public float getFromX() {
+    public double getFromX() {
         return fromX;
     }
     
-    public float getFromY() {
+    public double getFromY() {
         return fromY;
     }
     
-    public float getToX() {
+    public double getToX() {
         return toX;
     }
 
-    public float getToY() {
+    public double getToY() {
         return toY;
     }
     
