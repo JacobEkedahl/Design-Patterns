@@ -31,7 +31,7 @@ public class ModelFascade {
 
     public void addShape() {
         //placeholder code for testing
-        Circle circle = new Circle(40, 40, 100, 100);
+        ModelCircle circle = new ModelCircle(40, 40, 100, 100);
         drawing.addShape(circle);
     }
 
