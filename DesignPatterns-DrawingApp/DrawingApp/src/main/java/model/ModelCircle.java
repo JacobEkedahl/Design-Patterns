@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 package model;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 
 /**
@@ -11,13 +13,17 @@ import javafx.scene.shape.*;
  * @author Jacob
  */
 public class ModelCircle extends Shape {
-    public ModelCircle(float fromX, float fromY, float toX, float toY) {
-        super(fromX, fromY, toX, toY);
+    public ModelCircle(float fromX, float fromY, float toX, float toY,Color col, float strokeWidth) {
+        super(fromX, fromY, toX, toY,col,strokeWidth);
     }
 
+    
+
     @Override
-     public void drawShape() {
-      Circle circle = new Circle();
+    void drawShape(GraphicsContext gc) {
+        
+        
+        Circle circle = new Circle();
       
       float fromX = getFromX();
       float fromY = getFromY();
@@ -30,6 +36,6 @@ public class ModelCircle extends Shape {
       circle.setCenterX(fromX);
       circle.setCenterY(fromY);
       circle.setRadius(pyth);
-      
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -7,6 +7,7 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
+import javafx.scene.paint.Color;
 
 /**
  *
@@ -35,7 +36,7 @@ public class ModelFascade {
 
     public void addShape() {
         //placeholder code for testing
-        ModelCircle circle = new ModelCircle(40, 40, 100, 100);
+        ModelCircle circle = new ModelCircle(40, 40, 100, 100,Color.AZURE,40);
         drawing.addShape(circle);
     }
 

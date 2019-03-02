@@ -13,26 +13,17 @@ import javafx.scene.shape.*;
  * @author Jacob
  */
 public class ModelLine extends Shape {
+   
     public ModelLine(float fromX, float fromY, float toX, float toY, Color col, float strokeWidth) {
         super(fromX, fromY, toX, toY, col, strokeWidth);
     }
 
     @Override
-<<<<<<< HEAD
-    public void drawShape() {
-        Line l = new javafx.scene.shape.Line();
-        
-        l.setStartX(getFromX());
-        l.setStartY(getFromY());
-        l.setEndX(getToX());
-        l.setEndY(getToY());
-        
-       
-=======
     void drawShape(GraphicsContext gc) {
-        gc.setStroke(super.getCol());
-        gc.setLineWidth(super.getStrokeWidth());
-        gc.strokeLine(40, 10, 10, 40);
->>>>>>> origin/master
+               Rectangle r = new Rectangle();
+        r.setX(getFromX());
+        r.setY(getFromY());
+        r.setWidth(getToX()-getFromX());
+        r.setHeight(getToY()-getToX());
     }
 }
