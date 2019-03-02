@@ -10,14 +10,14 @@ import javafx.stage.Stage;
 
 public class MainApp extends Application {
 
-    @Override 
+    @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/DrawingView.fxml"));
         
         Scene scene = new Scene(root);
-        scene.getStylesheets().add("/styles/Styles.css");
+        //scene.getStylesheets().add("/styles/Styles.css");
         
-        stage.setTitle("JavaFX and Maven");
+        stage.setTitle("DrawingApplication");
         stage.setScene(scene);
         stage.show();
     }
