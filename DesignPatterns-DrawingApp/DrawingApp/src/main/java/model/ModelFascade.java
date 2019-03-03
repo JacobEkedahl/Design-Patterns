@@ -17,7 +17,7 @@ import javafx.scene.paint.Color;
 public class ModelFascade {
 
     private Shape selectedShape;
-    private Shape shapeToDraw;
+    private String shapeToDraw;
     private Drawing drawing;
     private static ModelFascade fascadeInstance = null;
     private double fromX;
@@ -60,7 +60,7 @@ public class ModelFascade {
         return drawing;
     }
 
-    public void selectShape(Shape shape) {
+    public void selectShape(String shape) {
         shapeToDraw = shape;
     }
 
@@ -69,14 +69,7 @@ public class ModelFascade {
             return;
         }
 
-        if (shapeToDraw instanceof ModelLine) {
-            ModelLine line = new ModelLine(fromX, fromY, fromX, fromY, col, strokeWidth);
-            selectedShape = line;
-        } else if (shapeToDraw instanceof ModelCircle) {
-            ModelCircle circle = new ModelCircle(fromX, fromY, fromX, fromY, col, strokeWidth);
-            selectedShape = circle;
-        }
-
+        selectedShape = ShapeFactory.getShape(shapeToDraw, fromX, fromY, fromX, fromY, col, strokeWidth);
         drawing.addShape(selectedShape);
     }
 }

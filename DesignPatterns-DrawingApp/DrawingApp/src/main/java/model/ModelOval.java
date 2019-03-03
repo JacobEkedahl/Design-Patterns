@@ -15,20 +15,10 @@ import javafx.scene.shape.*;
  *
  * @author Jacob
  */
-public class ModelCircle extends Shape {
+public class ModelOval extends Shape {
 
-    private boolean drawRightX;
-    private boolean drawDownY;
-
-    public ModelCircle(double fromX, double fromY, double toX, double toY, Color col, double strokeWidth) {
-        super(fromX, fromY, toX, toY, col, strokeWidth);
-        drawRightX = true;
-        drawDownY = true;
-    }
-
-    public ModelCircle() {
-        super();
-    }
+    private boolean drawRightX = true;
+    private boolean drawDownY = true;
 
     @Override
     void drawShape(GraphicsContext gc) {

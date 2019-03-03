@@ -16,15 +16,6 @@ import javafx.scene.shape.*;
  * @author Jacob
  */
 public class ModelLine extends Shape {
-
-    public ModelLine(double fromX, double fromY, double toX, double toY, Color col, double strokeWidth) {
-        super(fromX, fromY, toX, toY, col, strokeWidth);
-    }
-
-    public ModelLine() {
-        super();
-    }
-
     @Override
     void drawShape(GraphicsContext gc) {
         System.out.println("from: " + super.getFromX() + " y: " + super.getFromY() + " toX: " + super.getToX() + " toY: " + super.getToY());

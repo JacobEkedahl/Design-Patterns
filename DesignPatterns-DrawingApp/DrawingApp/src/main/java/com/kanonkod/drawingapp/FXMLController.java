@@ -20,7 +20,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import static javafx.scene.paint.Color.color;
 import model.Drawing;
-import model.ModelCircle;
+import model.ModelOval;
 import model.ModelFascade;
 import model.ModelLine;
 import model.Shape;
@@ -50,7 +50,7 @@ public class FXMLController extends Observer implements Initializable  {
         double fromX = event.getX();
         double fromY = event.getY();
         
-        model.selectShape(new ModelCircle());
+        model.selectShape("Line");
         model.addShape(fromX, fromY);
     }
     

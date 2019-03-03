@@ -5,6 +5,8 @@
  */
 package model;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
@@ -12,7 +14,8 @@ import javafx.scene.paint.Color;
  *
  * @author Jacob
  */
-public abstract class Shape {
+public abstract class Shape implements Cloneable{
+
     private double fromX, fromY;
     private double toX, toY;
     private Color col;
@@ -20,17 +23,21 @@ public abstract class Shape {
 
     abstract void drawShape(GraphicsContext gc);
     abstract void changeSize(double newX, double newY);
-    public Shape(double fromX, double fromY, double toX, double toY, Color col, double strokeWidth) {
+
+    public Shape createCopy(double fromX, double fromY, double toX, double toY, Color col, double strokeWidth) {
         this.fromX = fromX;
         this.fromY = fromY;
         this.toX = toX;
         this.toY = toY;
         this.col = col;
         this.strokeWidth = strokeWidth;
-    }
-    
-    public Shape() {
         
+        try {
+            return (Shape)this.clone();
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(Shape.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
     
     final void draw(GraphicsContext gc) {
@@ -38,13 +45,13 @@ public abstract class Shape {
         gc.setLineWidth(strokeWidth);
         drawShape(gc);
     }
-    
+
     public void invertX() {
         double tmpX = fromX;
         this.fromX = this.toX;
         this.toX = this.fromX;
     }
-    
+
     public void invertY() {
         double tmpY = fromY;
         this.fromY = this.toY;
@@ -82,16 +89,12 @@ public abstract class Shape {
     public void setToY(double toY) {
         this.toY = toY;
     }
-    
-    
-    
-    
-    
+
     public void setStart(double fromX, double fromY) {
         this.fromX = fromX;
         this.fromY = fromY;
     }
-    
+
     public void setEnd(double toX, double toY) {
         this.toX = toX;
         this.toY = toY;
@@ -100,11 +103,11 @@ public abstract class Shape {
     public double getFromX() {
         return fromX;
     }
-    
+
     public double getFromY() {
         return fromY;
     }
-    
+
     public double getToX() {
         return toX;
     }
@@ -112,7 +115,7 @@ public abstract class Shape {
     public double getToY() {
         return toY;
     }
-    
+
     @Override
     public String toString() {
         return "Shape{" + "fromX=" + fromX + ", fromY=" + fromY + ", toX=" + toX + ", toY=" + toY + '}';
