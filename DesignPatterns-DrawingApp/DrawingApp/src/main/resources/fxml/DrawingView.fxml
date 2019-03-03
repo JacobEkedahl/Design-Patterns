@@ -6,6 +6,6 @@
 
 <AnchorPane id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kanonkod.drawingapp.FXMLController">
    <children>
-      <Canvas fx:id="canvas" height="400.0" onMouseClicked="#drawCircle" onMouseDragEntered="#saveFrom" onMouseDragReleased="#saveTo" width="600.0" />
+      <Canvas fx:id="canvas" height="400.0" onMouseDragged="#changeSize" onMousePressed="#saveFrom" onMouseReleased="#saveTo" width="600.0" />
    </children>
 </AnchorPane>

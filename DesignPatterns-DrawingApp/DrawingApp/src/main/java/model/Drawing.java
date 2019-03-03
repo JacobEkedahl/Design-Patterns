@@ -21,9 +21,20 @@ public class Drawing {
     public void addShape(Shape shape) {
         //notify observers
         shapes.add(shape);
+        System.out.println("added shape!");
+    }
+    
+    public void changeSize(Shape shape, double toX, double toY) {
+        int index = shapes.indexOf(shape);
+        Shape shapeToChange = shapes.get(index);
+        shapeToChange.setEnd(toX, toY);
+        
+        System.out.println("changing size: " + toX + ": " + toY);
+        //notify observers
     }
     
     public void clear() {
         shapes = new ArrayList<>();
+        //notify observers
     }
 }

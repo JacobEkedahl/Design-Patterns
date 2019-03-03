@@ -21,40 +21,33 @@ public class FXMLController implements Initializable {
     private Canvas canvas;
     ModelFascade model;
 
+    //mouse dragged, change size/move selected object
     @FXML
-    private void drawCircle(MouseEvent event) {
+    private void changeSize(MouseEvent event) {
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        
-        double fromX = event.getSceneX();
-        double fromY = event.getSceneY();
-        model.setFrom(fromX, fromY);
-        double toX = fromX + 50;
-        double toY = fromY + 50;
-        model.setTo(toX, toY);
-        model.addShape(canvas.getGraphicsContext2D());
+        double toX = event.getX();
+        double toY = event.getX();
+        model.setEnd(toX, toY);
     }
     
+    //add shape, mouse pressed
     @FXML
-    private void saveFrom(MouseDragEvent event) {
-        double fromX = event.getSceneX();
-        double fromY = event.getSceneY();
-        model.setFrom(fromX, fromY);
+    private void saveFrom(MouseEvent event) {
+        System.out.println("save from!");
+        double fromX = event.getX();
+        double fromY = event.getX();
+        model.addShape(fromX, fromY);
     }
     
+    //mouse released, deselect
     @FXML
-    private void saveTo(MouseDragEvent event) {
-        double toX = event.getSceneX();
-        double toY = event.getSceneY();
-        model.setTo(toX, toY);
-        //model.draw("Circle", canvas.getGraphicsContext2D());
-        //model.addShape();
+    private void saveTo(MouseEvent event) {
+        model.deselect();
     }
 
     @FXML
     private void clear() {
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.setFill(Color.WHITE);
-        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        model.clearDrawing();
     }
 
     @Override

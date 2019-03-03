@@ -16,13 +16,12 @@ import javafx.scene.paint.Color;
  */
 public class ModelFascade {
 
+    private Shape selectedShape;
     private String shapeToDraw;
     private Drawing drawing;
     private static ModelFascade fascadeInstance = null;
     private double fromX;
     private double fromY;
-    private double toX;
-    private double toY;
     private Color col;
     private double strokeWidth;
 
@@ -41,31 +40,23 @@ public class ModelFascade {
         return fascadeInstance;
     }
 
-    public void setFrom(double fromX, double fromY) {
-        this.fromX = fromX;
-        this.fromY = fromY;
-    }
-
-    public void setTo(double toX, double toY) {
-        this.toX = toX;
-        this.toY = toY;
-    }
-
-    public void drawCircle(GraphicsContext gc) {
-        ModelCircle circle = new ModelCircle(fromX, fromY, toX, toY, col, strokeWidth);
-        circle.drawShape(gc);
+    public void setEnd(double toX, double toY) {
+        this.drawing.changeSize(selectedShape, toX, toY);
     }
 
     public void clearDrawing() {
-        drawing.clear();
+        this.drawing.clear();
+    }
+    
+    public void deselect() {
+      //  selectedShape = null;
     }
 
-    public void addShape(GraphicsContext gc) {
+    public void addShape(double fromX, double fromY) {
         if (shapeToDraw == "Circle") {
-            ModelCircle circle = new ModelCircle(fromX, fromY, toX, toY, col, strokeWidth);
-            circle.drawShape(gc);
+            ModelCircle circle = new ModelCircle(fromX, fromY, 0, 0, col, strokeWidth);
+            selectedShape = circle;
             drawing.addShape(circle);
         }
     }
-
 }
