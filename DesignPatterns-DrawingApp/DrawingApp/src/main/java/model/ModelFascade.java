@@ -52,6 +52,11 @@ public class ModelFascade {
       //  selectedShape = null;
     }
 
+    public Drawing getDrawing() {
+        return drawing;
+    }
+    
+    
     public void addShape(double fromX, double fromY) {
         if (shapeToDraw == "Circle") {
             ModelCircle circle = new ModelCircle(fromX, fromY, 0, 0, col, strokeWidth);

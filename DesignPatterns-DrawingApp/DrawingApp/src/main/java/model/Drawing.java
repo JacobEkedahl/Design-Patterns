@@ -5,6 +5,7 @@
  */
 package model;
 
+import com.kanonkod.drawingapp.Observer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,8 +13,9 @@ import java.util.List;
  *
  * @author Jacob
  */
-public class Drawing {
+public class Drawing implements Subject {
     List<Shape> shapes = new ArrayList<>();
+    Observer observer;
     public Drawing() {
         
     }
@@ -36,5 +38,26 @@ public class Drawing {
     public void clear() {
         shapes = new ArrayList<>();
         //notify observers
+    }
+
+    @Override
+    public void register(Observer obj) {
+        observer = obj;
+       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void notifyObservers(Drawing drawing) {
+        
+        observer.update(drawing);
+        
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Shape getUpdate(Observer obj) {
+        System.out.println("here's an update");
+        return null;
+     //   throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
