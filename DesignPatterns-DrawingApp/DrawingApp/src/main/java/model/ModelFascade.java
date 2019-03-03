@@ -17,7 +17,7 @@ import javafx.scene.paint.Color;
 public class ModelFascade {
 
     private Shape selectedShape;
-    private String shapeToDraw;
+    private Shape shapeToDraw;
     private Drawing drawing;
     private static ModelFascade fascadeInstance = null;
     private double fromX;
@@ -29,7 +29,7 @@ public class ModelFascade {
         col = Color.BLACK;
         strokeWidth = 5;
         drawing = new Drawing();
-        shapeToDraw = "Circle";
+        shapeToDraw = null;
     }
 
     public static ModelFascade getInstance() {
@@ -40,6 +40,10 @@ public class ModelFascade {
         return fascadeInstance;
     }
 
+    public void draw(GraphicsContext gc) {
+        drawing.drawAll(gc);
+    }
+
     public void setEnd(double toX, double toY) {
         this.drawing.changeSize(selectedShape, toX, toY);
     }
@@ -47,21 +51,32 @@ public class ModelFascade {
     public void clearDrawing() {
         this.drawing.clear();
     }
-    
+
     public void deselect() {
-      //  selectedShape = null;
+        //  selectedShape = null;
     }
 
     public Drawing getDrawing() {
         return drawing;
     }
-    
-    
+
+    public void selectShape(Shape shape) {
+        shapeToDraw = shape;
+    }
+
     public void addShape(double fromX, double fromY) {
-        if (shapeToDraw == "Circle") {
-            ModelCircle circle = new ModelCircle(fromX, fromY, 0, 0, col, strokeWidth);
-            selectedShape = circle;
-            drawing.addShape(circle);
+        if (shapeToDraw == null) {
+            return;
         }
+
+        if (shapeToDraw instanceof ModelLine) {
+            ModelLine line = new ModelLine(fromX, fromY, fromX, fromY, col, strokeWidth);
+            selectedShape = line;
+        } else if (shapeToDraw instanceof ModelCircle) {
+            ModelCircle circle = new ModelCircle(fromX, fromY, fromX, fromY, col, strokeWidth);
+            selectedShape = circle;
+        }
+
+        drawing.addShape(selectedShape);
     }
 }

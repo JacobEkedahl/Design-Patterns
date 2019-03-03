@@ -5,59 +5,61 @@
  */
 package model;
 
-import com.kanonkod.drawingapp.Observer;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.scene.canvas.GraphicsContext;
+import model.interfaces.Observer;
 
 /**
  *
  * @author Jacob
  */
-public class Drawing implements Subject {
+public class Drawing {
+
     List<Shape> shapes = new ArrayList<>();
-    Observer observer;
-    public Drawing() {
-        
-    }
     
+    //Object - Subject pattern with methods ------------------------
+    List<Observer> observers = new ArrayList<Observer>();
+
+    public void notifyAllObservers() {
+        for (Observer observer : observers) {
+            observer.update();
+        }
+    }
+
+    public void attach(Observer observer) {
+        observers.add(observer);
+    }
+    //End object - subject pattern
+
+    public Drawing() {
+
+    }
+
     public void addShape(Shape shape) {
         //notify observers
         shapes.add(shape);
-        System.out.println("added shape!");
+        notifyAllObservers();
     }
     
+    public void drawAll(GraphicsContext gc) {
+        gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+        for (Shape shape : shapes) {
+            shape.drawShape(gc);
+        }
+    }
+
     public void changeSize(Shape shape, double toX, double toY) {
         int index = shapes.indexOf(shape);
         Shape shapeToChange = shapes.get(index);
-        shapeToChange.setEnd(toX, toY);
-        
-        System.out.println("changing size: " + toX + ": " + toY);
+        shapeToChange.changeSize(toX, toY);
         //notify observers
+        notifyAllObservers();
     }
-    
+
     public void clear() {
         shapes = new ArrayList<>();
+        notifyAllObservers();
         //notify observers
-    }
-
-    @Override
-    public void register(Observer obj) {
-        observer = obj;
-       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void notifyObservers(Drawing drawing) {
-        
-        observer.update(drawing);
-        
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Shape getUpdate(Observer obj) {
-        System.out.println("here's an update");
-        return null;
-     //   throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
