@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="pane" fx:id="Anchor" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kanonkod.drawingapp.FXMLController">
+<fx:root id="pane" fx:id="Anchor" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" type="AnchorPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kanonkod.drawingapp.FXMLMenuController">
    <children>
       <BorderPane fx:id="border" prefHeight="200.0" prefWidth="200.0">
          <center>
@@ -60,7 +60,7 @@
                               <Image url="@square.jpg" />
                            </image>
                         </ImageView>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="24.0" fitWidth="24.0" onMouseClicked="#itemClick" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@hexagon.png" />
                            </image>
@@ -105,4 +105,4 @@
          </top>
       </BorderPane>
    </children>
-</AnchorPane>
+</fx:root>

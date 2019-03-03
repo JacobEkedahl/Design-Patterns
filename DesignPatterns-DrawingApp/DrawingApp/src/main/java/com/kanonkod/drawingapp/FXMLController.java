@@ -8,8 +8,15 @@ import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import static javafx.scene.paint.Color.color;
 import model.Drawing;
@@ -25,6 +32,22 @@ public class FXMLController implements Initializable,Observer {
     ModelFascade model;
     Drawing drawing;
     Subject subject;
+    @FXML
+    private AnchorPane Anchor;
+    @FXML
+    private BorderPane border;
+    @FXML
+    private VBox vbox;
+    @FXML
+    private MenuBar menubar;
+    @FXML
+    private Menu File;
+    @FXML
+    private HBox Hbox;
+    @FXML
+    private ImageView highlight;
+    
+    
     //mouse dragged, change size/move selected object
     @FXML
     private void changeSize(MouseEvent event) {
@@ -49,7 +72,6 @@ public class FXMLController implements Initializable,Observer {
         model.deselect();
     }
 
-    @FXML
     private void clear() {
         model.clearDrawing();
     }
@@ -60,7 +82,7 @@ public class FXMLController implements Initializable,Observer {
         // TODO
         model = ModelFascade.getInstance();
         this.setSubject(this.drawing);
-        this.drawing.register(this);
+     //   this.drawing.register(this);
        
         
     }
@@ -77,5 +99,15 @@ public class FXMLController implements Initializable,Observer {
         this.subject = sub;
         
      //   throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @FXML
+    private void clickedItemClose(ActionEvent event) {
+        System.out.println("clicked menu item");
+    }
+
+    @FXML
+    private void clickedHighLight(MouseEvent event) {
+        System.out.println("Clicked highlight");
     }
 }
