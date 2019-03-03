@@ -15,10 +15,9 @@ import javafx.scene.shape.*;
  *
  * @author Jacob
  */
-public class ModelLine extends Shape {
+public class aLine extends Shape {
     @Override
     void drawShape(GraphicsContext gc) {
-        System.out.println("from: " + super.getFromX() + " y: " + super.getFromY() + " toX: " + super.getToX() + " toY: " + super.getToY());
         gc.strokeLine(super.getFromX(), super.getFromY(), super.getToX(), super.getToY());
     }
 

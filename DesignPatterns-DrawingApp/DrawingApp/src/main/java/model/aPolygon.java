@@ -15,7 +15,7 @@ import javafx.scene.shape.*;
  *
  * @author Jacob
  */
-public class Polygon extends Shape {
+public class aPolygon extends Shape {
     @Override
     void drawShape(GraphicsContext gc) {
         gc.strokePolygon(new double[]{super.getFromX(), super.getFromY(), super.getToX(), super.getToY()},

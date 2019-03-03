@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.CheckBox?>
@@ -13,96 +20,69 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="pane" fx:id="Anchor" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kanonkod.drawingapp.FXMLController">
-   <children>
-      <BorderPane fx:id="border" prefHeight="200.0" prefWidth="200.0">
-         <center>
-            <Canvas fx:id="canvas" height="400.0" onMouseDragged="#changeSize" onMousePressed="#saveFrom" onMouseReleased="#saveTo" width="600.0" BorderPane.alignment="CENTER" />
-         </center>
-         <top>
-            <VBox fx:id="vbox" prefHeight="60.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+<BorderPane id="borderPane" fx:id="border" prefHeight="546.0" prefWidth="901.0" style="-fx-background-color: lightgray;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kanonkod.drawingapp.FXMLController">
+   <top>
+      <VBox fx:id="vbox" BorderPane.alignment="CENTER">
+         <children>
+            <MenuBar fx:id="menubar" maxWidth="1.7976931348623157E308" pickOnBounds="false">
+               <menus>
+                  <Menu fx:id="File" mnemonicParsing="false" text="File">
+                     <items>
+                        <MenuItem id="menuItem" mnemonicParsing="false" onAction="#clickedItemClose" text="New" />
+                        <MenuItem mnemonicParsing="false" text="Open" />
+                        <MenuItem mnemonicParsing="false" text="Save" />
+                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Edit">
+                     <items>
+                        <MenuItem mnemonicParsing="false" text="Delete" />
+                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Help">
+                     <items>
+                        <MenuItem mnemonicParsing="false" text="About" />
+                     </items>
+                  </Menu>
+               </menus>
+            </MenuBar>
+            <HBox fx:id="Hbox" spacing="10.0" style="-fx-background-color: white; -fx-border-width: 1; -fx-border-color: black; -fx-border-insets: 0;">
                <children>
-                  <MenuBar id="menuBarId" fx:id="menubar" maxWidth="1.7976931348623157E308" pickOnBounds="false" prefWidth="151.0">
-                    <menus>
-                      <Menu fx:id="File" mnemonicParsing="false" text="File">
-                        <items>
-                          <MenuItem id="menuItem" mnemonicParsing="false" onAction="#clickedItemClose" text="New" />
-                              <MenuItem mnemonicParsing="false" text="Open" />
-                              <MenuItem mnemonicParsing="false" text="Save" />
-                        </items>
-                      </Menu>
-                      <Menu mnemonicParsing="false" text="Edit">
-                        <items>
-                          <MenuItem mnemonicParsing="false" text="Delete" />
-                        </items>
-                      </Menu>
-                      <Menu mnemonicParsing="false" text="Help">
-                        <items>
-                          <MenuItem mnemonicParsing="false" text="About" />
-                        </items>
-                      </Menu>
-                    </menus>
-                  </MenuBar>
-                  <HBox fx:id="Hbox" prefHeight="40.0" prefWidth="200.0">
-                     <children>
-                        <ImageView fx:id="highlight" fitHeight="24.0" fitWidth="24.0" onMouseClicked="#clickedHighLight" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@dottedsquare.png" />
-                           </image>
-                        </ImageView>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@line.jpg" />
-                           </image>
-                        </ImageView>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@square.jpg" />
-                           </image>
-                        </ImageView>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@hexagon.png" />
-                           </image>
-                        </ImageView>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@circle.png" />
-                           </image>
-                        </ImageView>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@paint-bucket-bucket-pngrepo-com.png" />
-                           </image>
-                        </ImageView>
-                        <CheckBox mnemonicParsing="false" text="Fill">
-                           <padding>
-                              <Insets bottom="4.0" left="4.0" right="4.0" />
-                           </padding>
-                           <HBox.margin>
-                              <Insets />
-                           </HBox.margin>
-                        </CheckBox>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@rotate_left_match.png" />
-                           </image>
-                        </ImageView>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@rotate_right_match.png" />
-                           </image>
-                        </ImageView>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@tashbin.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </HBox>
+                  <ColorPicker />
+                  <CheckBox mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" text="Fill">
+                     <padding>
+                        <Insets bottom="4.0" left="4.0" right="4.0" />
+                     </padding>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </CheckBox>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/undo.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="230.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/redo.png" />
+                     </image>
+                  </ImageView>
                </children>
-            </VBox>
-         </top>
-      </BorderPane>
-   </children>
-</AnchorPane>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </HBox>
+         </children>
+      </VBox>
+   </top>
+   <center>
+      <Pane id="canvasPane" maxHeight="-Infinity" maxWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" style="-fx-background-color: white; -fx-border-color: lightblue; -fx-border-width: 2;" BorderPane.alignment="TOP_LEFT">
+         <children>
+            <Canvas id="canvas" fx:id="canvas" height="400.0" nodeOrientation="INHERIT" onMouseDragged="#changeSize" onMousePressed="#saveFrom" onMouseReleased="#saveTo" width="600.0">
+            </Canvas>
+         </children>
+      </Pane>
+   </center>
+</BorderPane>

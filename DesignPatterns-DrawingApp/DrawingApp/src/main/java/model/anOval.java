@@ -15,7 +15,7 @@ import javafx.scene.shape.*;
  *
  * @author Jacob
  */
-public class ModelOval extends Shape {
+public class anOval extends Shape {
 
     private boolean drawRightX = true;
     private boolean drawDownY = true;
