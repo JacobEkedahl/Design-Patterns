@@ -32,22 +32,7 @@ public class FXMLController extends Observer implements Initializable  {
     private Canvas canvas;
     ModelFascade model;
     Drawing drawing;
-    //Subject subject;
-    @FXML
-    private AnchorPane Anchor;
-    @FXML
-    private BorderPane border;
-    @FXML
-    private VBox vbox;
-    @FXML
-    private MenuBar menubar;
-    @FXML
-    private Menu File;
-    @FXML
-    private HBox Hbox;
-    @FXML
-    private ImageView highlight;
-    
+    //Subject subject;    
     
     //mouse dragged, change size/move selected object
     @FXML
