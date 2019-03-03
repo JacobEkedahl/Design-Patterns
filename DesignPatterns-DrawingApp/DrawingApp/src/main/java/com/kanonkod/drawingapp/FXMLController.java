@@ -22,16 +22,17 @@ import static javafx.scene.paint.Color.color;
 import model.Drawing;
 import model.ModelCircle;
 import model.ModelFascade;
+import model.ModelLine;
 import model.Shape;
-import model.Subject;
+import model.interfaces.Observer;
 
-public class FXMLController implements Initializable,Observer {
+public class FXMLController extends Observer implements Initializable  {
 
     @FXML
     private Canvas canvas;
     ModelFascade model;
     Drawing drawing;
-    Subject subject;
+    //Subject subject;
     @FXML
     private AnchorPane Anchor;
     @FXML
@@ -53,16 +54,18 @@ public class FXMLController implements Initializable,Observer {
     private void changeSize(MouseEvent event) {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         double toX = event.getX();
-        double toY = event.getX();
+        double toY = event.getY();
         model.setEnd(toX, toY);
     }
     
     //add shape, mouse pressed
     @FXML
     private void saveFrom(MouseEvent event) {
-        System.out.println("save from!");
+      //  model.clearDrawing();
         double fromX = event.getX();
-        double fromY = event.getX();
+        double fromY = event.getY();
+        
+        model.selectShape(new ModelCircle());
         model.addShape(fromX, fromY);
     }
     
@@ -81,24 +84,14 @@ public class FXMLController implements Initializable,Observer {
         System.out.println("init controller");
         // TODO
         model = ModelFascade.getInstance();
-        this.setSubject(this.drawing);
-     //   this.drawing.register(this);
-       
-        
+        model.getDrawing().attach(this);
     }
 
     @Override
-    public void update(Drawing drawing) {
-        System.out.println("here's a drawing " + drawing.toString());
-      //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setSubject(Subject sub) {
-        System.out.println("");
-        this.subject = sub;
+    public void update() {
+        //the drawing has been changed, clear and draw it
+        model.draw(canvas.getGraphicsContext2D());
         
-     //   throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @FXML
