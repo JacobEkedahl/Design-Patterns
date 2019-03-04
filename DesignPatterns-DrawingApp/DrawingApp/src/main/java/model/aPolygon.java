@@ -24,16 +24,29 @@ public class aPolygon extends Shape {
 
     @Override
     void drawShape(GraphicsContext gc) {
-        System.out.println("drawing polygon: " + Arrays.toString(xPoints));
-         gc.strokePolygon(xPoints, yPoints, corners);
+        redoPoints(super.getFromX(), super.getFromY(), super.getToX(), super.getToY());
+        gc.strokePolygon(xPoints, yPoints, corners);
     }
 
     @Override
     public void changeSize(double newX, double newY) {
         redoPoints(super.getFromX(), super.getFromY(), newX, newY);
     }
+    
+    private void initPoints(double x, double y) {
+        for (int i = 0; i < corners; i++) {
+            xPoints[i] = x;
+            yPoints[i] = y;
+        }
+    }
 
     private void redoPoints(double fromX, double fromY, double toX, double toY) {
+        //do not draw any points on init
+        if (fromX == toX && fromY == toY) {
+            initPoints(fromX, fromY);
+            return;
+        }
+        
         xPoints = new double[corners];
         yPoints = new double[corners];
 
@@ -41,12 +54,11 @@ public class aPolygon extends Shape {
         double yRad = (toY - fromY) / 2;
         double centerX = xRad + fromX;
         double centerY = yRad + fromY;
-        
+
         double increment = 360 / corners;
 
         int index = 0;
         for (int angle = 0; angle < 360; angle += increment) {
-            System.out.println("index: " + index + ", angle: " + angle);
             xPoints[index] = centerX + xRad * Math.cos(angle * Math.PI / 180);
             yPoints[index] = centerY + yRad * Math.sin(angle * Math.PI / 180);
             index++;
