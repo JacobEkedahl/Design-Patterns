@@ -54,10 +54,7 @@ public class FXMLController extends Observer implements Initializable {
     @FXML
     private Canvas canvas;
 
-    @FXML
-    private BorderPane borderPane;
 
-    @FXML
     private Pane canvasPane;
 
     @FXML
@@ -81,6 +78,14 @@ public class FXMLController extends Observer implements Initializable {
     ModelFascade model;
     Drawing drawing;
     //Subject subject;    
+    @FXML
+    private BorderPane border;
+    @FXML
+    private VBox vbox;
+    @FXML
+    private MenuBar menubar;
+    @FXML
+    private Menu File;
 
     //mouse dragged, change size/move selected object
     @FXML
@@ -117,15 +122,6 @@ public class FXMLController extends Observer implements Initializable {
         model.setWidth(Double.valueOf(value));
     }
 
-    @FXML
-    private void undo(MouseEvent event) {
-        //not implemeneted
-    }
-
-    @FXML
-    private void redo(MouseEvent event) {
-        //not implemeneted
-    }
     
     @FXML
     private void changeFill(Event event) {
@@ -206,8 +202,19 @@ public class FXMLController extends Observer implements Initializable {
         System.out.println("clicked menu item");
     }
 
-    @FXML
     private void clickedHighLight(MouseEvent event) {
         System.out.println("Clicked highlight");
+    }
+
+
+    @FXML
+    private void undo(ActionEvent event) {
+        model.getDrawing().undoAdd();
+    }
+
+
+    @FXML
+    private void redo(ActionEvent event) {
+        model.getDrawing().redoAdd();
     }
 }

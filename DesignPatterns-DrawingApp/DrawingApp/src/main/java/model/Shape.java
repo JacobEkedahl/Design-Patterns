@@ -128,6 +128,11 @@ public abstract class Shape implements Cloneable {
         return toY;
     }
 
+    public boolean isFill() {
+        return fill;
+    }
+    
+
     @Override
     public String toString() {
         return "Shape{" + "fromX=" + fromX + ", fromY=" + fromY + ", toX=" + toX + ", toY=" + toY + '}';
