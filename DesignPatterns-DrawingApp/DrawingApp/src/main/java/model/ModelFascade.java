@@ -24,8 +24,10 @@ public class ModelFascade {
     private double fromY;
     private Color col;
     private double strokeWidth;
+    private boolean fill;
 
     private ModelFascade() {
+        fill = false;
         col = Color.BLACK;
         strokeWidth = 5;
         drawing = new Drawing();
@@ -47,6 +49,12 @@ public class ModelFascade {
     public void setEnd(double toX, double toY) {
         this.drawing.changeSize(selectedShape, toX, toY);
     }
+    
+    @SuppressWarnings("empty-statement")
+    public void setColor(Color col) {
+        System.out.println("changing color to: " + col.toString());
+        this.col = col;
+    }
 
     public void clearDrawing() {
         this.drawing.clear();
@@ -63,13 +71,18 @@ public class ModelFascade {
     public void selectShape(String shape) {
         shapeToDraw = shape;
     }
+    
+    public void setFill(boolean newVal) {
+        System.out.println("new fill: " + newVal);
+        this.fill = newVal;
+    }
 
     public void addShape(double fromX, double fromY) {
         if (shapeToDraw == null) {
             return;
         }
 
-        selectedShape = ShapeFactory.getShape(shapeToDraw, fromX, fromY, fromX, fromY, col, strokeWidth);
+        selectedShape = ShapeFactory.getShape(shapeToDraw, fromX, fromY, fromX, fromY, col, strokeWidth, fill);
         drawing.addShape(selectedShape);
     }
 }

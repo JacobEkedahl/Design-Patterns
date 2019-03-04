@@ -37,6 +37,9 @@ public class Drawing {
     }
 
     public void addShape(Shape shape) {
+        if (shape == null) {
+            return;
+        }
         //notify observers
         shapes.add(shape);
        // notifyAllObservers();
@@ -45,7 +48,7 @@ public class Drawing {
     public void drawAll(GraphicsContext gc) {
         gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
         for (Shape shape : shapes) {
-            shape.drawShape(gc);
+            shape.draw(gc);
         }
     }
 

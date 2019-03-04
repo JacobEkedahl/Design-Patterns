@@ -14,38 +14,48 @@ import javafx.scene.paint.Color;
  *
  * @author Jacob
  */
-
 //DO NOT CHANGE NAME OF THIS CLASS
-public abstract class Shape implements Cloneable{
+public abstract class Shape implements Cloneable {
 
     private double fromX, fromY;
     private double toX, toY;
     private Color col;
     private double strokeWidth;
+    private boolean fill;
 
-    abstract void drawShape(GraphicsContext gc);
+    abstract void drawFill(GraphicsContext gc);
+
+    abstract void drawHollow(GraphicsContext gc);
+
     abstract void changeSize(double newX, double newY);
 
-    public Shape createCopy(double fromX, double fromY, double toX, double toY, Color col, double strokeWidth) {
+    public Shape createCopy(double fromX, double fromY, double toX, double toY, Color col, double strokeWidth, boolean fill) {
         this.fromX = fromX;
         this.fromY = fromY;
         this.toX = toX;
         this.toY = toY;
         this.col = col;
         this.strokeWidth = strokeWidth;
-        
+        this.fill = fill;
+
         try {
-            return (Shape)this.clone();
+            return (Shape) this.clone();
         } catch (CloneNotSupportedException ex) {
             Logger.getLogger(Shape.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
-    
+
     final void draw(GraphicsContext gc) {
+        gc.setFill(col);
         gc.setStroke(col);
-        gc.setLineWidth(strokeWidth);
-        drawShape(gc);
+        
+        if (fill) {
+            drawFill(gc);
+        } else {
+            gc.setLineWidth(strokeWidth);
+            drawHollow(gc);
+        }
     }
 
     public void invertX() {

@@ -23,7 +23,7 @@ public class aPolygon extends Shape {
     double[] yPoints;
 
     @Override
-    void drawShape(GraphicsContext gc) {
+    void drawHollow(GraphicsContext gc) {
         redoPoints(super.getFromX(), super.getFromY(), super.getToX(), super.getToY());
         gc.strokePolygon(xPoints, yPoints, corners);
     }
@@ -55,5 +55,11 @@ public class aPolygon extends Shape {
             yPoints[index] = centerY + yRad * Math.sin(angle * Math.PI / 180);
             index++;
         }
+    }
+
+    @Override
+    void drawFill(GraphicsContext gc) {
+        redoPoints(super.getFromX(), super.getFromY(), super.getToX(), super.getToY());
+        gc.fillPolygon(xPoints, yPoints, corners);
     }
 }

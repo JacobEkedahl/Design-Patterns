@@ -17,15 +17,9 @@ import org.reflections.Reflections;
  * @author Jacob
  */
 public class ShapeFactory {
-    private static HashMap<String, Shape> shapeMap = new HashMap<String, Shape>();
+    private static HashMap<String, Shape> shapeMap = ShapeLoader.getShapeTypes();
     
-    static {
-        shapeMap = ShapeLoader.getShapeTypes();
-    }
-    
-    public static Shape getShape(String shapeName, double fromX, double fromY, double toX, double toY, Color col, double strokeWidth) {
-        System.out.println("returning shape: " + shapeName);
-        ShapeLoader.getShapeTypes();
-        return (Shape) shapeMap.get(shapeName).createCopy(fromX, fromY, toX, toY, col, strokeWidth);
+    public static Shape getShape(String shapeName, double fromX, double fromY, double toX, double toY, Color col, double strokeWidth, boolean fill) {
+        return (Shape) shapeMap.get(shapeName).createCopy(fromX, fromY, toX, toY, col, strokeWidth, fill);
     }
 }

@@ -21,7 +21,7 @@ public class anOval extends Shape {
     private boolean drawDownY = true;
 
     @Override
-    void drawShape(GraphicsContext gc) {
+    void drawHollow(GraphicsContext gc) {
         double width = super.getToX() - super.getFromX();
         double height = super.getToY() - super.getFromY();
         gc.strokeOval(super.getFromX(), super.getFromY(), width, height);
@@ -56,5 +56,12 @@ public class anOval extends Shape {
         if (height < 0) {
             drawDownY = !drawDownY;
         }
+    }
+
+    @Override
+    void drawFill(GraphicsContext gc) {
+        double width = super.getToX() - super.getFromX();
+        double height = super.getToY() - super.getFromY();
+        gc.fillOval(super.getFromX(), super.getFromY(), width, height);
     }
 }
