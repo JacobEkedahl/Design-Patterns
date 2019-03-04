@@ -6,7 +6,11 @@
 package model;
 
 import java.util.HashMap;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.paint.Color;
+import org.reflections.Reflections;
 
 /**
  *
@@ -16,12 +20,12 @@ public class ShapeFactory {
     private static HashMap<String, Shape> shapeMap = new HashMap<String, Shape>();
     
     static {
-        shapeMap.put("Oval", new ModelOval());
-        shapeMap.put("Line", new ModelLine());
-        shapeMap.put("Polygon", new Polygon());
+        shapeMap = ShapeLoader.getShapeTypes();
     }
     
     public static Shape getShape(String shapeName, double fromX, double fromY, double toX, double toY, Color col, double strokeWidth) {
+        System.out.println("returning shape: " + shapeName);
+        ShapeLoader.getShapeTypes();
         return (Shape) shapeMap.get(shapeName).createCopy(fromX, fromY, toX, toY, col, strokeWidth);
     }
 }

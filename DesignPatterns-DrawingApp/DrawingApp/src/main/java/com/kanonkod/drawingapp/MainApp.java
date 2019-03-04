@@ -1,4 +1,4 @@
-package view;
+package com.kanonkod.drawingapp;
 
 import javafx.application.Application;
 import static javafx.application.Application.launch;
@@ -7,16 +7,15 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-
 public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/DrawingView.fxml"));
-        
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/LoadView.fxml"));
+
         Scene scene = new Scene(root);
-        //scene.getStylesheets().add("/styles/Styles.css");
-        
+    //    scene.getStylesheets().add("/styles/Styles.css");
+
         stage.setTitle("DrawingApplication");
         stage.setScene(scene);
         stage.show();

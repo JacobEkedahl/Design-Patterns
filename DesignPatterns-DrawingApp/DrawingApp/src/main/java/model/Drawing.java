@@ -39,7 +39,7 @@ public class Drawing {
     public void addShape(Shape shape) {
         //notify observers
         shapes.add(shape);
-        notifyAllObservers();
+       // notifyAllObservers();
     }
     
     public void drawAll(GraphicsContext gc) {
@@ -51,6 +51,11 @@ public class Drawing {
 
     public void changeSize(Shape shape, double toX, double toY) {
         int index = shapes.indexOf(shape);
+        
+        if (index < 0) {
+            return;
+        }
+        
         Shape shapeToChange = shapes.get(index);
         shapeToChange.changeSize(toX, toY);
         //notify observers
