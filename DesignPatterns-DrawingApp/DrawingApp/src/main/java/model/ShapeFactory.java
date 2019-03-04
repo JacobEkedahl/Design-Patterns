@@ -24,6 +24,7 @@ public class ShapeFactory {
     }
     
     public static Shape getShape(String shapeName, double fromX, double fromY, double toX, double toY, Color col, double strokeWidth) {
+        System.out.println("returning shape: " + shapeName);
         ShapeLoader.getShapeTypes();
         return (Shape) shapeMap.get(shapeName).createCopy(fromX, fromY, toX, toY, col, strokeWidth);
     }

@@ -39,6 +39,7 @@ public class ShapeLoader {
         WritableImage wim = new WritableImage(25, 25);
         //draw an image from 0,0 to 30,30 with each shape if that has not already been done
         for (String key : getShapeKeys()) {
+            System.out.println("key: " + key);
             String fileName = directoryName + File.separator + key + ".png";
             File tmpFile = new File(fileName);
             if (tmpFile.exists()) {
@@ -46,7 +47,7 @@ public class ShapeLoader {
             }
 
             gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
-            Shape shape = ShapeFactory.getShape(key, 0, 0, 25, 25, Color.BLACK, 1);
+            Shape shape = ShapeFactory.getShape(key, 2, 2, 23, 23, Color.BLACK, 1);
             shape.draw(gc);
             gc.getCanvas().snapshot(null, wim);
 

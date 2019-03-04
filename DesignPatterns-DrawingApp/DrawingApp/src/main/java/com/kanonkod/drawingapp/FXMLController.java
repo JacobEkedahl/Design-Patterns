@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -33,13 +34,16 @@ public class FXMLController extends Observer implements Initializable {
 
     @FXML
     private Canvas canvas;
-    
+
     @FXML
     private BorderPane borderPane;
-    
+
     @FXML
     private Pane canvasPane;
-            
+
+    @FXML
+    private HBox buttonBar;
+
     ModelFascade model;
     Drawing drawing;
     //Subject subject;    
@@ -58,8 +62,6 @@ public class FXMLController extends Observer implements Initializable {
         //  model.clearDrawing();
         double fromX = event.getX();
         double fromY = event.getY();
-
-        model.selectShape("aPolygon");
         model.addShape(fromX, fromY);
     }
 
@@ -75,7 +77,20 @@ public class FXMLController extends Observer implements Initializable {
         // TODO
         model = ModelFascade.getInstance();
         model.getDrawing().attach(this);
-      //  mapCanvasToParent();
+        initDrawButtons();
+        //  mapCanvasToParent();
+    }
+
+    private void initDrawButtons() {
+        for (String key : ShapeLoader.getShapeKeys()) {
+            Button shapeBtn = new Button(key);
+            shapeBtn.setOnAction(actionEvent -> {
+                String shapeTxt = ((Button) actionEvent.getSource()).getText();
+                model.selectShape(shapeTxt);
+            });
+
+            buttonBar.getChildren().add(shapeBtn);
+        }
     }
 
     private void mapCanvasToParent() {

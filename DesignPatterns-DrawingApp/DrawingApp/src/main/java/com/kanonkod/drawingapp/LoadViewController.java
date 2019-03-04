@@ -62,7 +62,6 @@ public class LoadViewController implements Initializable {
                 Scene scene = new Scene(rootNode, 1000, 800);
                 Stage stage = (Stage) anchorPane.getScene().getWindow();
                 stage.setScene(scene);
-
             }
         });
     }

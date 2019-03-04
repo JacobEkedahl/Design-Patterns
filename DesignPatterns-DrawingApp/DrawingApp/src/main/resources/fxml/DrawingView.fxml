@@ -45,7 +45,7 @@
                   </Menu>
                </menus>
             </MenuBar>
-            <HBox fx:id="Hbox" spacing="10.0" style="-fx-background-color: white; -fx-border-width: 1; -fx-border-color: black; -fx-border-insets: 0;">
+            <HBox fx:id="buttonBar" spacing="10.0" style="-fx-background-color: white; -fx-border-width: 1; -fx-border-color: black; -fx-border-insets: 0;">
                <children>
                   <ColorPicker />
                   <CheckBox mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" text="Fill">

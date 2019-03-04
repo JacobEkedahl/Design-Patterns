@@ -33,17 +33,9 @@ public class aPolygon extends Shape {
         redoPoints(super.getFromX(), super.getFromY(), newX, newY);
     }
     
-    private void initPoints(double x, double y) {
-        for (int i = 0; i < corners; i++) {
-            xPoints[i] = x;
-            yPoints[i] = y;
-        }
-    }
-
     private void redoPoints(double fromX, double fromY, double toX, double toY) {
         //do not draw any points on init
         if (fromX == toX && fromY == toY) {
-            initPoints(fromX, fromY);
             return;
         }
         
