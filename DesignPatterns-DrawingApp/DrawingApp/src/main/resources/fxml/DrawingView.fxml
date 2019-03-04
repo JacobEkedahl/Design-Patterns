@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.collections.*?>
 <?import javafx.scene.*?>
 <?import java.lang.*?>
 <?import javafx.geometry.*?>
@@ -19,70 +20,88 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.collections.FXCollections?>
 
 <BorderPane id="borderPane" fx:id="border" prefHeight="546.0" prefWidth="901.0" style="-fx-background-color: lightgray;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kanonkod.drawingapp.FXMLController">
-   <top>
-      <VBox fx:id="vbox" BorderPane.alignment="CENTER">
-         <children>
-            <MenuBar fx:id="menubar" maxWidth="1.7976931348623157E308" pickOnBounds="false">
-               <menus>
-                  <Menu fx:id="File" mnemonicParsing="false" text="File">
-                     <items>
-                        <MenuItem id="menuItem" mnemonicParsing="false" onAction="#clickedItemClose" text="New" />
-                        <MenuItem mnemonicParsing="false" text="Open" />
-                        <MenuItem mnemonicParsing="false" text="Save" />
-                     </items>
-                  </Menu>
-                  <Menu mnemonicParsing="false" text="Edit">
-                     <items>
-                        <MenuItem mnemonicParsing="false" text="Delete" />
-                     </items>
-                  </Menu>
-                  <Menu mnemonicParsing="false" text="Help">
-                     <items>
-                        <MenuItem mnemonicParsing="false" text="About" />
-                     </items>
-                  </Menu>
-               </menus>
-            </MenuBar>
-            <HBox fx:id="buttonBar" spacing="10.0" style="-fx-background-color: white; -fx-border-width: 1; -fx-border-color: black; -fx-border-insets: 0;">
-               <children>
-                  <ColorPicker fx:id="colorPicker" onAction="#setColor" style="-fx-border-color: black;" />
-                  <CheckBox fx:id="fillBtn" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#changeFill" style="-fx-border-color: black;" text="Fill">
-                     <padding>
+    <top>
+        <VBox fx:id="vbox" BorderPane.alignment="CENTER">
+            <children>
+                <MenuBar fx:id="menubar" maxWidth="1.7976931348623157E308" pickOnBounds="false">
+                    <menus>
+                        <Menu fx:id="File" mnemonicParsing="false" text="File">
+                            <items>
+                                <MenuItem id="menuItem" mnemonicParsing="false" onAction="#clickedItemClose" text="New" />
+                                <MenuItem mnemonicParsing="false" text="Open" />
+                                <MenuItem mnemonicParsing="false" text="Save" />
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Edit">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="Delete" />
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Help">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="About" />
+                            </items>
+                        </Menu>
+                    </menus>
+                </MenuBar>
+                <HBox fx:id="buttonBar" spacing="10.0" style="-fx-background-color: white; -fx-border-width: 1; -fx-border-color: black; -fx-border-insets: 0;">
+                    <children>
+                        <ColorPicker fx:id="colorPicker" onAction="#setColor" style="-fx-border-color: black;" />
+                        <CheckBox fx:id="fillBtn" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#changeFill" style="-fx-border-color: black;" text="Fill">
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                            </padding>
+                            <HBox.margin>
+                                <Insets />
+                            </HBox.margin>
+                        </CheckBox>
+                        <Button fx:id="undoBtn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#undo" prefHeight="25.0" prefWidth="25.0" style="-fx-border-color: black;">
+                            <HBox.margin>
+                                <Insets top="5.0" />
+                            </HBox.margin>
+                        </Button>
+                        <Button fx:id="redoBtn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#redo" prefHeight="25.0" prefWidth="25.0" style="-fx-border-color: black;">
+                            <HBox.margin>
+                                <Insets top="5.0" />
+                            </HBox.margin>
+                        </Button>
+                        <ComboBox fx:id="widthSelector" onAction="#setWidth" prefHeight="33.0" prefWidth="89.0" promptText="1px" style="-fx-border-color: black;" value="1px">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="2px" />
+                                    <String fx:value="3px" />
+                                    <String fx:value="4px" />
+                                    <String fx:value="6px" />
+                                    <String fx:value="7px" />
+                                    <String fx:value="8px" />
+                                    <String fx:value="9px" />
+                                    <String fx:value="10px" />
+                                </FXCollections>
+                            </items>
+                            <HBox.margin>
+                                <Insets top="2.0" />
+                            </HBox.margin>
+                        </ComboBox>
+                    </children>
+                    <padding>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                     <HBox.margin>
+                    </padding>
+                    <VBox.margin>
                         <Insets />
-                     </HBox.margin>
-                  </CheckBox>
-                  <Button fx:id="undoBtn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#undo" prefHeight="25.0" prefWidth="25.0" style="-fx-border-color: black;">
-                     <HBox.margin>
-                        <Insets top="5.0" />
-                     </HBox.margin>
-                  </Button>
-                  <Button fx:id="redoBtn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#redo" prefHeight="25.0" prefWidth="25.0" style="-fx-border-color: black;">
-                     <HBox.margin>
-                        <Insets top="5.0" />
-                     </HBox.margin>
-                  </Button>
-               </children>
-               <padding>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </padding>
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-            </HBox>
-         </children>
-      </VBox>
-   </top>
-   <center>
-      <Pane id="canvasPane" maxHeight="-Infinity" maxWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" style="-fx-background-color: white; -fx-border-color: lightblue; -fx-border-width: 2;" BorderPane.alignment="TOP_LEFT">
-         <children>
-            <Canvas id="canvas" fx:id="canvas" height="400.0" nodeOrientation="INHERIT" onMouseDragged="#changeSize" onMousePressed="#saveFrom" onMouseReleased="#saveTo" width="600.0">
-            </Canvas>
-         </children>
-      </Pane>
-   </center>
+                    </VBox.margin>
+                </HBox>
+            </children>
+        </VBox>
+    </top>
+    <center>
+        <Pane id="canvasPane" maxHeight="-Infinity" maxWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" style="-fx-background-color: white; -fx-border-color: lightblue; -fx-border-width: 2;" BorderPane.alignment="TOP_LEFT">
+            <children>
+                <Canvas id="canvas" fx:id="canvas" height="400.0" nodeOrientation="INHERIT" onMouseDragged="#changeSize" onMousePressed="#saveFrom" onMouseReleased="#saveTo" width="600.0">
+                </Canvas>
+            </children>
+        </Pane>
+    </center>
 </BorderPane>

@@ -18,6 +18,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ColorPicker;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -69,10 +70,13 @@ public class FXMLController extends Observer implements Initializable {
     private CheckBox fillBtn;
 
     @FXML
-    Button undoBtn;
+    private Button undoBtn;
 
     @FXML
-    Button redoBtn;
+    private Button redoBtn;
+    
+    @FXML
+    private ComboBox widthSelector;
 
     ModelFascade model;
     Drawing drawing;
@@ -104,6 +108,13 @@ public class FXMLController extends Observer implements Initializable {
     @FXML
     private void setColor(Event event) {
         model.setColor(colorPicker.getValue());
+    }
+    
+    @FXML
+    private void setWidth(Event event) {
+        String valStr = (String) widthSelector.getValue();
+        String value = valStr.substring(0, valStr.length() - 2);
+        model.setWidth(Double.valueOf(value));
     }
 
     @FXML

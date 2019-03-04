@@ -29,7 +29,7 @@ public class ModelFascade {
     private ModelFascade() {
         fill = false;
         col = Color.BLACK;
-        strokeWidth = 5;
+        strokeWidth = 1;
         drawing = new Drawing();
         shapeToDraw = null;
     }
@@ -75,6 +75,10 @@ public class ModelFascade {
     public void setFill(boolean newVal) {
         System.out.println("new fill: " + newVal);
         this.fill = newVal;
+    }
+    
+    public void setWidth(double width) {
+        this.strokeWidth = width;
     }
 
     public void addShape(double fromX, double fromY) {
