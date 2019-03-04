@@ -25,6 +25,7 @@ public class Drawing {
      Stack<Command> undoCommands = new Stack<>();
      Stack<Command> redoCommands = new Stack<>();
     
+    List<Shape> selectedShapes = new ArrayList<>();
     //Object - Subject pattern with methods ------------------------
     List<Observer> observers = new ArrayList<Observer>();
 
@@ -51,9 +52,9 @@ public class Drawing {
         undoCommands.add(new UndoAdd(shape,this,shapes.size()-1));
         redoCommands.add(new RedoAdd(shape,this,shapes.size()-1));
         shapes.add(shape);
-       // notifyAllObservers();
+        // notifyAllObservers();
     }
-    
+
     public void drawAll(GraphicsContext gc) {
         gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
         for (Shape shape : shapes) {
@@ -63,11 +64,11 @@ public class Drawing {
 
     public void changeSize(Shape shape, double toX, double toY) {
         int index = shapes.indexOf(shape);
-        
+
         if (index < 0) {
             return;
         }
-        
+
         Shape shapeToChange = shapes.get(index);
         shapeToChange.changeSize(toX, toY);
         //notify observers
@@ -99,7 +100,18 @@ public class Drawing {
     public void clearOneImage(Shape shape, int index) {
         shapes.remove(shape);
         notifyAllObservers();
+    } void removeShape(Shape shape) {
+        int index = shapes.indexOf(shape);
+
+        shapes.remove(index);
+        notifyAllObservers();
     }
+    
+    public void selectShapes(Shape shape) {
+        //find all the object which are inside this area
+        
+    }
+
     public void clear() {
         shapes = new ArrayList<>();
         notifyAllObservers();
