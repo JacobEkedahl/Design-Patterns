@@ -47,12 +47,14 @@ public class ModelFascade {
     }
 
     public void setEnd(double toX, double toY) {
+        if (selectedShape == null) {
+            return;
+        }
+        
         this.drawing.changeSize(selectedShape, toX, toY);
     }
-    
-    @SuppressWarnings("empty-statement")
+
     public void setColor(Color col) {
-        System.out.println("changing color to: " + col.toString());
         this.col = col;
     }
 
@@ -61,7 +63,7 @@ public class ModelFascade {
     }
 
     public void deselect() {
-        //  selectedShape = null;
+        selectedShape = null;
     }
 
     public Drawing getDrawing() {
@@ -71,12 +73,12 @@ public class ModelFascade {
     public void selectShape(String shape) {
         shapeToDraw = shape;
     }
-    
+
     public void setFill(boolean newVal) {
         System.out.println("new fill: " + newVal);
         this.fill = newVal;
     }
-    
+
     public void setWidth(double width) {
         this.strokeWidth = width;
     }

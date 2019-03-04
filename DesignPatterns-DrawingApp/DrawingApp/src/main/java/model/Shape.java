@@ -49,11 +49,11 @@ public abstract class Shape implements Cloneable {
     final void draw(GraphicsContext gc) {
         gc.setFill(col);
         gc.setStroke(col);
-        
+        gc.setLineWidth(strokeWidth);
+
         if (fill) {
             drawFill(gc);
         } else {
-            gc.setLineWidth(strokeWidth);
             drawHollow(gc);
         }
     }
