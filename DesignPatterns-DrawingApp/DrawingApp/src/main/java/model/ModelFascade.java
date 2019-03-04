@@ -50,7 +50,6 @@ public class ModelFascade {
         if (selectedShape == null) {
             return;
         }
-        
         this.drawing.changeSize(selectedShape, toX, toY);
     }
 
@@ -87,7 +86,6 @@ public class ModelFascade {
         if (shapeToDraw == null) {
             return;
         }
-
         selectedShape = ShapeFactory.getShape(shapeToDraw, fromX, fromY, fromX, fromY, col, strokeWidth, fill);
         drawing.addShape(selectedShape);
     }

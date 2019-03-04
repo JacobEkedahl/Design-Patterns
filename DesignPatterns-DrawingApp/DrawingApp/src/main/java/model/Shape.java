@@ -15,6 +15,7 @@ import javafx.scene.paint.Color;
  * @author Jacob
  */
 //DO NOT CHANGE NAME OF THIS CLASS
+//Cmon just one more time
 public abstract class Shape implements Cloneable {
 
     private double fromX, fromY;

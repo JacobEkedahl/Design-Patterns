@@ -194,6 +194,7 @@ public class FXMLController extends Observer implements Initializable {
     @Override
     public void update() {
         //the drawing has been changed, clear and draw it
+        //ystem.out.println("draw");
         model.draw(canvas.getGraphicsContext2D());
     }
 

@@ -21,7 +21,7 @@ import model.interfaces.UndoCommand;
  */
 public class Drawing {
 
-    List<Shape> shapes = new ArrayList<>();
+     List<Shape> shapes = new ArrayList<>();
      Stack<Command> undoCommands = new Stack<>();
      Stack<Command> redoCommands = new Stack<>();
     
@@ -47,9 +47,13 @@ public class Drawing {
         if (shape == null) {
             return;
         }
+        
         //notify observers
         undoCommands.add(new UndoAdd(shape,this,shapes.size()-1));
         redoCommands.add(new RedoAdd(shape,this,shapes.size()-1));
+        if(!shapes.isEmpty()){
+            addComponent(shape);
+        }
         shapes.add(shape);
        // notifyAllObservers();
     }
@@ -71,6 +75,11 @@ public class Drawing {
         Shape shapeToChange = shapes.get(index);
         shapeToChange.changeSize(toX, toY);
         //notify observers
+        //System.out.println("change sizes");
+       // System.out.println("shape " + shape.toString());
+        if(shapes.size()>1){
+           addComponent(shape);   
+        }
         notifyAllObservers();
     }
 
@@ -105,4 +114,31 @@ public class Drawing {
         notifyAllObservers();
         //notify observers
     }
+
+    private void addComponent(Shape shape) {
+        ShapeComposite composite = null;
+        boolean ifCompositeFound = false;
+        for (Shape s : shapes) {
+            if(checkIfInsideShape(s,shape)){
+                ifCompositeFound = true;
+                composite = new ShapeComposite();
+                composite.add(s);
+                System.out.println("part of component " + composite.getSize());
+            }
+        }
+        if(!ifCompositeFound){
+            return;
+        }
+        composite.add(shape);
+        Shape tmp = composite;
+        //tmp.draw(gc);
+    }
+
+    private boolean checkIfInsideShape(Shape s, Shape shape) {
+        if(shape.getFromX()> s.getFromX() && shape.getFromY() > s.getFromY() && shape.getToX() < s.getToX() && shape.getToY() < s.getToY()){
+           return true;
+        }
+        return false;
+    }
+    
 }
