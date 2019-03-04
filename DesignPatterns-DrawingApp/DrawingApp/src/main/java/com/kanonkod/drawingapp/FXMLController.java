@@ -59,7 +59,7 @@ public class FXMLController extends Observer implements Initializable {
         double fromX = event.getX();
         double fromY = event.getY();
 
-        model.selectShape("aLine");
+        model.selectShape("aPolygon");
         model.addShape(fromX, fromY);
     }
 

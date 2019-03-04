@@ -39,7 +39,7 @@ public class Drawing {
     public void addShape(Shape shape) {
         //notify observers
         shapes.add(shape);
-        notifyAllObservers();
+       // notifyAllObservers();
     }
     
     public void drawAll(GraphicsContext gc) {
