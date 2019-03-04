@@ -17,7 +17,8 @@ import model.interfaces.Observer;
 public class Drawing {
 
     List<Shape> shapes = new ArrayList<>();
-    
+    List<Shape> selectedShapes = new ArrayList<>();
+
     //Object - Subject pattern with methods ------------------------
     List<Observer> observers = new ArrayList<Observer>();
 
@@ -42,9 +43,9 @@ public class Drawing {
         }
         //notify observers
         shapes.add(shape);
-       // notifyAllObservers();
+        // notifyAllObservers();
     }
-    
+
     public void drawAll(GraphicsContext gc) {
         gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
         for (Shape shape : shapes) {
@@ -54,15 +55,27 @@ public class Drawing {
 
     public void changeSize(Shape shape, double toX, double toY) {
         int index = shapes.indexOf(shape);
-        
+
         if (index < 0) {
             return;
         }
-        
+
         Shape shapeToChange = shapes.get(index);
         shapeToChange.changeSize(toX, toY);
         //notify observers
         notifyAllObservers();
+    }
+
+    public void removeShape(Shape shape) {
+        int index = shapes.indexOf(shape);
+
+        shapes.remove(index);
+        notifyAllObservers();
+    }
+    
+    public void selectShapes(Shape shape) {
+        //find all the object which are inside this area
+        
     }
 
     public void clear() {
