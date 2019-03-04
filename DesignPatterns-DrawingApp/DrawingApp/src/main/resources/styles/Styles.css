@@ -1,3 +1,7 @@
 .button {
     -fx-font-weight: bold;
 }
+
+.button:focused{
+    -fx-background-color: gray;
+}

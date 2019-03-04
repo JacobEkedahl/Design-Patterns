@@ -42,7 +42,7 @@ public class LoadViewController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-       // loadImages();
+        // loadImages();
         changeToDrawing();
     }
 
@@ -60,6 +60,8 @@ public class LoadViewController implements Initializable {
                     Logger.getLogger(LoadViewController.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 Scene scene = new Scene(rootNode, 1000, 800);
+
+                scene.getStylesheets().add("/styles/Styles.css");
                 Stage stage = (Stage) anchorPane.getScene().getWindow();
                 stage.setScene(scene);
             }

@@ -1,7 +1,12 @@
 package com.kanonkod.drawingapp;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.binding.DoubleBinding;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,6 +17,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
@@ -82,10 +90,23 @@ public class FXMLController extends Observer implements Initializable {
     }
 
     private void initDrawButtons() {
+        final ToggleGroup group = new ToggleGroup();
+        
         for (String key : ShapeLoader.getShapeKeys()) {
-            Button shapeBtn = new Button(key);
+            ToggleButton shapeBtn = new ToggleButton();
+            shapeBtn.setToggleGroup(group);
+            
+            
+            File path = new File("./shapes/" + key + ".png");
+            try {
+                shapeBtn.setGraphic(new ImageView(new Image(new FileInputStream(path))));
+            } catch (FileNotFoundException ex) {
+                shapeBtn.setText(key);
+            }
+            
+            shapeBtn.setId(key);
             shapeBtn.setOnAction(actionEvent -> {
-                String shapeTxt = ((Button) actionEvent.getSource()).getText();
+                String shapeTxt = ((ToggleButton) actionEvent.getSource()).getId();
                 model.selectShape(shapeTxt);
             });
 
