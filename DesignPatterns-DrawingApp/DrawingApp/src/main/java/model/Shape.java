@@ -143,6 +143,10 @@ public abstract class Shape implements Cloneable {
     public double getToY() {
         return toY;
     }
+    
+    public void setFill(boolean newVal) {
+        this.fill = newVal;
+    }
 
     @Override
     public String toString() {
