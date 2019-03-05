@@ -61,6 +61,17 @@ public class ModelFascade {
     public void clearDrawing() {
         this.drawing.clear();
     }
+    
+    public void handleMarker() {
+        if (selectedShape instanceof aMarker) {
+            this.drawing.selectShapes(selectedShape);
+            this.drawing.removeShape(selectedShape);
+        }
+    }
+    
+    public void deselectAll() {
+        this.drawing.deselectAll();
+    }
 
     public void deselect() {
         selectedShape = null;

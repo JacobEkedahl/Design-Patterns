@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Stack;
 import javafx.scene.canvas.GraphicsContext;
 import model.interfaces.Command;
+import javafx.scene.paint.Color;
 import model.interfaces.Observer;
 import model.interfaces.UndoCommand;
 
@@ -55,10 +56,17 @@ public class Drawing {
         // notifyAllObservers();
     }
 
+    //is called from the views update method
     public void drawAll(GraphicsContext gc) {
         gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
         for (Shape shape : shapes) {
             shape.draw(gc);
+        }
+        
+        for (Shape shape : selectedShapes) {
+            //draw rect around
+            Shape tmpRect = ShapeFactory.getShape("aMarker", shape.getFromX(), shape.getFromY(), shape.getToX(), shape.getToY(), Color.CORAL, 1, false);
+            tmpRect.draw(gc);
         }
     }
 
@@ -73,6 +81,12 @@ public class Drawing {
         shapeToChange.changeSize(toX, toY);
         //notify observers
         notifyAllObservers();
+    }
+    
+    public void removeSelected() {
+        for (Shape shape : selectedShapes) {
+            removeShape(shape);
+        }
     }
 
      public void undoAdd(){
@@ -102,14 +116,30 @@ public class Drawing {
         notifyAllObservers();
     } void removeShape(Shape shape) {
         int index = shapes.indexOf(shape);
-
         shapes.remove(index);
+        notifyAllObservers();
+    }
+    
+    public void deselectAll() {
+        selectedShapes.clear();
         notifyAllObservers();
     }
     
     public void selectShapes(Shape shape) {
         //find all the object which are inside this area
-        
+        selectedShapes.clear();
+        for (Shape orig : shapes) {
+            if ((orig.getMinX() > shape.getMaxX()) ||  //orig is to right of marker
+               (orig.getMaxX()< shape.getMinX()) ||  //orig is to left of marker
+               (orig.getMinY() > shape.getMaxY()) || //orig is below marker
+               (orig.getMaxY() < shape.getMinY()) ||
+               (orig.equals(shape))){  //orig is above marker
+                continue;
+            }
+            selectedShapes.add(orig);
+        }
+        System.out.println("selectedShapes size: " + selectedShapes.size());
+        notifyAllObservers();
     }
 
     public void clear() {
