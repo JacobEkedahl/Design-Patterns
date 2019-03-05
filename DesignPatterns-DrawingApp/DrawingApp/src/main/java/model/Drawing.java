@@ -8,6 +8,7 @@ package model;
 import com.kanonkod.drawingapp.command.RedoAdd;
 import com.kanonkod.drawingapp.command.UndoAdd;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 import javafx.scene.canvas.GraphicsContext;
@@ -20,17 +21,21 @@ import model.interfaces.UndoCommand;
  * @author Jacob
  */
 public class Drawing {
-
+     HashMap<Integer,Shape> map = new HashMap<>();
      List<Shape> shapes = new ArrayList<>();
      Stack<Command> undoCommands = new Stack<>();
      Stack<Command> redoCommands = new Stack<>();
     
     //Object - Subject pattern with methods ------------------------
     List<Observer> observers = new ArrayList<Observer>();
+    
+    private final Object MUTEX= new Object();
 
     public void notifyAllObservers() {
         for (Observer observer : observers) {
-            observer.update();
+           synchronized (MUTEX) {
+              observer.update();  
+           } 
         }
     }
 
@@ -40,7 +45,7 @@ public class Drawing {
     //End object - subject pattern
 
     public Drawing() {
-
+         
     }
 
     public void addShape(Shape shape) {
@@ -77,11 +82,36 @@ public class Drawing {
         //notify observers
         //System.out.println("change sizes");
        // System.out.println("shape " + shape.toString());
-        if(shapes.size()>1){
-           addComponent(shape);   
-        }
+        
         notifyAllObservers();
     }
+    
+     public Shape addComponent(Shape shape) {
+         if(shapes.size()<=1){
+          return null;
+        }
+      //  ShapeComposite composite = null;
+        boolean ifCompositeFound = false;
+        for (Shape s : shapes) {
+            if(checkIfInsideShape(s,shape)){
+                //ifCompositeFound = true;
+                System.out.println("part of component " );
+                return s;
+              
+            }
+        }
+        return null;
+     //   shapes.remove(shape);
+       // shapes.add(composite);
+        //tmp.draw(gc);
+    }
+      private boolean checkIfInsideShape(Shape s, Shape shape) {
+        if(shape.getFromX()> s.getFromX() && shape.getFromY() > s.getFromY() && shape.getToX() < s.getToX() && shape.getToY() < s.getToY()){
+           return true;
+        }
+        return false;
+    }
+
 
      public void undoAdd(){
         if(!undoCommands.empty()){
@@ -114,31 +144,10 @@ public class Drawing {
         notifyAllObservers();
         //notify observers
     }
+    
+   
 
-    private void addComponent(Shape shape) {
-        ShapeComposite composite = null;
-        boolean ifCompositeFound = false;
-        for (Shape s : shapes) {
-            if(checkIfInsideShape(s,shape)){
-                ifCompositeFound = true;
-                composite = new ShapeComposite();
-                composite.add(s);
-                System.out.println("part of component " + composite.getSize());
-            }
-        }
-        if(!ifCompositeFound){
-            return;
-        }
-        composite.add(shape);
-        Shape tmp = composite;
-        //tmp.draw(gc);
-    }
-
-    private boolean checkIfInsideShape(Shape s, Shape shape) {
-        if(shape.getFromX()> s.getFromX() && shape.getFromY() > s.getFromY() && shape.getToX() < s.getToX() && shape.getToY() < s.getToY()){
-           return true;
-        }
-        return false;
-    }
+   
+   
     
 }

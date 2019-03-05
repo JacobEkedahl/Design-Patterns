@@ -31,6 +31,7 @@ public class ShapeLoader {
 
     static final String directoryName = "shapes";
     public static void initImages(GraphicsContext gc) {
+        System.out.println("initImages");
         File directory = new File(directoryName);
         if (!directory.exists()) {
             directory.mkdir();
@@ -60,7 +61,9 @@ public class ShapeLoader {
     }
 
     public static List<String> getShapeKeys() {
+        
         Reflections reflections = new Reflections("model");
+        System.out.println("getShapeKeys");
         return reflections.getSubTypesOf(Shape.class)
                 .stream()
                 .map(s -> s.getSimpleName())
@@ -74,7 +77,8 @@ public class ShapeLoader {
         Reflections reflections = new Reflections("model");
         Set<Class<? extends Shape>> subTypes
                 = reflections.getSubTypesOf(Shape.class);
-
+        
+       // System.out.println();
         for (Class type : subTypes) {
             try {
                 result.put(type.getSimpleName(), (Shape) type.newInstance());

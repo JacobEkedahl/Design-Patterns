@@ -23,6 +23,7 @@ public abstract class Shape implements Cloneable {
     private Color col;
     private double strokeWidth;
     private boolean fill;
+    private boolean component;
 
     abstract void drawFill(GraphicsContext gc);
 
@@ -31,6 +32,8 @@ public abstract class Shape implements Cloneable {
     abstract void changeSize(double newX, double newY);
 
     public Shape createCopy(double fromX, double fromY, double toX, double toY, Color col, double strokeWidth, boolean fill) {
+        System.out.println("creating copy ");
+        
         this.fromX = fromX;
         this.fromY = fromY;
         this.toX = toX;
@@ -46,8 +49,25 @@ public abstract class Shape implements Cloneable {
         }
         return null;
     }
+    
+    public Shape createCopy(double fromX, double fromY, double toX, double toY) {
+        System.out.println("creating copy ");
+        
+        this.fromX = fromX;
+        this.fromY = fromY;
+        this.toX = toX;
+        this.toY = toY;
+       
 
-    final void draw(GraphicsContext gc) {
+        try {
+            return (Shape) this.clone();
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(Shape.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+     void draw(GraphicsContext gc) {
         gc.setFill(col);
         gc.setStroke(col);
         gc.setLineWidth(strokeWidth);
@@ -112,6 +132,12 @@ public abstract class Shape implements Cloneable {
         this.toX = toX;
         this.toY = toY;
     }
+    public void setFromAndEnd(double fromX, double fromY, double toX, double toY){
+        this.fromX = fromX;
+        this.fromY = fromY;
+        this.toX    = toX;
+        this.toY    = toY;
+    }
 
     public double getFromX() {
         return fromX;
@@ -132,6 +158,16 @@ public abstract class Shape implements Cloneable {
     public boolean isFill() {
         return fill;
     }
+
+    public boolean isComponent() {
+        return component;
+    }
+
+    public void setComponent(boolean component) {
+        this.component = component;
+    }
+    
+   
     
 
     @Override

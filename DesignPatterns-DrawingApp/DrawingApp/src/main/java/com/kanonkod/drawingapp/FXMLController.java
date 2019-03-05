@@ -159,6 +159,7 @@ public class FXMLController extends Observer implements Initializable {
         final ToggleGroup group = new ToggleGroup();
 
         for (String key : ShapeLoader.getShapeKeys()) {
+            System.out.println("key from draw " + key);
             ToggleButton shapeBtn = new ToggleButton();
             shapeBtn.setToggleGroup(group);
 

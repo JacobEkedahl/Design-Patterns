@@ -62,7 +62,22 @@ public class ModelFascade {
     }
 
     public void deselect() {
+    
+        Shape comp = drawing.addComponent(selectedShape);
+        
+        if(comp!=null){
+           ShapeComposite  component = (ShapeComposite) ShapeFactory.getShape("ShapeComposite", comp.getFromX(), comp.getFromY(), comp.getToX(), comp.getToY());
+          /* int indexa = drawing.getIndex(comp);
+           comp = drawing.removeShape(indexa);
+           indexa = drawing.getIndex(selectedShape);
+           selectedShape =drawing.removeShape(indexa);*/
+           component.add(comp);
+           component.add(selectedShape);
+           System.out.println("composition size " + component.queue.size());
+           drawing.addShape(component);
+        }
         selectedShape = null;
+        
     }
 
     public Drawing getDrawing() {
