@@ -93,7 +93,7 @@ public class FXMLController extends Observer implements Initializable {
     //add shape, mouse pressed
     @FXML
     private void saveFrom(MouseEvent event) {
-        //  model.clearDrawing();
+        model.deselectAll();
         double fromX = event.getX();
         double fromY = event.getY();
         model.addShape(fromX, fromY);
@@ -102,11 +102,14 @@ public class FXMLController extends Observer implements Initializable {
     //mouse released, deselect
     @FXML
     private void saveTo(MouseEvent event) {
+        model.deselectAll();
+        model.handleMarker();
         model.deselect();
     }
 
     @FXML
     private void setColor(Event event) {
+        model.deselectAll();
         model.setColor(colorPicker.getValue());
     }
     
@@ -114,6 +117,7 @@ public class FXMLController extends Observer implements Initializable {
     private void setWidth(Event event) {
         String valStr = (String) widthSelector.getValue();
         String value = valStr.substring(0, valStr.length() - 2);
+        model.deselectAll();
         model.setWidth(Double.valueOf(value));
     }
 
@@ -130,6 +134,7 @@ public class FXMLController extends Observer implements Initializable {
     @FXML
     private void changeFill(Event event) {
         boolean newVal = ((CheckBox) event.getSource()).isSelected();
+        model.deselectAll();
         model.setFill(newVal);
     }
 
@@ -176,6 +181,7 @@ public class FXMLController extends Observer implements Initializable {
             shapeBtn.setId(key);
             shapeBtn.setOnAction(actionEvent -> {
                 if (!shapeBtn.isSelected()) {
+                    model.deselectAll();
                     shapeBtn.setSelected(true);
                 }
                 String shapeTxt = ((ToggleButton) actionEvent.getSource()).getId();

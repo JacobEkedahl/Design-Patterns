@@ -45,6 +45,22 @@ public abstract class Shape implements Cloneable {
         }
         return null;
     }
+    
+    public double getMinX() {
+        return (fromX < toX) ? fromX : toX;
+    }
+    
+    public double getMinY() {
+        return (fromY < toY) ? fromY : toY;
+    }
+        
+    public double getMaxX() {
+        return (fromX > toX) ? fromX : toX;
+    }
+    
+    public double getMaxY() {
+        return (fromY > toY) ? fromY : toY;
+    }
 
     final void draw(GraphicsContext gc) {
         gc.setFill(col);

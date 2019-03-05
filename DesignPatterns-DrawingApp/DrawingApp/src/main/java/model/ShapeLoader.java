@@ -7,6 +7,7 @@ package model;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -61,10 +62,12 @@ public class ShapeLoader {
 
     public static List<String> getShapeKeys() {
         Reflections reflections = new Reflections("model");
-        return reflections.getSubTypesOf(Shape.class)
+        List<String> result = reflections.getSubTypesOf(Shape.class)
                 .stream()
                 .map(s -> s.getSimpleName())
                 .collect(Collectors.toList());
+        Collections.sort(result);
+        return result;
     }
 
     public static HashMap<String, Shape> getShapeTypes() {
