@@ -60,26 +60,46 @@ public class ModelFascade {
     public void clearDrawing() {
         this.drawing.clear();
     }
-
-    public void deselect() {
     
-        Shape comp = drawing.addComponent(selectedShape);
-        
-        if(comp!=null){
-           ShapeComposite  component = (ShapeComposite) ShapeFactory.getShape("ShapeComposite", comp.getFromX(), comp.getFromY(), comp.getToX(), comp.getToY());
-          /* int indexa = drawing.getIndex(comp);
-           comp = drawing.removeShape(indexa);
-           indexa = drawing.getIndex(selectedShape);
-           selectedShape =drawing.removeShape(indexa);*/
-           component.add(comp);
-           component.add(selectedShape);
-           System.out.println("composition size " + component.queue.size());
-           drawing.addShape(component);
+    public void handleMarker() {
+        if (selectedShape instanceof aMarker) {
+            this.drawing.selectShapes(selectedShape);
+            this.drawing.removeShape(selectedShape);
         }
-        selectedShape = null;
-        
     }
-
+    
+    public void changeSelectedFill(boolean newVal) {
+        this.drawing.changeSelectedFill(newVal);
+    }
+    
+   public void changeSelectedColor(Color newCol) {
+        this.drawing.changeSelectedColor(newCol);
+    }
+    public void deselectAll() {
+        this.drawing.deselectAll();
+    }
+    public void deselect() {
+       // Shape comp = drawing.addComponent(selectedShape);
+        handleComposite();
+        selectedShape = null;
+    }
+    public void handleComposite(){
+        if(selectedShape==null){
+            return;
+        }
+        if(drawing.updateComposite(selectedShape)){
+            return;
+        }
+        Shape outerShape = drawing.retrieveComposite(selectedShape);
+        if(outerShape!=null){
+            ShapeComposite newComposite = makeNewComposite(outerShape);
+            drawing.initializeComposite(newComposite,selectedShape,outerShape);
+            return;
+        }
+    }
+    public ShapeComposite makeNewComposite(Shape outline){
+        return  (ShapeComposite) ShapeFactory.getShape("ShapeComposite", outline.getFromX(), outline.getFromY(), outline.getToX(), outline.getToY());
+    }
     public Drawing getDrawing() {
         return drawing;
     }
@@ -89,7 +109,6 @@ public class ModelFascade {
     }
 
     public void setFill(boolean newVal) {
-        System.out.println("new fill: " + newVal);
         this.fill = newVal;
     }
 

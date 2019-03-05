@@ -29,14 +29,14 @@ public class RedoAdd implements RedoCommand{
     @Override
     public void redo() {
        
-        Shape newShape = shape.createCopy(shape.getFromX(), shape.getFromY(), shape.getToX(), shape.getToY(), shape.getCol(),shape.getStrokeWidth(),shape.isFill());
+       /* Shape newShape = shape.createCopy(shape.getFromX(), shape.getFromY(), shape.getToX(), shape.getToY(), shape.getCol(),shape.getStrokeWidth(),shape.isFill());
         
        
         newShape.setFromX(shape.getFromX()+30);
         newShape.setFromY(shape.getFromY()+30);
         newShape.setToX(shape.getToX()+30);
         newShape.setToY(shape.getToY()+30);
-        drawing.repeat(newShape);
+        drawing.repeat(newShape);*/
     }
 
     @Override

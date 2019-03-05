@@ -15,10 +15,18 @@ import javafx.scene.shape.*;
  *
  * @author Jacob
  */
-public class aLine extends Shape {
+public class aMarker extends Shape {
     @Override
     void drawHollow(GraphicsContext gc) {
-        gc.strokeLine(super.getFromX(), super.getFromY(), super.getToX(), super.getToY());
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(1.0);
+        
+        gc.setLineDashes(5);
+        gc.strokeLine(super.getFromX(), super.getFromY(), super.getToX(), super.getFromY()); //top
+        gc.strokeLine(super.getFromX(), super.getFromY(), super.getFromX(), super.getToY()); //left
+        gc.strokeLine(super.getToX(), super.getFromY(), super.getToX(), super.getToY()); //right
+        gc.strokeLine(super.getFromX(), super.getToY(), super.getToX(), super.getToY()); //bot
+        gc.setLineDashes(0);
     }
 
     @Override

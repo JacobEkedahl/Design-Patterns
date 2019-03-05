@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 import javafx.scene.canvas.GraphicsContext;
-import model.interfaces.Command;
+import javafx.scene.paint.Color;
 import model.interfaces.Observer;
 import model.interfaces.UndoCommand;
 
@@ -21,11 +21,10 @@ import model.interfaces.UndoCommand;
  * @author Jacob
  */
 public class Drawing {
-     HashMap<Integer,Shape> map = new HashMap<>();
-     List<Shape> shapes = new ArrayList<>();
-     Stack<Command> undoCommands = new Stack<>();
-     Stack<Command> redoCommands = new Stack<>();
-    
+
+    List<Shape> shapes = new ArrayList<>();
+    List<Shape> selectedShapes = new ArrayList<>();
+
     //Object - Subject pattern with methods ------------------------
     List<Observer> observers = new ArrayList<Observer>();
     
@@ -54,35 +53,41 @@ public class Drawing {
         }
         
         //notify observers
-        undoCommands.add(new UndoAdd(shape,this,shapes.size()-1));
-        redoCommands.add(new RedoAdd(shape,this,shapes.size()-1));
+      //  undoCommands.add(new UndoAdd(shape,this,shapes.size()-1));
+       // redoCommands.add(new RedoAdd(shape,this,shapes.size()-1));
         if(!shapes.isEmpty()){
             addComponent(shape);
         }
+        
         shapes.add(shape);
-       // notifyAllObservers();
+        // notifyAllObservers();
     }
-    
+
+    //is called from the views update method
     public void drawAll(GraphicsContext gc) {
         gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+       
+        for (Shape shape : selectedShapes) {
+            //draw rect around
+            Shape tmpRect = ShapeFactory.getShape("aMarker", shape.getFromX(), shape.getFromY(), shape.getToX(), shape.getToY(), Color.CORAL, 1, false);
+            tmpRect.draw(gc);
+        }
+
         for (Shape shape : shapes) {
             shape.draw(gc);
         }
+
     }
 
     public void changeSize(Shape shape, double toX, double toY) {
         int index = shapes.indexOf(shape);
-        
+
         if (index < 0) {
             return;
         }
-        
+
         Shape shapeToChange = shapes.get(index);
         shapeToChange.changeSize(toX, toY);
-        //notify observers
-        //System.out.println("change sizes");
-       // System.out.println("shape " + shape.toString());
-        
         notifyAllObservers();
     }
     
@@ -101,9 +106,6 @@ public class Drawing {
             }
         }
         return null;
-     //   shapes.remove(shape);
-       // shapes.add(composite);
-        //tmp.draw(gc);
     }
       private boolean checkIfInsideShape(Shape s, Shape shape) {
         if(shape.getFromX()> s.getFromX() && shape.getFromY() > s.getFromY() && shape.getToX() < s.getToX() && shape.getToY() < s.getToY()){
@@ -112,42 +114,109 @@ public class Drawing {
         return false;
     }
 
-
-     public void undoAdd(){
-        if(!undoCommands.empty()){
-            UndoCommand ua = (UndoCommand) undoCommands.pop();
-            ua.undo();
-        }
-        
-    }
-    public void redoAdd(){
-         if(!undoCommands.empty()){
-          RedoAdd ra = (RedoAdd) redoCommands.pop();
-          ra.redo();   
-         }
-        
-    }
-    
     public void repeat(Shape shape) {
         
         shapes.add(shape);
         notifyAllObservers();
     }
 
+    public void removeSelected() {
+        for (Shape shape : selectedShapes) {
+            removeShape(shape);
+        }
+    }
 
-    public void clearOneImage(Shape shape, int index) {
-        shapes.remove(shape);
+    public void removeShape(Shape shape) {
+        int index = shapes.indexOf(shape);
+        shapes.remove(index);
         notifyAllObservers();
     }
+
+    public void deselectAll() {
+        selectedShapes.clear();
+        notifyAllObservers();
+    }
+    
+    public void changeSelectedColor(Color newCol) {
+        selectedShapes.forEach((shape) -> {
+            shape.setCol(newCol);
+        });
+        
+        notifyAllObservers();
+    }
+    
+    public void changeSelectedFill(boolean newVal) {
+        selectedShapes.forEach((shape) -> {
+            shape.setFill(newVal);
+        });
+        
+        notifyAllObservers();
+    }
+
+    public void selectShapes(Shape shape) {
+        //find all the object which are inside the marker area and add to selectedShapes
+        selectedShapes.clear();
+        for (Shape orig : shapes) {
+            if ((orig.getMinX() > shape.getMaxX()) //orig is to right of marker
+                    ||
+                    (orig.getMaxX() < shape.getMinX())//orig is to left of marker
+                    || 
+                    (orig.getMinY() > shape.getMaxY())//orig is below marker
+                    || 
+                    (orig.getMaxY() < shape.getMinY()) //orig is above marker
+                    || (orig.equals(shape))) { //this shape is the marker
+                continue;
+            }
+            selectedShapes.add(orig);
+            System.out.println("orig: " + orig);
+        }
+        
+        notifyAllObservers();
+    }
+    public boolean updateComposite(Shape selectedShape) {
+         for (Shape s : shapes) {
+            if(s instanceof ShapeComposite){
+                ShapeComposite composite = (ShapeComposite) s;
+                if(checkIfInsideShape(s,selectedShape)){
+                    shapes.remove(selectedShape);
+                    composite.add(selectedShape);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    public void initializeComposite(ShapeComposite composite, Shape shape, Shape outer){
+        shapes.remove(outer);
+        shapes.remove(shape);
+        composite.add(outer);
+        composite.add(shape);
+        shapes.add(composite);
+    }
+    public Shape retrieveComposite(Shape selected){
+         if(shapes.size()<=1){
+          return null;
+        }
+        for (Shape s : shapes) {
+            if(checkIfInsideShape(s,selected)){
+                if(!( s instanceof ShapeComposite)){
+                    return s;
+                }
+            }
+        }
+        return null;
+    }
+   
     public void clear() {
         shapes = new ArrayList<>();
         notifyAllObservers();
         //notify observers
     }
+  
     
    
 
    
    
-    
 }

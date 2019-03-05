@@ -98,7 +98,7 @@ public class FXMLController extends Observer implements Initializable {
     //add shape, mouse pressed
     @FXML
     private void saveFrom(MouseEvent event) {
-        //  model.clearDrawing();
+        model.deselectAll();
         double fromX = event.getX();
         double fromY = event.getY();
         model.addShape(fromX, fromY);
@@ -107,11 +107,16 @@ public class FXMLController extends Observer implements Initializable {
     //mouse released, deselect
     @FXML
     private void saveTo(MouseEvent event) {
+        model.deselectAll();
+        model.handleMarker();
         model.deselect();
     }
 
     @FXML
     private void setColor(Event event) {
+        //fill selected
+        
+        model.changeSelectedColor(colorPicker.getValue());
         model.setColor(colorPicker.getValue());
     }
     
@@ -119,6 +124,7 @@ public class FXMLController extends Observer implements Initializable {
     private void setWidth(Event event) {
         String valStr = (String) widthSelector.getValue();
         String value = valStr.substring(0, valStr.length() - 2);
+        model.deselectAll();
         model.setWidth(Double.valueOf(value));
     }
 
@@ -126,6 +132,7 @@ public class FXMLController extends Observer implements Initializable {
     @FXML
     private void changeFill(Event event) {
         boolean newVal = ((CheckBox) event.getSource()).isSelected();
+        model.changeSelectedFill(newVal);
         model.setFill(newVal);
     }
 
@@ -159,7 +166,6 @@ public class FXMLController extends Observer implements Initializable {
         final ToggleGroup group = new ToggleGroup();
 
         for (String key : ShapeLoader.getShapeKeys()) {
-            System.out.println("key from draw " + key);
             ToggleButton shapeBtn = new ToggleButton();
             shapeBtn.setToggleGroup(group);
 
@@ -211,12 +217,12 @@ public class FXMLController extends Observer implements Initializable {
 
     @FXML
     private void undo(ActionEvent event) {
-        model.getDrawing().undoAdd();
+      //  model.getDrawing().undoAdd();
     }
 
 
     @FXML
     private void redo(ActionEvent event) {
-        model.getDrawing().redoAdd();
+       // model.getDrawing().redoAdd();
     }
 }

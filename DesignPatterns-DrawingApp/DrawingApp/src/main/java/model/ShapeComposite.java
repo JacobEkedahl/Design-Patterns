@@ -14,18 +14,15 @@ import javafx.scene.canvas.GraphicsContext;
  */
 public class ShapeComposite extends Shape {
     
-    LinkedList<Shape> queue = new LinkedList<>();
+    private LinkedList<Shape> queue;
     
-   // public ShapeComposite(Shape outline){
-     //   queue = new LinkedList<Shape>(); 
-        //super.setFromAndEnd(outline.getFromX(), outline.getFromY(), outline.getToX(), outline.getToY());
-       // System.out.println("This is a new composite " + this.toString());
-        
-   // }
-    
+  
    
     
     public void add(Shape shape){
+        if(queue==null){
+            queue = new LinkedList<>();
+        }
         queue.add(shape);
     }
     public int getSize(){
@@ -57,11 +54,20 @@ public class ShapeComposite extends Shape {
 
     @Override
     void changeSize(double newX, double newY) {
-        System.out.println("Component size");
           for(Shape e : queue){
             e.changeSize(newX,newY);
         }
      //    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public String toString() {
+        if(queue==null){
+            return null;
+        }
+        return "ShapeComposite{" + "queue=" + queue.toString() + '}';
+    }
+    
+    
     
 }

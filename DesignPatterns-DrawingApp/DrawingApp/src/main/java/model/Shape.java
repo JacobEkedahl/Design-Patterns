@@ -23,7 +23,6 @@ public abstract class Shape implements Cloneable {
     private Color col;
     private double strokeWidth;
     private boolean fill;
-    private boolean component;
 
     abstract void drawFill(GraphicsContext gc);
 
@@ -32,8 +31,6 @@ public abstract class Shape implements Cloneable {
     abstract void changeSize(double newX, double newY);
 
     public Shape createCopy(double fromX, double fromY, double toX, double toY, Color col, double strokeWidth, boolean fill) {
-        System.out.println("creating copy ");
-        
         this.fromX = fromX;
         this.fromY = fromY;
         this.toX = toX;
@@ -50,7 +47,7 @@ public abstract class Shape implements Cloneable {
         return null;
     }
     
-    public Shape createCopy(double fromX, double fromY, double toX, double toY) {
+     public Shape createCopy(double fromX, double fromY, double toX, double toY) {
         System.out.println("creating copy ");
         
         this.fromX = fromX;
@@ -65,6 +62,22 @@ public abstract class Shape implements Cloneable {
             Logger.getLogger(Shape.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+    
+    public double getMinX() {
+        return (fromX < toX) ? fromX : toX;
+    }
+    
+    public double getMinY() {
+        return (fromY < toY) ? fromY : toY;
+    }
+        
+    public double getMaxX() {
+        return (fromX > toX) ? fromX : toX;
+    }
+    
+    public double getMaxY() {
+        return (fromY > toY) ? fromY : toY;
     }
 
      void draw(GraphicsContext gc) {
@@ -132,12 +145,6 @@ public abstract class Shape implements Cloneable {
         this.toX = toX;
         this.toY = toY;
     }
-    public void setFromAndEnd(double fromX, double fromY, double toX, double toY){
-        this.fromX = fromX;
-        this.fromY = fromY;
-        this.toX    = toX;
-        this.toY    = toY;
-    }
 
     public double getFromX() {
         return fromX;
@@ -154,21 +161,10 @@ public abstract class Shape implements Cloneable {
     public double getToY() {
         return toY;
     }
-
-    public boolean isFill() {
-        return fill;
-    }
-
-    public boolean isComponent() {
-        return component;
-    }
-
-    public void setComponent(boolean component) {
-        this.component = component;
-    }
     
-   
-    
+    public void setFill(boolean newVal) {
+        this.fill = newVal;
+    }
 
     @Override
     public String toString() {
