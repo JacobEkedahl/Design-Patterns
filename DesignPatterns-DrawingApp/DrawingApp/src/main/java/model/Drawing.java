@@ -59,15 +59,17 @@ public class Drawing {
     //is called from the views update method
     public void drawAll(GraphicsContext gc) {
         gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
-        for (Shape shape : shapes) {
-            shape.draw(gc);
-        }
-        
+
         for (Shape shape : selectedShapes) {
             //draw rect around
             Shape tmpRect = ShapeFactory.getShape("aMarker", shape.getFromX(), shape.getFromY(), shape.getToX(), shape.getToY(), Color.CORAL, 1, false);
             tmpRect.draw(gc);
         }
+
+        for (Shape shape : shapes) {
+            shape.draw(gc);
+        }
+
     }
 
     public void changeSize(Shape shape, double toX, double toY) {
@@ -82,7 +84,7 @@ public class Drawing {
         //notify observers
         notifyAllObservers();
     }
-    
+
     public void removeSelected() {
         for (Shape shape : selectedShapes) {
             removeShape(shape);
@@ -119,25 +121,46 @@ public class Drawing {
         shapes.remove(index);
         notifyAllObservers();
     }
-    
+
     public void deselectAll() {
         selectedShapes.clear();
         notifyAllObservers();
     }
     
+    public void changeSelectedColor(Color newCol) {
+        selectedShapes.forEach((shape) -> {
+            shape.setCol(newCol);
+        });
+        
+        notifyAllObservers();
+    }
+    
+    public void changeSelectedFill(boolean newVal) {
+        selectedShapes.forEach((shape) -> {
+            shape.setFill(newVal);
+        });
+        
+        notifyAllObservers();
+    }
+
     public void selectShapes(Shape shape) {
-        //find all the object which are inside this area
+        //find all the object which are inside the marker area and add to selectedShapes
         selectedShapes.clear();
         for (Shape orig : shapes) {
-            if ((orig.getMinX() > shape.getMaxX()) ||  //orig is to right of marker
-               (orig.getMaxX()< shape.getMinX()) ||  //orig is to left of marker
-               (orig.getMinY() > shape.getMaxY()) || //orig is below marker
-               (orig.getMaxY() < shape.getMinY()) ||
-               (orig.equals(shape))){  //orig is above marker
+            if ((orig.getMinX() > shape.getMaxX()) //orig is to right of marker
+                    ||
+                    (orig.getMaxX() < shape.getMinX())//orig is to left of marker
+                    || 
+                    (orig.getMinY() > shape.getMaxY())//orig is below marker
+                    || 
+                    (orig.getMaxY() < shape.getMinY()) //orig is above marker
+                    || (orig.equals(shape))) { //this shape is the marker
                 continue;
             }
             selectedShapes.add(orig);
+            System.out.println("orig: " + orig);
         }
+        
         System.out.println("selectedShapes size: " + selectedShapes.size());
         notifyAllObservers();
     }

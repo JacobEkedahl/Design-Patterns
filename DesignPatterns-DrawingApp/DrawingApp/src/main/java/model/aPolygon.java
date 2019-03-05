@@ -24,28 +24,36 @@ public class aPolygon extends Shape {
 
     @Override
     void drawHollow(GraphicsContext gc) {
-        redoPoints(super.getFromX(), super.getFromY(), super.getToX(), super.getToY());
+        redoPoints();
         gc.strokePolygon(xPoints, yPoints, corners);
     }
 
     @Override
     public void changeSize(double newX, double newY) {
-        redoPoints(super.getFromX(), super.getFromY(), newX, newY);
+        super.setToX(newX);
+        super.setToY(newY);
+        redoPoints();
     }
-    
-    private void redoPoints(double fromX, double fromY, double toX, double toY) {
+
+    @Override
+    void drawFill(GraphicsContext gc) {
+        redoPoints();
+        gc.fillPolygon(xPoints, yPoints, corners);
+    }
+
+    private void redoPoints() {
         //do not draw any points on init
-        if (fromX == toX && fromY == toY) {
+        if (super.getFromX() == super.getToX() && super.getFromY() == super.getToY()) {
             return;
         }
-        
+
         xPoints = new double[corners];
         yPoints = new double[corners];
 
-        double xRad = (toX - fromX) / 2;
-        double yRad = (toY - fromY) / 2;
-        double centerX = xRad + fromX;
-        double centerY = yRad + fromY;
+        double xRad = (super.getToX() - super.getFromX()) / 2;
+        double yRad = (super.getToY() - super.getFromY()) / 2;
+        double centerX = xRad + super.getFromX();
+        double centerY = yRad + super.getFromY();
 
         double increment = 360 / corners;
 
@@ -55,11 +63,5 @@ public class aPolygon extends Shape {
             yPoints[index] = centerY + yRad * Math.sin(angle * Math.PI / 180);
             index++;
         }
-    }
-
-    @Override
-    void drawFill(GraphicsContext gc) {
-        redoPoints(super.getFromX(), super.getFromY(), super.getToX(), super.getToY());
-        gc.fillPolygon(xPoints, yPoints, corners);
     }
 }

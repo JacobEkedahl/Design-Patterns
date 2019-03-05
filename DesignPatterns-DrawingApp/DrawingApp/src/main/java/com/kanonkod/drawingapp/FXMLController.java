@@ -114,7 +114,9 @@ public class FXMLController extends Observer implements Initializable {
 
     @FXML
     private void setColor(Event event) {
-        model.deselectAll();
+        //fill selected
+        
+        model.changeSelectedColor(colorPicker.getValue());
         model.setColor(colorPicker.getValue());
     }
     
@@ -130,7 +132,7 @@ public class FXMLController extends Observer implements Initializable {
     @FXML
     private void changeFill(Event event) {
         boolean newVal = ((CheckBox) event.getSource()).isSelected();
-        model.deselectAll();
+        model.changeSelectedFill(newVal);
         model.setFill(newVal);
     }
 
@@ -177,7 +179,6 @@ public class FXMLController extends Observer implements Initializable {
             shapeBtn.setId(key);
             shapeBtn.setOnAction(actionEvent -> {
                 if (!shapeBtn.isSelected()) {
-                    model.deselectAll();
                     shapeBtn.setSelected(true);
                 }
                 String shapeTxt = ((ToggleButton) actionEvent.getSource()).getId();

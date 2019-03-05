@@ -69,6 +69,14 @@ public class ModelFascade {
         }
     }
     
+    public void changeSelectedFill(boolean newVal) {
+        this.drawing.changeSelectedFill(newVal);
+    }
+    
+   public void changeSelectedColor(Color newCol) {
+        this.drawing.changeSelectedColor(newCol);
+    }
+    
     public void deselectAll() {
         this.drawing.deselectAll();
     }
