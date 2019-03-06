@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -12,7 +14,10 @@ import javafx.beans.binding.DoubleBinding;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
@@ -22,6 +27,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
@@ -40,6 +47,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import static javafx.scene.paint.Color.color;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 import model.Drawing;
 import model.anOval;
@@ -71,7 +80,7 @@ public class FXMLController extends Observer implements Initializable {
 
     @FXML
     private Button redoBtn;
-    
+
     @FXML
     private ComboBox widthSelector;
 
@@ -98,9 +107,9 @@ public class FXMLController extends Observer implements Initializable {
     //add shape, mouse pressed
     @FXML
     private void saveFrom(MouseEvent event) {
-        model.deselectAll();
         double fromX = event.getX();
         double fromY = event.getY();
+        model.deselectAll();
         model.addShape(fromX, fromY);
     }
 
@@ -115,20 +124,78 @@ public class FXMLController extends Observer implements Initializable {
     @FXML
     private void setColor(Event event) {
         //fill selected
-        
+
         model.changeSelectedColor(colorPicker.getValue());
         model.setColor(colorPicker.getValue());
     }
-    
+
     @FXML
     private void setWidth(Event event) {
-        String valStr = (String) widthSelector.getValue();
-        String value = valStr.substring(0, valStr.length() - 2);
-        model.deselectAll();
-        model.setWidth(Double.valueOf(value));
+        String widthSelValue = (String) widthSelector.getValue();
+        String valueStr = widthSelValue.substring(0, widthSelValue.length() - 2);
+        double value = Double.valueOf(valueStr);
+
+        model.changeSelectedWidth(value);
+        model.setWidth(value);
     }
 
-    
+    @FXML
+    private void createNew(Event event) {
+        //show popup with textbox
+        TextInputDialog dialog = new TextInputDialog("");
+
+        dialog.setTitle("New drawing");
+        dialog.setHeaderText("Enter the name of the drawing:");
+        dialog.setContentText("Name:");
+
+        Optional<String> result = dialog.showAndWait();
+
+        result.ifPresent(name -> {
+            model.setName(name);
+        });
+    }
+
+    @FXML
+    private void openDrawing(Event event) {
+        final Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initOwner(canvas.getScene().getWindow());
+        dialog.setResizable(false);
+
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/fxml/DrawingChooser.fxml"));
+        Parent rootNode = null;
+        try {
+            rootNode = loader.load();
+        } catch (IOException ex) {
+            Logger.getLogger(LoadViewController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        Scene dialogScene = new Scene(rootNode, 230, 400);
+        dialog.setScene(dialogScene);
+        dialog.show();
+    }
+
+    @FXML
+    private void saveDrawing(Event event) {
+        //save to db
+        model.saveData();
+    }
+
+    @FXML
+    private void undo(Event event) {
+        //not implemeneted
+    }
+
+    @FXML
+    private void showAbout(Event event) {
+        //not implemented
+    }
+
+    @FXML
+    private void redo(Event event) {
+        //not implemeneted
+    }
+
     @FXML
     private void changeFill(Event event) {
         boolean newVal = ((CheckBox) event.getSource()).isSelected();
@@ -147,7 +214,7 @@ public class FXMLController extends Observer implements Initializable {
         initColorPicker();
         //  mapCanvasToParent();
     }
-    
+
     //init colorpicker with color black
     private void initColorPicker() {
         colorPicker.setValue(Color.BLACK);
