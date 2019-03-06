@@ -80,6 +80,9 @@ public class FXMLController extends Observer implements Initializable {
 
     @FXML
     private Button undoBtn;
+    
+    @FXML
+    private Button thrashcan;
 
     @FXML
     private Button redoBtn;
@@ -137,17 +140,7 @@ public class FXMLController extends Observer implements Initializable {
     @FXML
     private void createNew(Event event) {
         //show popup with textbox
-        TextInputDialog dialog = new TextInputDialog("");
-
-        dialog.setTitle("New drawing");
-        dialog.setHeaderText("Enter the name of the drawing:");
-        dialog.setContentText("Name:");
-
-        Optional<String> result = dialog.showAndWait();
-
-        result.ifPresent(name -> {
-            model.setName(name);
-        });
+        this.createNew();
     }
 
     @FXML
@@ -173,7 +166,12 @@ public class FXMLController extends Observer implements Initializable {
     @FXML
     private void saveDrawing(Event event) {
         //save to db
-        model.saveData();
+        try {
+            model.saveData();
+        } catch (IllegalArgumentException ex) {
+            this.createNew();
+            model.saveData();
+        }
     }
 
     @FXML
@@ -189,6 +187,12 @@ public class FXMLController extends Observer implements Initializable {
     @FXML
     private void redo(Event event) {
         //not implemeneted
+    }
+    
+    @FXML
+    private void removeSelected(Event event) {
+        this.model.removeSelected();
+        model.deselectAll();
     }
 
     @FXML
@@ -206,6 +210,7 @@ public class FXMLController extends Observer implements Initializable {
         model.getDrawing().attach(this);
         initDrawButtons();
         initRedoUndo();
+        initThrascan();
         initColorPicker();
         //  mapCanvasToParent();
     }
@@ -214,6 +219,11 @@ public class FXMLController extends Observer implements Initializable {
     private void initColorPicker() {
         colorPicker.setValue(Color.BLACK);
         model.setColor(Color.BLACK);
+    }
+
+    private void initThrascan() {
+        ImageView undoImg = new ImageView(new Image("images/thrashcan.png"));
+        thrashcan.setGraphic(undoImg);
     }
 
     private void initRedoUndo() {
@@ -259,20 +269,24 @@ public class FXMLController extends Observer implements Initializable {
     private void clear() {
         model.clearDrawing();
     }
+    
+    private void createNew() {
+        TextInputDialog dialog = new TextInputDialog("");
+        dialog.setTitle("New drawing");
+        dialog.setHeaderText("Enter the name of the drawing:");
+        dialog.setContentText("Name:");
+
+        Optional<String> result = dialog.showAndWait();
+
+        result.ifPresent(name -> {
+            model.setName(name);
+        });
+    }
 
     @Override
     public void update() {
         //the drawing has been changed, clear and draw it
         model.draw(canvas.getGraphicsContext2D());
     }
-
-    @FXML
-    private void clickedItemClose(ActionEvent event) {
-        System.out.println("clicked menu item");
-    }
-
-    @FXML
-    private void clickedHighLight(MouseEvent event) {
-        System.out.println("Clicked highlight");
-    }
+    
 }
