@@ -8,8 +8,6 @@ package model;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.canvas.GraphicsContext;
-
-
 import javafx.scene.paint.Color;
 
 /**
@@ -47,19 +45,23 @@ public abstract class Shape implements Cloneable {
         }
         return null;
     }
-
+    
+    public boolean getFill() {
+        return fill;
+    }
+    
     public double getMinX() {
         return (fromX < toX) ? fromX : toX;
     }
-
+    
     public double getMinY() {
         return (fromY < toY) ? fromY : toY;
     }
-
+        
     public double getMaxX() {
         return (fromX > toX) ? fromX : toX;
     }
-
+    
     public double getMaxY() {
         return (fromY > toY) ? fromY : toY;
     }
@@ -145,13 +147,13 @@ public abstract class Shape implements Cloneable {
     public double getToY() {
         return toY;
     }
-
+    
     public void setFill(boolean newVal) {
         this.fill = newVal;
     }
-
+    
     public boolean isFill() {
-        return fill;
+        return this.fill;
     }
 
     @Override

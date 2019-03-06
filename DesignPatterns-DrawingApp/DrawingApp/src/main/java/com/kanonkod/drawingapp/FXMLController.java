@@ -183,6 +183,11 @@ public class FXMLController extends Observer implements Initializable {
     private void undo(Event event) {
         model.getDrawing().undoAdd();
     }
+    
+    @FXML
+    private void showAbout(Event event) {
+        //not implemeneted
+    }
 
 
     @FXML

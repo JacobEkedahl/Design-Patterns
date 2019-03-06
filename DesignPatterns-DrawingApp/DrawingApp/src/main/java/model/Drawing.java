@@ -1,3 +1,4 @@
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -5,13 +6,8 @@
  */
 package model;
 
-<<<<<<< HEAD
 import com.kanonkod.drawingapp.command.RedoAdd;
 import com.kanonkod.drawingapp.command.UndoAdd;
-=======
-import com.google.gson.Gson;
-import java.nio.file.Paths;
->>>>>>> Fixed problem with color not showing
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -27,15 +23,11 @@ import model.interfaces.UndoCommand;
  */
 public class Drawing {
 
-<<<<<<< HEAD
     List<Shape> shapes = new ArrayList<>();
      Stack<Command> undoCommands = new Stack<>();
      Stack<Command> redoCommands = new Stack<>();
     
     List<Shape> selectedShapes = new ArrayList<>();
-=======
-    private List<Shape> shapes = new ArrayList<>();
-    private List<Shape> selectedShapes = new ArrayList<>();
     private String name = "testDrawing";
 
     public Drawing() {
@@ -54,7 +46,6 @@ public class Drawing {
         notifyAllObservers();
     }
 
->>>>>>> Fixed problem with color not showing
     //Object - Subject pattern with methods ------------------------
     List<Observer> observers = new ArrayList<Observer>();
 
@@ -224,5 +215,4 @@ public class Drawing {
     public String toString() {
         return "Drawing{" + "shapes=" + shapes + ", selectedShapes=" + selectedShapes + ", name=" + name + '}';
     }
-
 }
