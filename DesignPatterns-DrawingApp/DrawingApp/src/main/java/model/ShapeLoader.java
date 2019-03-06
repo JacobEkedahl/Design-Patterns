@@ -77,6 +77,7 @@ public class ShapeLoader {
         Reflections reflections = new Reflections("model");
         Set<Class<? extends Shape>> subTypes
                 = reflections.getSubTypesOf(Shape.class);
+
         for (Class type : subTypes) {
             try {
                 result.put(type.getSimpleName(), (Shape) type.newInstance());
@@ -86,6 +87,7 @@ public class ShapeLoader {
                 Logger.getLogger(ShapeLoader.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+
         return result;
     }
 }

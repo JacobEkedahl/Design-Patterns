@@ -1,3 +1,4 @@
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -12,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 import javafx.scene.canvas.GraphicsContext;
+import model.interfaces.Command;
 import javafx.scene.paint.Color;
 import model.interfaces.Observer;
 import model.interfaces.UndoCommand;
@@ -23,7 +25,27 @@ import model.interfaces.UndoCommand;
 public class Drawing {
 
     List<Shape> shapes = new ArrayList<>();
+     Stack<Command> undoCommands = new Stack<>();
+     Stack<Command> redoCommands = new Stack<>();
+    
     List<Shape> selectedShapes = new ArrayList<>();
+    private String name = "";
+
+    public Drawing() {
+
+    }
+
+    public void init(DrawingDAO dbDrawing) {
+        this.name = dbDrawing.getName();
+        selectedShapes.clear();
+        this.name = dbDrawing.getName();
+        this.shapes.clear();
+        for (ShapeDAO shapeDAO : dbDrawing.getShapes()) {
+            shapes.add(ShapeFactory.getShape(shapeDAO));
+        }
+
+        notifyAllObservers();
+    }
 
     //Object - Subject pattern with methods ------------------------
     List<Observer> observers = new ArrayList<Observer>();
@@ -41,11 +63,6 @@ public class Drawing {
     public void attach(Observer observer) {
         observers.add(observer);
     }
-    //End object - subject pattern
-
-    public Drawing() {
-         
-    }
 
     public void addShape(Shape shape) {
         if (shape == null) {
@@ -59,10 +76,30 @@ public class Drawing {
         // notifyAllObservers();
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<Shape> getShapes() {
+        return shapes;
+    }
+
+    public void setObservers(List<Observer> observers) {
+        this.observers = observers;
+    }
+
+    public List<Observer> getObservers() {
+        return observers;
+    }
+
     //is called from the views update method
     public void drawAll(GraphicsContext gc) {
         gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
-       
+
         for (Shape shape : selectedShapes) {
             //draw rect around
             Shape tmpRect = ShapeFactory.getShape("aMarker", shape.getFromX(), shape.getFromY(), shape.getToX(), shape.getToY(), Color.CORAL, 1, false);
@@ -84,6 +121,15 @@ public class Drawing {
 
         Shape shapeToChange = shapes.get(index);
         shapeToChange.changeSize(toX, toY);
+        //notify observers
+        notifyAllObservers();
+    }
+
+    public void removeSelected() {
+        for (Shape shape : selectedShapes) {
+            removeShape(shape);
+        }
+
         notifyAllObservers();
     }
       
@@ -94,60 +140,44 @@ public class Drawing {
         notifyAllObservers();
     }
 
-    public void removeSelected() {
-        for (Shape shape : selectedShapes) {
-            removeShape(shape);
-        }
-    }
-
+    
     public void removeShape(Shape shape) {
         int index = shapes.indexOf(shape);
         shapes.remove(index);
         notifyAllObservers();
     }
 
+
     public void deselectAll() {
         selectedShapes.clear();
         notifyAllObservers();
     }
-    
+
+    public void changeSelectedWidth(double width) {
+        for (Shape shape : selectedShapes) {
+            shape.setStrokeWidth(width);
+        }
+
+        notifyAllObservers();
+    }
+
     public void changeSelectedColor(Color newCol) {
         selectedShapes.forEach((shape) -> {
             shape.setCol(newCol);
         });
-        
+
         notifyAllObservers();
     }
-    
+
     public void changeSelectedFill(boolean newVal) {
         selectedShapes.forEach((shape) -> {
             shape.setFill(newVal);
         });
-        
+
         notifyAllObservers();
     }
 
-    public void selectShapes(Shape shape) {
-        //find all the object which are inside the marker area and add to selectedShapes
-        selectedShapes.clear();
-        for (Shape orig : shapes) {
-            if ((orig.getMinX() > shape.getMaxX()) //orig is to right of marker
-                    ||
-                    (orig.getMaxX() < shape.getMinX())//orig is to left of marker
-                    || 
-                    (orig.getMinY() > shape.getMaxY())//orig is below marker
-                    || 
-                    (orig.getMaxY() < shape.getMinY()) //orig is above marker
-                    || (orig.equals(shape))) { //this shape is the marker
-                continue;
-            }
-            selectedShapes.add(orig);
-            System.out.println("orig: " + orig);
-        }
-        
-        notifyAllObservers();
-    }
-    public boolean updateComposite(Shape selectedShape) {
+     public boolean updateComposite(Shape selectedShape) {
          for (Shape s : shapes) {
             if(s instanceof ShapeComposite){
                 ShapeComposite composite = (ShapeComposite) s;
@@ -160,14 +190,7 @@ public class Drawing {
         }
         return false;
     }
-    
-    public void initializeComposite(ShapeComposite composite, Shape shape, Shape outer){
-        shapes.remove(outer);
-        shapes.remove(shape);
-        composite.add(outer);
-        composite.add(shape);
-        shapes.add(composite);
-    }
+     
     public Shape retrieveCompositeOutline(Shape selected){
          if(shapes.size()<=1){
           return null;
@@ -188,15 +211,47 @@ public class Drawing {
         
         return null;
     }  
+    
+     public void initializeComposite(ShapeComposite composite, Shape shape, Shape outer){
+        shapes.remove(outer);
+        shapes.remove(shape);
+        composite.add(outer);
+        composite.add(shape);
+        shapes.add(composite);
+    }
+     
+    public void selectShapes(Shape shape) {
+        //find all the object which are inside the marker area and add to selectedShapes
+        selectedShapes.clear();
+        for (Shape orig : shapes) {
+            if ((orig.getMinX() > shape.getMaxX()) //orig is to right of marker
+                    || (orig.getMaxX() < shape.getMinX())//orig is to left of marker
+                    || (orig.getMinY() > shape.getMaxY())//orig is below marker
+                    || (orig.getMaxY() < shape.getMinY()) //orig is above marker
+                    || (orig.equals(shape))) { //this shape is the marker
+                continue;
+            }
+            selectedShapes.add(orig);
+            System.out.println("orig: " + orig);
+        }
+
+        System.out.println("selectedShapes size: " + selectedShapes.size());
+        notifyAllObservers();
+    }
+
     public void clear() {
         shapes = new ArrayList<>();
         notifyAllObservers();
-        //notify observers
     }
-    public void printAll(){
+     public void printAll(){
         for(Shape e: shapes){
             System.out.println("PA: " + e.toString());
         }
     }
+    
 
+    @Override
+    public String toString() {
+        return "Drawing{" + "shapes=" + shapes + ", selectedShapes=" + selectedShapes + ", name=" + name + '}';
+    }
 }

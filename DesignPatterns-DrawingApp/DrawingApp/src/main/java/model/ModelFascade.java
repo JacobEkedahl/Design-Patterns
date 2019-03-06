@@ -5,10 +5,16 @@
  */
 package model;
 
+import databases.FirebaseHandler;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import model.interfaces.Observer;
 
 /**
  *
@@ -25,6 +31,7 @@ public class ModelFascade {
     private Color col;
     private double strokeWidth;
     private boolean fill;
+    private FirebaseHandler db = null;
 
     private ModelFascade() {
         fill = false;
@@ -32,6 +39,53 @@ public class ModelFascade {
         strokeWidth = 1;
         drawing = new Drawing();
         shapeToDraw = null;
+        initDb();
+    }
+
+    private void initDb() {
+        try {
+            db = new FirebaseHandler();
+        } catch (IOException ex) {
+            Logger.getLogger(ModelFascade.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public List<String> getNames() {
+        try {
+            return db.getNames();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ModelFascade.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ExecutionException ex) {
+            Logger.getLogger(ModelFascade.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;
+    }
+    
+    public void setName(String newName) {
+        this.drawing.setName(newName);
+    }
+
+    public void saveData() {
+        try {
+            db.addData(this.drawing);
+        } catch (IllegalArgumentException ex) {
+            //show popup for saving a name
+            throw new IllegalArgumentException("Error: " + ex.getMessage());
+        } catch (InterruptedException | ExecutionException ex) {
+            Logger.getLogger(ModelFascade.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void getData(String name) {
+        try {
+            System.out.println("name to get: " + name);
+            this.drawing.init(db.getData(name));
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ModelFascade.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ExecutionException ex) {
+            Logger.getLogger(ModelFascade.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public static ModelFascade getInstance() {
@@ -50,6 +104,7 @@ public class ModelFascade {
         if (selectedShape == null) {
             return;
         }
+
         this.drawing.changeSize(selectedShape, toX, toY);
     }
 
@@ -60,30 +115,42 @@ public class ModelFascade {
     public void clearDrawing() {
         this.drawing.clear();
     }
-    
+
     public void handleMarker() {
         if (selectedShape instanceof aMarker) {
             this.drawing.selectShapes(selectedShape);
             this.drawing.removeShape(selectedShape);
         }
     }
-    
+
+    public void changeSelectedWidth(double newWidth) {
+        this.drawing.changeSelectedWidth(newWidth);
+    }
+
     public void changeSelectedFill(boolean newVal) {
         this.drawing.changeSelectedFill(newVal);
     }
-    
-   public void changeSelectedColor(Color newCol) {
+
+    public void changeSelectedColor(Color newCol) {
         this.drawing.changeSelectedColor(newCol);
     }
+    
+    public void removeSelected() {
+        this.drawing.removeSelected();
+    }
+
     public void deselectAll() {
         this.drawing.deselectAll();
     }
+
     public void deselect() {
+        
         handleComposite();
         drawing.printAll();
         selectedShape = null;
     }
-    public void handleComposite(){
+    
+    private void handleComposite(){
         if(selectedShape==null){
             return;
         }
@@ -97,9 +164,7 @@ public class ModelFascade {
             return;
         }
     }
-    public ShapeComposite makeNewComposite(Shape outline){
-        return  (ShapeComposite) ShapeFactory.getShape("ShapeComposite", outline.getFromX(), outline.getFromY(), outline.getToX(), outline.getToY());
-    }
+   
     public Drawing getDrawing() {
         return drawing;
     }
@@ -109,6 +174,7 @@ public class ModelFascade {
     }
 
     public void setFill(boolean newVal) {
+        System.out.println("new fill: " + newVal);
         this.fill = newVal;
     }
 
@@ -120,7 +186,12 @@ public class ModelFascade {
         if (shapeToDraw == null) {
             return;
         }
+
         selectedShape = ShapeFactory.getShape(shapeToDraw, fromX, fromY, fromX, fromY, col, strokeWidth, fill);
         drawing.addShape(selectedShape);
     }
+     public ShapeComposite makeNewComposite(Shape outline){
+        return  (ShapeComposite) ShapeFactory.getShape("ShapeComposite", outline.getFromX(), outline.getFromY(), outline.getToX(), outline.getToY(),null,0,false);
+    }
+
 }

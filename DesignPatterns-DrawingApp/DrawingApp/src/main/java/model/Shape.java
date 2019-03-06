@@ -46,17 +46,8 @@ public abstract class Shape implements Cloneable {
         return null;
     }
     
-     public Shape createCopy(double fromX, double fromY, double toX, double toY) { 
-        this.fromX = fromX;
-        this.fromY = fromY;
-        this.toX = toX;
-        this.toY = toY;
-        try {
-            return (Shape) this.clone();
-        } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(Shape.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
+    public boolean getFill() {
+        return fill;
     }
     
     public double getMinX() {
@@ -161,6 +152,9 @@ public abstract class Shape implements Cloneable {
         this.fill = newVal;
     }
     
+    public boolean isFill() {
+        return this.fill;
+    }
     public boolean isInsideAnotherShape(Shape aDifferentShape){
         if(this.getFromX()> aDifferentShape.getFromX() && this.getFromY() > aDifferentShape.getFromY() && this.getToX() < aDifferentShape.getToX() && this.getToY() < aDifferentShape.getToY()){
            return true;
