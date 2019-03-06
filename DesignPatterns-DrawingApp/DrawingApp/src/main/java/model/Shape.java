@@ -15,7 +15,6 @@ import javafx.scene.paint.Color;
  * @author Jacob
  */
 //DO NOT CHANGE NAME OF THIS CLASS
-//Cmon just one more time
 public abstract class Shape implements Cloneable {
 
     private double fromX, fromY;
@@ -47,15 +46,11 @@ public abstract class Shape implements Cloneable {
         return null;
     }
     
-     public Shape createCopy(double fromX, double fromY, double toX, double toY) {
-        System.out.println("creating copy ");
-        
+     public Shape createCopy(double fromX, double fromY, double toX, double toY) { 
         this.fromX = fromX;
         this.fromY = fromY;
         this.toX = toX;
         this.toY = toY;
-       
-
         try {
             return (Shape) this.clone();
         } catch (CloneNotSupportedException ex) {
@@ -165,6 +160,27 @@ public abstract class Shape implements Cloneable {
     public void setFill(boolean newVal) {
         this.fill = newVal;
     }
+    
+    public boolean isInsideAnotherShape(Shape aDifferentShape){
+        if(this.getFromX()> aDifferentShape.getFromX() && this.getFromY() > aDifferentShape.getFromY() && this.getToX() < aDifferentShape.getToX() && this.getToY() < aDifferentShape.getToY()){
+           return true;
+        }
+        return false;
+    }
+    
+    public boolean isCoveringAnotherShape(Shape aDifferentShape){
+         if(aDifferentShape.getFromX()> this.getFromX() && aDifferentShape.getFromY() > this.getFromY() && aDifferentShape.getToX() < this.getToX() && aDifferentShape.getToY() < this.getToY()){
+           return true;
+        }
+        return false;
+    }
+    
+    public boolean isOverlapping(Shape aDifferentShape){
+      //TODO: make another overlap
+        return false;
+    }
+    
+    
 
     @Override
     public String toString() {

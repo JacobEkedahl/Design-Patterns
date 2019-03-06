@@ -79,8 +79,8 @@ public class ModelFascade {
         this.drawing.deselectAll();
     }
     public void deselect() {
-       // Shape comp = drawing.addComponent(selectedShape);
         handleComposite();
+        drawing.printAll();
         selectedShape = null;
     }
     public void handleComposite(){
@@ -90,7 +90,7 @@ public class ModelFascade {
         if(drawing.updateComposite(selectedShape)){
             return;
         }
-        Shape outerShape = drawing.retrieveComposite(selectedShape);
+        Shape outerShape = drawing.retrieveCompositeOutline(selectedShape);
         if(outerShape!=null){
             ShapeComposite newComposite = makeNewComposite(outerShape);
             drawing.initializeComposite(newComposite,selectedShape,outerShape);

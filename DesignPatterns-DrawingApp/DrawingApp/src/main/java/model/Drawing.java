@@ -54,11 +54,7 @@ public class Drawing {
         
         //notify observers
       //  undoCommands.add(new UndoAdd(shape,this,shapes.size()-1));
-       // redoCommands.add(new RedoAdd(shape,this,shapes.size()-1));
-        if(!shapes.isEmpty()){
-            addComponent(shape);
-        }
-        
+       // redoCommands.add(new RedoAdd(shape,this,shapes.size()-1));  
         shapes.add(shape);
         // notifyAllObservers();
     }
@@ -90,29 +86,7 @@ public class Drawing {
         shapeToChange.changeSize(toX, toY);
         notifyAllObservers();
     }
-    
-     public Shape addComponent(Shape shape) {
-         if(shapes.size()<=1){
-          return null;
-        }
-      //  ShapeComposite composite = null;
-        boolean ifCompositeFound = false;
-        for (Shape s : shapes) {
-            if(checkIfInsideShape(s,shape)){
-                //ifCompositeFound = true;
-                System.out.println("part of component " );
-                return s;
-              
-            }
-        }
-        return null;
-    }
-      private boolean checkIfInsideShape(Shape s, Shape shape) {
-        if(shape.getFromX()> s.getFromX() && shape.getFromY() > s.getFromY() && shape.getToX() < s.getToX() && shape.getToY() < s.getToY()){
-           return true;
-        }
-        return false;
-    }
+      
 
     public void repeat(Shape shape) {
         
@@ -177,7 +151,7 @@ public class Drawing {
          for (Shape s : shapes) {
             if(s instanceof ShapeComposite){
                 ShapeComposite composite = (ShapeComposite) s;
-                if(checkIfInsideShape(s,selectedShape)){
+                if(s.isInsideAnotherShape(selectedShape) || s.isCoveringAnotherShape(selectedShape)){  
                     shapes.remove(selectedShape);
                     composite.add(selectedShape);
                     return true;
@@ -194,29 +168,35 @@ public class Drawing {
         composite.add(shape);
         shapes.add(composite);
     }
-    public Shape retrieveComposite(Shape selected){
+    public Shape retrieveCompositeOutline(Shape selected){
          if(shapes.size()<=1){
           return null;
         }
         for (Shape s : shapes) {
-            if(checkIfInsideShape(s,selected)){
-                if(!( s instanceof ShapeComposite)){
+            if(!s.equals(selected)){
+               //if(checkIfInsideShape(s,selected)){
+               if(s.isCoveringAnotherShape(selected)){
+                  if(!( s instanceof ShapeComposite)){
                     return s;
-                }
+              }
+            }
+            else if(s.isInsideAnotherShape(selected)){
+                return selected;
+              }   
             }
         }
+        
         return null;
-    }
-   
+    }  
     public void clear() {
         shapes = new ArrayList<>();
         notifyAllObservers();
         //notify observers
     }
-  
-    
-   
+    public void printAll(){
+        for(Shape e: shapes){
+            System.out.println("PA: " + e.toString());
+        }
+    }
 
-   
-   
 }

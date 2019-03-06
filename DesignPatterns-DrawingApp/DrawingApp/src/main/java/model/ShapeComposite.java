@@ -16,21 +16,24 @@ public class ShapeComposite extends Shape {
     
     private LinkedList<Shape> queue;
     
-  
-   
-    
     public void add(Shape shape){
         if(queue==null){
             queue = new LinkedList<>();
         }
+      //  System.out.println("adding");
         queue.add(shape);
+    }
+    public boolean remove(Shape shape){
+        if(queue!=null && !queue.isEmpty()){
+            return queue.remove(shape);
+        }
+        return false;
     }
     public int getSize(){
         return queue.size();
     }
     
     void draw(GraphicsContext gc) {
-        System.out.println("doing draw");
          for(Shape e : queue){
             e.draw(gc);
         }
@@ -41,7 +44,6 @@ public class ShapeComposite extends Shape {
         for(Shape e : queue){
             e.drawFill(gc);
         }
-       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -49,7 +51,6 @@ public class ShapeComposite extends Shape {
         for(Shape e : queue){
             e.drawHollow(gc);
         }
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -57,7 +58,6 @@ public class ShapeComposite extends Shape {
           for(Shape e : queue){
             e.changeSize(newX,newY);
         }
-     //    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -67,6 +67,8 @@ public class ShapeComposite extends Shape {
         }
         return "ShapeComposite{" + "queue=" + queue.toString() + '}';
     }
+
+    
     
     
     
