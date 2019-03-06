@@ -5,6 +5,8 @@
  */
 package model;
 
+import com.google.gson.Gson;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.canvas.GraphicsContext;
@@ -17,8 +19,25 @@ import model.interfaces.Observer;
  */
 public class Drawing {
 
-    List<Shape> shapes = new ArrayList<>();
-    List<Shape> selectedShapes = new ArrayList<>();
+    private List<Shape> shapes = new ArrayList<>();
+    private List<Shape> selectedShapes = new ArrayList<>();
+    private String name = "testDrawing";
+
+    public Drawing() {
+
+    }
+
+    public void init(DrawingDAO dbDrawing) {
+        this.name = dbDrawing.getName();
+        selectedShapes.clear();
+        this.name = dbDrawing.getName();
+        this.shapes.clear();
+        for (ShapeDAO shapeDAO : dbDrawing.getShapes()) {
+            shapes.add(ShapeFactory.getShape(shapeDAO));
+        }
+
+        notifyAllObservers();
+    }
 
     //Object - Subject pattern with methods ------------------------
     List<Observer> observers = new ArrayList<Observer>();
@@ -32,11 +51,6 @@ public class Drawing {
     public void attach(Observer observer) {
         observers.add(observer);
     }
-    //End object - subject pattern
-
-    public Drawing() {
-
-    }
 
     public void addShape(Shape shape) {
         if (shape == null) {
@@ -45,6 +59,26 @@ public class Drawing {
         //notify observers
         shapes.add(shape);
         // notifyAllObservers();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<Shape> getShapes() {
+        return shapes;
+    }
+
+    public void setObservers(List<Observer> observers) {
+        this.observers = observers;
+    }
+
+    public List<Observer> getObservers() {
+        return observers;
     }
 
     //is called from the views update method
@@ -80,6 +114,8 @@ public class Drawing {
         for (Shape shape : selectedShapes) {
             removeShape(shape);
         }
+
+        notifyAllObservers();
     }
 
     public void removeShape(Shape shape) {
@@ -92,20 +128,28 @@ public class Drawing {
         selectedShapes.clear();
         notifyAllObservers();
     }
-    
+
+    public void changeSelectedWidth(double width) {
+        for (Shape shape : selectedShapes) {
+            shape.setStrokeWidth(width);
+        }
+
+        notifyAllObservers();
+    }
+
     public void changeSelectedColor(Color newCol) {
         selectedShapes.forEach((shape) -> {
             shape.setCol(newCol);
         });
-        
+
         notifyAllObservers();
     }
-    
+
     public void changeSelectedFill(boolean newVal) {
         selectedShapes.forEach((shape) -> {
             shape.setFill(newVal);
         });
-        
+
         notifyAllObservers();
     }
 
@@ -114,19 +158,16 @@ public class Drawing {
         selectedShapes.clear();
         for (Shape orig : shapes) {
             if ((orig.getMinX() > shape.getMaxX()) //orig is to right of marker
-                    ||
-                    (orig.getMaxX() < shape.getMinX())//orig is to left of marker
-                    || 
-                    (orig.getMinY() > shape.getMaxY())//orig is below marker
-                    || 
-                    (orig.getMaxY() < shape.getMinY()) //orig is above marker
+                    || (orig.getMaxX() < shape.getMinX())//orig is to left of marker
+                    || (orig.getMinY() > shape.getMaxY())//orig is below marker
+                    || (orig.getMaxY() < shape.getMinY()) //orig is above marker
                     || (orig.equals(shape))) { //this shape is the marker
                 continue;
             }
             selectedShapes.add(orig);
             System.out.println("orig: " + orig);
         }
-        
+
         System.out.println("selectedShapes size: " + selectedShapes.size());
         notifyAllObservers();
     }
@@ -134,6 +175,11 @@ public class Drawing {
     public void clear() {
         shapes = new ArrayList<>();
         notifyAllObservers();
-        //notify observers
     }
+
+    @Override
+    public String toString() {
+        return "Drawing{" + "shapes=" + shapes + ", selectedShapes=" + selectedShapes + ", name=" + name + '}';
+    }
+
 }
