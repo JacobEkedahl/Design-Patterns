@@ -28,7 +28,7 @@ public class Drawing {
      Stack<Command> redoCommands = new Stack<>();
     
     List<Shape> selectedShapes = new ArrayList<>();
-    private String name = "testDrawing";
+    private String name = "";
 
     public Drawing() {
 
