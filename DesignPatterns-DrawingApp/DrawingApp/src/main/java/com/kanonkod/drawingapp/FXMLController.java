@@ -63,10 +63,7 @@ public class FXMLController extends Observer implements Initializable {
     @FXML
     private Canvas canvas;
 
-    @FXML
-    private BorderPane borderPane;
 
-    @FXML
     private Pane canvasPane;
 
     @FXML
@@ -93,6 +90,14 @@ public class FXMLController extends Observer implements Initializable {
     ModelFascade model;
     Drawing drawing;
     //Subject subject;    
+    @FXML
+    private BorderPane border;
+    @FXML
+    private VBox vbox;
+    @FXML
+    private MenuBar menubar;
+    @FXML
+    private Menu File;
 
     //mouse dragged, change size/move selected object
     @FXML
@@ -176,7 +181,7 @@ public class FXMLController extends Observer implements Initializable {
 
     @FXML
     private void undo(Event event) {
-        //not implemeneted
+        model.getDrawing().undoAdd();
     }
 
     @FXML
@@ -186,9 +191,9 @@ public class FXMLController extends Observer implements Initializable {
 
     @FXML
     private void redo(Event event) {
-        //not implemeneted
+        model.getDrawing().redoAdd();
     }
-    
+  
     @FXML
     private void removeSelected(Event event) {
         this.model.removeSelected();
@@ -288,5 +293,4 @@ public class FXMLController extends Observer implements Initializable {
         //the drawing has been changed, clear and draw it
         model.draw(canvas.getGraphicsContext2D());
     }
-    
 }
