@@ -10,6 +10,7 @@ import com.kanonkod.drawingapp.command.RedoAdd;
 import com.kanonkod.drawingapp.command.UndoAdd;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 import javafx.scene.canvas.GraphicsContext;
@@ -191,33 +192,51 @@ public class Drawing {
         return false;
     }
      
-    public Shape retrieveCompositeOutline(Shape selected){
+    public ArrayList<Shape> retrieveShapesWithin(Shape selected){
          if(shapes.size()<=1){
           return null;
         }
+        ArrayList<Shape> insideShape = new ArrayList<Shape>();         
         for (Shape s : shapes) {
-            if(!s.equals(selected)){
-               //if(checkIfInsideShape(s,selected)){
-               if(s.isCoveringAnotherShape(selected)){
-                  if(!( s instanceof ShapeComposite)){
-                    return s;
-              }
-            }
-            else if(s.isInsideAnotherShape(selected)){
-                return selected;
-              }   
-            }
+            if(!s.equals(selected)){              
+               if(selected.isCoveringAnotherShape(s)){            
+                      insideShape.add(s);  
+            }                         
+         }
+        } 
+        if(insideShape.size()>0){           
+            return insideShape;
         }
-        
         return null;
-    }  
-    
-     public void initializeComposite(ShapeComposite composite, Shape shape, Shape outer){
-        shapes.remove(outer);
+     }
+    public ArrayList<Shape> retrieveCoveringShapes(Shape selected){
+         if(shapes.size()<=1){
+          return null;
+        }
+        ArrayList<Shape> outer = new ArrayList<Shape>();         
+        for (Shape s : shapes) {
+            if(!s.equals(selected)){              
+               if(selected.isInsideAnotherShape(s)){            
+                      outer.add(s);  
+            }                         
+         }
+        } 
+        if(outer.size()>0){           
+            return outer;
+        }
+        return null;
+     }
+   
+     public ShapeComposite initializeComposite(ShapeComposite composite, Shape shape, ArrayList<Shape> outer){
+        System.out.println("Initialize comp");
+        for(Shape s : outer){
+            shapes.remove(s);
+            composite.add(s);
+        }
         shapes.remove(shape);
-        composite.add(outer);
         composite.add(shape);
         shapes.add(composite);
+        return composite;
     }
      
     public void selectShapes(Shape shape) {
@@ -248,7 +267,20 @@ public class Drawing {
             System.out.println("PA: " + e.toString());
         }
     }
-    
+      public void printAll(ArrayList<Shape> ksd){
+        for(Shape e: ksd){
+            System.out.println("PP: " + e.toString());
+        }
+    }
+    public void undoAdd(){
+        
+    }
+    public void undoDelete(){
+        
+    }
+    public void redoAdd(){
+        
+    }
 
     @Override
     public String toString() {

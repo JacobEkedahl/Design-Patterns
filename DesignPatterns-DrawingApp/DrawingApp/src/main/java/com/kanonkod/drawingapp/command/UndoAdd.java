@@ -18,20 +18,17 @@ public class UndoAdd implements UndoCommand{
     
     private Shape shape;
     private Drawing drawing;
-    private int index;
 
-    public UndoAdd(Shape shape, Drawing model, int index) {
+    public UndoAdd(Shape shape, Drawing model) {
         this.drawing = model;
         this.shape = shape;
-        this.index = index;
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     
     
     @Override
     public void undo() {
-      // drawing.clearOneImage(shape, index);
+       drawing.removeShape(shape);
        // model.clearDrawing();
        // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

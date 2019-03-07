@@ -8,10 +8,12 @@ package model;
 import databases.FirebaseHandler;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import model.interfaces.Observer;
@@ -144,9 +146,9 @@ public class ModelFascade {
     }
 
     public void deselect() {
-        
         handleComposite();
         drawing.printAll();
+        System.out.println("end");
         selectedShape = null;
     }
     
@@ -154,14 +156,36 @@ public class ModelFascade {
         if(selectedShape==null){
             return;
         }
-        if(drawing.updateComposite(selectedShape)){
-            return;
+     
+        ArrayList<Shape> innerShape = drawing.retrieveShapesWithin(selectedShape);
+        ArrayList<Shape> outerShapes =drawing.retrieveCoveringShapes(selectedShape);
+        ShapeComposite newComposite = null;
+        if(innerShape!=null){
+            newComposite = makeNewComposite(selectedShape);
+            drawing.initializeComposite(newComposite,selectedShape,innerShape);
         }
-        Shape outerShape = drawing.retrieveCompositeOutline(selectedShape);
-        if(outerShape!=null){
-            ShapeComposite newComposite = makeNewComposite(outerShape);
-            drawing.initializeComposite(newComposite,selectedShape,outerShape);
-            return;
+        if(outerShapes!=null){
+           drawing.printAll(outerShapes);
+           outerShapes.sort(new CompareArea());
+           System.out.println("end");
+           drawing.printAll(outerShapes);
+           Shape closest = outerShapes.get(0);
+           Shape toBeInserted = null;
+               if(newComposite==null){
+                   toBeInserted = selectedShape;
+               }
+               else{
+                   toBeInserted = newComposite;
+               }
+           if(closest instanceof ShapeComposite){   
+               ((ShapeComposite) closest).add(toBeInserted);
+           }
+           else{
+               ShapeComposite outerShape = makeNewComposite(closest);
+               drawing.initializeComposite(outerShape, closest, outerShapes);
+               
+           }
+           
         }
     }
    
