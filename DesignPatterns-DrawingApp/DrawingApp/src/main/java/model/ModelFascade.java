@@ -20,7 +20,7 @@ import model.interfaces.Observer;
  *
  * @author Jacob
  */
-public class ModelFascade {
+public class ModelFascade extends Observer {
 
     private Shape selectedShape;
     private String shapeToDraw;
@@ -40,6 +40,11 @@ public class ModelFascade {
         drawing = new Drawing();
         shapeToDraw = null;
         initDb();
+        attachDrawingToDb();
+    }
+
+    private void attachDrawingToDb() {
+        db.attach(this);
     }
 
     private void initDb() {
@@ -49,7 +54,7 @@ public class ModelFascade {
             Logger.getLogger(ModelFascade.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public List<String> getNames() {
         try {
             return db.getNames();
@@ -58,12 +63,13 @@ public class ModelFascade {
         } catch (ExecutionException ex) {
             Logger.getLogger(ModelFascade.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return null;
     }
-    
+
     public void setName(String newName) {
         this.drawing.setName(newName);
+        this.db.setUpDbListener(newName);
     }
 
     public void saveData() {
@@ -77,6 +83,7 @@ public class ModelFascade {
         }
     }
 
+    /*
     public void getData(String name) {
         try {
             System.out.println("name to get: " + name);
@@ -86,7 +93,7 @@ public class ModelFascade {
         } catch (ExecutionException ex) {
             Logger.getLogger(ModelFascade.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
+    }*/
 
     public static ModelFascade getInstance() {
         if (fascadeInstance == null) {
@@ -134,7 +141,7 @@ public class ModelFascade {
     public void changeSelectedColor(Color newCol) {
         this.drawing.changeSelectedColor(newCol);
     }
-    
+
     public void removeSelected() {
         this.drawing.removeSelected();
     }
@@ -171,5 +178,11 @@ public class ModelFascade {
 
         selectedShape = ShapeFactory.getShape(shapeToDraw, fromX, fromY, fromX, fromY, col, strokeWidth, fill);
         drawing.addShape(selectedShape);
+    }
+
+    @Override
+    public void update() {
+        this.drawing.init(db.getDrawing());
+        //retrieve the data from the database
     }
 }

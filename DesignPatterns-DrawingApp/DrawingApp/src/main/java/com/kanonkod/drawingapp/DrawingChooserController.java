@@ -38,7 +38,7 @@ public class DrawingChooserController implements Initializable {
             scrollContainer.getChildren().add(choice);
             
             choice.setOnAction(actionEvent -> {
-                model.getData(choice.getText());
+                model.setName(choice.getText());
                 scrollContainer.getScene().getWindow().hide();
             });
         }

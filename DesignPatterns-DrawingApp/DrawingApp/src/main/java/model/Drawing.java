@@ -36,11 +36,13 @@ public class Drawing {
 
     public void init(DrawingDAO dbDrawing) {
         this.name = dbDrawing.getName();
-        selectedShapes.clear();
-        this.name = dbDrawing.getName();
-        this.shapes.clear();
+       // selectedShapes.clear();
+       // this.shapes.clear();
         for (ShapeDAO shapeDAO : dbDrawing.getShapes()) {
-            shapes.add(ShapeFactory.getShape(shapeDAO));
+            Shape newShape  = ShapeFactory.getShape(shapeDAO);
+            if (!shapes.contains(newShape)) {
+                shapes.add(newShape);
+            }
         }
 
         notifyAllObservers();
