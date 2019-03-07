@@ -174,8 +174,7 @@ public abstract class Shape implements Cloneable {
         return false;
     }
     
-    
-
+   
     @Override
     public String toString() {
         return "Shape{" + "fromX=" + fromX + ", fromY=" + fromY + ", toX=" + toX + ", toY=" + toY + '}';

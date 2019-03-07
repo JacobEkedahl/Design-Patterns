@@ -178,19 +178,7 @@ public class Drawing {
         notifyAllObservers();
     }
 
-     public boolean updateComposite(Shape selectedShape) {
-         for (Shape s : shapes) {
-            if(s instanceof ShapeComposite){
-                ShapeComposite composite = (ShapeComposite) s;
-                if(s.isInsideAnotherShape(selectedShape) || s.isCoveringAnotherShape(selectedShape)){  
-                    shapes.remove(selectedShape);
-                    composite.add(selectedShape);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+     
      
     public ArrayList<Shape> retrieveShapesWithin(Shape selected){
          if(shapes.size()<=1){
@@ -237,6 +225,16 @@ public class Drawing {
         composite.add(shape);
         shapes.add(composite);
         return composite;
+    }
+     public ShapeComposite initializeComposite(ShapeComposite composite,Shape outer, Shape shape){
+        shapes.remove(outer);
+        composite.add(outer);
+        shapes.remove(shape);
+        composite.add(shape);
+        shapes.add(composite);
+        return composite;
+        
+        
     }
      
     public void selectShapes(Shape shape) {

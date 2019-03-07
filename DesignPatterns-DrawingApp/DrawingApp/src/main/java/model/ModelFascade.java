@@ -146,9 +146,10 @@ public class ModelFascade {
     }
 
     public void deselect() {
-        handleComposite();
+       // handleComposite();
+      //  System.out.println("posthandle");
         drawing.printAll();
-        System.out.println("end");
+      //  System.out.println("end");
         selectedShape = null;
     }
     
@@ -156,34 +157,43 @@ public class ModelFascade {
         if(selectedShape==null){
             return;
         }
-     
+        // Collect all the shapes inside the shapes 
         ArrayList<Shape> innerShape = drawing.retrieveShapesWithin(selectedShape);
+        // find all the shapes that are covering the new shape
         ArrayList<Shape> outerShapes =drawing.retrieveCoveringShapes(selectedShape);
         ShapeComposite newComposite = null;
         if(innerShape!=null){
+            // make a new composite for the current shape if it has smaller shapes inside
             newComposite = makeNewComposite(selectedShape);
+            // add the shapes to the composite
             drawing.initializeComposite(newComposite,selectedShape,innerShape);
         }
         if(outerShapes!=null){
+           //if we have shapes outside that covers the new shape
+           //sort it so we have the smallest one,
            drawing.printAll(outerShapes);
            outerShapes.sort(new CompareArea());
            System.out.println("end");
            drawing.printAll(outerShapes);
            Shape closest = outerShapes.get(0);
-           Shape toBeInserted = null;
+           //include the newshape 
+           Shape toBeInserted = null; 
                if(newComposite==null){
                    toBeInserted = selectedShape;
                }
                else{
                    toBeInserted = newComposite;
                }
+               //if it is already a composite
            if(closest instanceof ShapeComposite){   
                ((ShapeComposite) closest).add(toBeInserted);
+               drawing.removeShape(toBeInserted);
            }
            else{
-               ShapeComposite outerShape = makeNewComposite(closest);
-               drawing.initializeComposite(outerShape, closest, outerShapes);
-               
+               //if it isn't already a composite, it should become one
+               System.out.println("this segment is invoked");
+               ShapeComposite outerShapeComposite = makeNewComposite(closest);
+               drawing.initializeComposite(outerShapeComposite, closest, toBeInserted);     
            }
            
         }

@@ -16,24 +16,23 @@ public class ShapeComposite extends Shape {
     
     private LinkedList<Shape> queue;
     
+    
     public void add(Shape shape){
         if(queue==null){
             queue = new LinkedList<>();
         }
-      // adjustSize(shape);
-      //  System.out.println("adding");
+        //adjustSize(shape);
         queue.add(shape);
     }
-    public boolean remove(Shape shape){
+    public void remove(Shape shape) {
         if(queue!=null && !queue.isEmpty()){
-            return queue.remove(shape);
+             queue.remove(shape);
         }
-        return false;
     }
+   
     public int getSize(){
         return queue.size();
-    }
-    
+    } 
     void draw(GraphicsContext gc) {
          for(Shape e : queue){
             e.draw(gc);
@@ -83,6 +82,8 @@ public class ShapeComposite extends Shape {
             setToX(shape.getToY());
         }
     }
+
+   
 
        
 }
