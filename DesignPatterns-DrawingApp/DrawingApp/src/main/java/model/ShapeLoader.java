@@ -31,12 +31,12 @@ import org.reflections.Reflections;
  */
 public class ShapeLoader {
 
-    static final String directoryName = "shapes";
+    static final String directoryName = "./src/main/resources/shapes";
 
     public static void initImages(GraphicsContext gc) {
         try {
-            File file = new File(directoryName);
-            return;
+            URL url = ShapeLoader.class.getClass().getClassLoader().getResource("shapes");
+            File file = new File(url.getFile());
         } catch (NullPointerException ex) {
             System.out.println("cannot find that folder inside shapeloader");
             File directory = new File(directoryName);

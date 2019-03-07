@@ -257,7 +257,7 @@ public class FXMLController extends Observer implements Initializable {
             try {
                 Image image = new Image("shapes/" + key + ".png");
                 shapeBtn.setGraphic(new ImageView(image));
-            } catch (NullPointerException ex) {
+            } catch (NullPointerException | IllegalArgumentException ex) {
                 shapeBtn.setText(key);
             }
 

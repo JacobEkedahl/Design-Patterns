@@ -42,6 +42,8 @@ public class Drawing {
             Shape newShape  = ShapeFactory.getShape(shapeDAO);
             if (!shapes.contains(newShape)) {
                 shapes.add(newShape);
+            } else {
+                
             }
         }
 
