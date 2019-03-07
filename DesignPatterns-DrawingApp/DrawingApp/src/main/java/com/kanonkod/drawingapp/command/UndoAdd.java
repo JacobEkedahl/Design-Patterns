@@ -28,7 +28,7 @@ public class UndoAdd implements UndoCommand{
     
     @Override
     public void undo() {
-       drawing.removeShape(shape);
+     //  drawing.removeShape(shape);
        // model.clearDrawing();
        // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

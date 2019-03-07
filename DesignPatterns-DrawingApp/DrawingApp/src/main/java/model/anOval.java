@@ -32,6 +32,7 @@ public class anOval extends Shape {
         double width;
         double height;
 
+        
         if (drawRightX) {
             width = newX - super.getFromX();
             super.setToX(newX);
@@ -60,6 +61,7 @@ public class anOval extends Shape {
 
     @Override
     void drawFill(GraphicsContext gc) {
+        System.out.println("drawfill");
         double width = super.getToX() - super.getFromX();
         double height = super.getToY() - super.getFromY();
         gc.fillOval(super.getFromX(), super.getFromY(), width, height);

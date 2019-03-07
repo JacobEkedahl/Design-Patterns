@@ -63,7 +63,6 @@ public class FXMLController extends Observer implements Initializable {
     @FXML
     private Canvas canvas;
 
-
     private Pane canvasPane;
 
     @FXML
@@ -77,7 +76,7 @@ public class FXMLController extends Observer implements Initializable {
 
     @FXML
     private Button undoBtn;
-    
+
     @FXML
     private Button thrashcan;
 
@@ -122,6 +121,7 @@ public class FXMLController extends Observer implements Initializable {
         model.deselectAll();
         model.handleMarker();
         model.deselect();
+        save();
     }
 
     @FXML
@@ -130,6 +130,7 @@ public class FXMLController extends Observer implements Initializable {
 
         model.changeSelectedColor(colorPicker.getValue());
         model.setColor(colorPicker.getValue());
+        this.save();
     }
 
     @FXML
@@ -140,6 +141,7 @@ public class FXMLController extends Observer implements Initializable {
 
         model.changeSelectedWidth(value);
         model.setWidth(value);
+        this.save();
     }
 
     @FXML
@@ -171,34 +173,29 @@ public class FXMLController extends Observer implements Initializable {
     @FXML
     private void saveDrawing(Event event) {
         //save to db
-        try {
-            model.saveData();
-        } catch (IllegalArgumentException ex) {
-            this.createNew();
-            model.saveData();
-        }
+        this.save();
     }
 
     @FXML
     private void undo(Event event) {
-         model.getDrawing().undoAdd();
+        model.getDrawing().undoAdd();
     }
-    
+
     @FXML
     private void showAbout(Event event) {
         //not implemeneted
     }
 
-
     @FXML
     private void redo(Event event) {
         model.getDrawing().redoAdd();
     }
-    
+
     @FXML
     private void removeSelected(Event event) {
         this.model.removeSelected();
         model.deselectAll();
+        this.save();
     }
 
     @FXML
@@ -206,6 +203,7 @@ public class FXMLController extends Observer implements Initializable {
         boolean newVal = ((CheckBox) event.getSource()).isSelected();
         model.changeSelectedFill(newVal);
         model.setFill(newVal);
+        save();
     }
 
     @Override
@@ -219,6 +217,15 @@ public class FXMLController extends Observer implements Initializable {
         initThrascan();
         initColorPicker();
         //  mapCanvasToParent();
+    }
+
+    private void save() {
+        try {
+            model.saveData();
+        } catch (IllegalArgumentException ex) {
+            this.createNew();
+            model.saveData();
+        }
     }
 
     //init colorpicker with color black
@@ -247,10 +254,10 @@ public class FXMLController extends Observer implements Initializable {
             ToggleButton shapeBtn = new ToggleButton();
             shapeBtn.setToggleGroup(group);
 
-            File path = new File("./shapes/" + key + ".png");
             try {
-                shapeBtn.setGraphic(new ImageView(new Image(new FileInputStream(path))));
-            } catch (FileNotFoundException ex) {
+                Image image = new Image("shapes/" + key + ".png");
+                shapeBtn.setGraphic(new ImageView(image));
+            } catch (NullPointerException | IllegalArgumentException ex) {
                 shapeBtn.setText(key);
             }
 
@@ -274,8 +281,9 @@ public class FXMLController extends Observer implements Initializable {
 
     private void clear() {
         model.clearDrawing();
+        this.save();
     }
-    
+
     private void createNew() {
         TextInputDialog dialog = new TextInputDialog("");
         dialog.setTitle("New drawing");
@@ -285,6 +293,7 @@ public class FXMLController extends Observer implements Initializable {
         Optional<String> result = dialog.showAndWait();
 
         result.ifPresent(name -> {
+            model.clearDrawing();
             model.setName(name);
         });
     }
@@ -292,7 +301,6 @@ public class FXMLController extends Observer implements Initializable {
     @Override
     public void update() {
         //the drawing has been changed, clear and draw it
-        //ystem.out.println("draw");
         model.draw(canvas.getGraphicsContext2D());
     }
 }

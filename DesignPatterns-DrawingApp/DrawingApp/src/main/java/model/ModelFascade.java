@@ -8,12 +8,10 @@ package model;
 import databases.FirebaseHandler;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import model.interfaces.Observer;
@@ -22,7 +20,7 @@ import model.interfaces.Observer;
  *
  * @author Jacob
  */
-public class ModelFascade {
+public class ModelFascade extends Observer {
 
     private Shape selectedShape;
     private String shapeToDraw;
@@ -42,6 +40,11 @@ public class ModelFascade {
         drawing = new Drawing();
         shapeToDraw = null;
         initDb();
+        attachDrawingToDb();
+    }
+
+    private void attachDrawingToDb() {
+        db.attach(this);
     }
 
     private void initDb() {
@@ -51,7 +54,7 @@ public class ModelFascade {
             Logger.getLogger(ModelFascade.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public List<String> getNames() {
         try {
             return db.getNames();
@@ -60,12 +63,13 @@ public class ModelFascade {
         } catch (ExecutionException ex) {
             Logger.getLogger(ModelFascade.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return null;
     }
-    
+
     public void setName(String newName) {
         this.drawing.setName(newName);
+        this.db.setUpDbListener(newName);
     }
 
     public void saveData() {
@@ -79,6 +83,7 @@ public class ModelFascade {
         }
     }
 
+    /*
     public void getData(String name) {
         try {
             System.out.println("name to get: " + name);
@@ -88,7 +93,7 @@ public class ModelFascade {
         } catch (ExecutionException ex) {
             Logger.getLogger(ModelFascade.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
+    }*/
 
     public static ModelFascade getInstance() {
         if (fascadeInstance == null) {
@@ -136,7 +141,7 @@ public class ModelFascade {
     public void changeSelectedColor(Color newCol) {
         this.drawing.changeSelectedColor(newCol);
     }
-    
+
     public void removeSelected() {
         this.drawing.removeSelected();
     }
@@ -146,59 +151,9 @@ public class ModelFascade {
     }
 
     public void deselect() {
-       // handleComposite();
-      //  System.out.println("posthandle");
-        drawing.printAll();
-      //  System.out.println("end");
         selectedShape = null;
     }
-    
-    private void handleComposite(){
-        if(selectedShape==null){
-            return;
-        }
-        // Collect all the shapes inside the shapes 
-        ArrayList<Shape> innerShape = drawing.retrieveShapesWithin(selectedShape);
-        // find all the shapes that are covering the new shape
-        ArrayList<Shape> outerShapes =drawing.retrieveCoveringShapes(selectedShape);
-        ShapeComposite newComposite = null;
-        if(innerShape!=null){
-            // make a new composite for the current shape if it has smaller shapes inside
-            newComposite = makeNewComposite(selectedShape);
-            // add the shapes to the composite
-            drawing.initializeComposite(newComposite,selectedShape,innerShape);
-        }
-        if(outerShapes!=null){
-           //if we have shapes outside that covers the new shape
-           //sort it so we have the smallest one,
-           drawing.printAll(outerShapes);
-           outerShapes.sort(new CompareArea());
-           System.out.println("end");
-           drawing.printAll(outerShapes);
-           Shape closest = outerShapes.get(0);
-           //include the newshape 
-           Shape toBeInserted = null; 
-               if(newComposite==null){
-                   toBeInserted = selectedShape;
-               }
-               else{
-                   toBeInserted = newComposite;
-               }
-               //if it is already a composite
-           if(closest instanceof ShapeComposite){   
-               ((ShapeComposite) closest).add(toBeInserted);
-               drawing.removeShape(toBeInserted);
-           }
-           else{
-               //if it isn't already a composite, it should become one
-               System.out.println("this segment is invoked");
-               ShapeComposite outerShapeComposite = makeNewComposite(closest);
-               drawing.initializeComposite(outerShapeComposite, closest, toBeInserted);     
-           }
-           
-        }
-    }
-   
+
     public Drawing getDrawing() {
         return drawing;
     }
@@ -224,8 +179,10 @@ public class ModelFascade {
         selectedShape = ShapeFactory.getShape(shapeToDraw, fromX, fromY, fromX, fromY, col, strokeWidth, fill);
         drawing.addShape(selectedShape);
     }
-     public ShapeComposite makeNewComposite(Shape outline){
-        return  (ShapeComposite) ShapeFactory.getShape("ShapeComposite", outline.getFromX(), outline.getFromY(), outline.getToX(), outline.getToY(),null,0,false);
-    }
 
+    @Override
+    public void update() {
+        this.drawing.init(db.getDrawing());
+        //retrieve the data from the database
+    }
 }

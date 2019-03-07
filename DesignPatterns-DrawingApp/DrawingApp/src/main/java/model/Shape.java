@@ -5,6 +5,7 @@
  */
 package model;
 
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.canvas.GraphicsContext;
@@ -135,6 +136,54 @@ public abstract class Shape implements Cloneable {
     public double getFromX() {
         return fromX;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Shape other = (Shape) obj;
+        if (Double.doubleToLongBits(this.fromX) != Double.doubleToLongBits(other.fromX)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.fromY) != Double.doubleToLongBits(other.fromY)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.toX) != Double.doubleToLongBits(other.toX)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.toY) != Double.doubleToLongBits(other.toY)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.strokeWidth) != Double.doubleToLongBits(other.strokeWidth)) {
+            return false;
+        }
+        if (this.fill != other.fill) {
+            return false;
+        }
+        if (!this.getClass().getSimpleName().equals(obj.getClass().getSimpleName())) {
+            return false;
+        }
+        if (!Objects.equals(this.col, other.col)) {
+            return false;
+        }
+        
+        return true;
+    }
+    
+    
 
     public double getFromY() {
         return fromY;

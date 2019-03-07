@@ -9,8 +9,6 @@ package model;
 import com.kanonkod.drawingapp.command.RedoAdd;
 import com.kanonkod.drawingapp.command.UndoAdd;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 import javafx.scene.canvas.GraphicsContext;
@@ -38,11 +36,15 @@ public class Drawing {
 
     public void init(DrawingDAO dbDrawing) {
         this.name = dbDrawing.getName();
-        selectedShapes.clear();
-        this.name = dbDrawing.getName();
-        this.shapes.clear();
+       // selectedShapes.clear();
+       // this.shapes.clear();
         for (ShapeDAO shapeDAO : dbDrawing.getShapes()) {
-            shapes.add(ShapeFactory.getShape(shapeDAO));
+            Shape newShape  = ShapeFactory.getShape(shapeDAO);
+            if (!shapes.contains(newShape)) {
+                shapes.add(newShape);
+            } else {
+                
+            }
         }
 
         notifyAllObservers();
@@ -50,14 +52,10 @@ public class Drawing {
 
     //Object - Subject pattern with methods ------------------------
     List<Observer> observers = new ArrayList<Observer>();
-    
-    private final Object MUTEX= new Object();
 
     public void notifyAllObservers() {
         for (Observer observer : observers) {
-           synchronized (MUTEX) {
-              observer.update();  
-           } 
+            observer.update();
         }
     }
 
@@ -69,10 +67,9 @@ public class Drawing {
         if (shape == null) {
             return;
         }
-        
         //notify observers
-      //  undoCommands.add(new UndoAdd(shape,this,shapes.size()-1));
-       // redoCommands.add(new RedoAdd(shape,this,shapes.size()-1));  
+       // undoCommands.add(new UndoAdd(shape,this,shapes.size()-1));
+        redoCommands.add(new RedoAdd(shape,this,shapes.size()-1));
         shapes.add(shape);
         // notifyAllObservers();
     }
@@ -133,21 +130,37 @@ public class Drawing {
 
         notifyAllObservers();
     }
-      
 
+     public void undoAdd(){
+        if(!undoCommands.empty()){
+            UndoCommand ua = (UndoCommand) undoCommands.pop();
+            ua.undo();
+        }
+        
+    }
+    public void redoAdd(){
+         if(!undoCommands.empty()){
+          RedoAdd ra = (RedoAdd) redoCommands.pop();
+          ra.redo();   
+         }
+        
+    }
+    
     public void repeat(Shape shape) {
         
         shapes.add(shape);
         notifyAllObservers();
     }
 
-    
-    public void removeShape(Shape shape) {
+
+    public void clearOneImage(Shape shape, int index) {
+        shapes.remove(shape);
+        notifyAllObservers();
+    } void removeShape(Shape shape) {
         int index = shapes.indexOf(shape);
         shapes.remove(index);
         notifyAllObservers();
     }
-
 
     public void deselectAll() {
         selectedShapes.clear();
@@ -178,65 +191,6 @@ public class Drawing {
         notifyAllObservers();
     }
 
-     
-     
-    public ArrayList<Shape> retrieveShapesWithin(Shape selected){
-         if(shapes.size()<=1){
-          return null;
-        }
-        ArrayList<Shape> insideShape = new ArrayList<Shape>();         
-        for (Shape s : shapes) {
-            if(!s.equals(selected)){              
-               if(selected.isCoveringAnotherShape(s)){            
-                      insideShape.add(s);  
-            }                         
-         }
-        } 
-        if(insideShape.size()>0){           
-            return insideShape;
-        }
-        return null;
-     }
-    public ArrayList<Shape> retrieveCoveringShapes(Shape selected){
-         if(shapes.size()<=1){
-          return null;
-        }
-        ArrayList<Shape> outer = new ArrayList<Shape>();         
-        for (Shape s : shapes) {
-            if(!s.equals(selected)){              
-               if(selected.isInsideAnotherShape(s)){            
-                      outer.add(s);  
-            }                         
-         }
-        } 
-        if(outer.size()>0){           
-            return outer;
-        }
-        return null;
-     }
-   
-     public ShapeComposite initializeComposite(ShapeComposite composite, Shape shape, ArrayList<Shape> outer){
-        System.out.println("Initialize comp");
-        for(Shape s : outer){
-            shapes.remove(s);
-            composite.add(s);
-        }
-        shapes.remove(shape);
-        composite.add(shape);
-        shapes.add(composite);
-        return composite;
-    }
-     public ShapeComposite initializeComposite(ShapeComposite composite,Shape outer, Shape shape){
-        shapes.remove(outer);
-        composite.add(outer);
-        shapes.remove(shape);
-        composite.add(shape);
-        shapes.add(composite);
-        return composite;
-        
-        
-    }
-     
     public void selectShapes(Shape shape) {
         //find all the object which are inside the marker area and add to selectedShapes
         selectedShapes.clear();
@@ -259,25 +213,6 @@ public class Drawing {
     public void clear() {
         shapes = new ArrayList<>();
         notifyAllObservers();
-    }
-     public void printAll(){
-        for(Shape e: shapes){
-            System.out.println("PA: " + e.toString());
-        }
-    }
-      public void printAll(ArrayList<Shape> ksd){
-        for(Shape e: ksd){
-            System.out.println("PP: " + e.toString());
-        }
-    }
-    public void undoAdd(){
-        
-    }
-    public void undoDelete(){
-        
-    }
-    public void redoAdd(){
-        
     }
 
     @Override

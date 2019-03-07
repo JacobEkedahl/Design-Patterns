@@ -6,6 +6,7 @@
 package model;
 
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,13 +31,18 @@ import org.reflections.Reflections;
  */
 public class ShapeLoader {
 
-    static final String directoryName = "shapes";
+    static final String directoryName = "./src/main/resources/shapes";
+
     public static void initImages(GraphicsContext gc) {
-        File directory = new File(directoryName);
-        if (!directory.exists()) {
+        try {
+            URL url = ShapeLoader.class.getClass().getClassLoader().getResource("shapes");
+            File file = new File(url.getFile());
+        } catch (NullPointerException ex) {
+            System.out.println("cannot find that folder inside shapeloader");
+            File directory = new File(directoryName);
             directory.mkdir();
         }
-        
+
         WritableImage wim = new WritableImage(25, 25);
         //draw an image from 0,0 to 30,30 with each shape if that has not already been done
         for (String key : getShapeKeys()) {
@@ -46,6 +52,7 @@ public class ShapeLoader {
             if (tmpFile.exists()) {
                 continue;
             }
+
             gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
             Shape shape = ShapeFactory.getShape(key, 2, 2, 23, 23, Color.BLACK, 1, false);
             shape.draw(gc);

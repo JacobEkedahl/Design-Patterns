@@ -12,6 +12,6 @@ import model.Drawing;
  * @author Jacob
  */
 public abstract class Observer {
-    public Drawing drawing;
+    public Object subject;
     public abstract void update();
 }
