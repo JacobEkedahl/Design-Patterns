@@ -24,19 +24,16 @@ public class UndoAdd implements UndoCommand{
         this.shape = shape;
     }
     
-    
-    
     @Override
     public void undo() {
-     //  drawing.removeShape(shape);
-       // model.clearDrawing();
-       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //Remove what was previously inserted
+        drawing.removeShape(shape);
+        drawing.updateRedoStack(new RedoAdd(this.shape,this.drawing));
     }
 
     @Override
     public void execute() {
       
-      //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

@@ -17,31 +17,22 @@ import model.interfaces.RedoCommand;
 public class RedoAdd implements RedoCommand{
     private Shape shape;
     private Drawing drawing;
-    private int index;
 
-    public RedoAdd(Shape shape, Drawing drawing, int index) {
+    public RedoAdd(Shape shape, Drawing drawing) {
         this.shape = shape;
         this.drawing = drawing;
-        this.index = index;
     }
     
     
     @Override
-    public void redo() {
-        
-        Shape newShape = shape.createCopy(shape.getFromX(), shape.getFromY(), shape.getToX(), shape.getToY(), shape.getCol(),shape.getStrokeWidth(),shape.isFill());
-        
-       
-        newShape.setFromX(shape.getFromX()+30);
-        newShape.setFromY(shape.getFromY()+30);
-        newShape.setToX(shape.getToX()+30);
-        newShape.setToY(shape.getToY()+30);
+    public void redo() {     
+        Shape newShape = shape.createCopy(shape.getFromX(), shape.getFromY(), shape.getToX(), shape.getToY(), shape.getCol(),shape.getStrokeWidth(),shape.isFill());       
         drawing.repeat(newShape);
+        drawing.updateUndoStack(newShape);
     }
 
     @Override
     public void execute() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

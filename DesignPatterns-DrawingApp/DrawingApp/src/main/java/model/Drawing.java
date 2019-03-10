@@ -8,6 +8,7 @@ package model;
 
 import com.kanonkod.drawingapp.command.RedoAdd;
 import com.kanonkod.drawingapp.command.UndoAdd;
+import com.kanonkod.drawingapp.command.UndoDelete;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -15,6 +16,7 @@ import javafx.scene.canvas.GraphicsContext;
 import model.interfaces.Command;
 import javafx.scene.paint.Color;
 import model.interfaces.Observer;
+import model.interfaces.RedoCommand;
 import model.interfaces.UndoCommand;
 
 /**
@@ -24,8 +26,8 @@ import model.interfaces.UndoCommand;
 public class Drawing {
 
     List<Shape> shapes = new ArrayList<>();
-     Stack<Command> undoCommands = new Stack<>();
-     Stack<Command> redoCommands = new Stack<>();
+    private Stack<Command> undoCommands = new Stack<>();
+    private Stack<Command> redoCommands = new Stack<>();
     
     List<Shape> selectedShapes = new ArrayList<>();
     private String name = "";
@@ -68,8 +70,6 @@ public class Drawing {
             return;
         }
         //notify observers
-       // undoCommands.add(new UndoAdd(shape,this,shapes.size()-1));
-        redoCommands.add(new RedoAdd(shape,this,shapes.size()-1));
         shapes.add(shape);
         // notifyAllObservers();
     }
@@ -85,25 +85,20 @@ public class Drawing {
     public List<Shape> getShapes() {
         return shapes;
     }
-
     public void setObservers(List<Observer> observers) {
         this.observers = observers;
     }
-
     public List<Observer> getObservers() {
         return observers;
     }
-
     //is called from the views update method
     public void drawAll(GraphicsContext gc) {
         gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
-
         for (Shape shape : selectedShapes) {
             //draw rect around
             Shape tmpRect = ShapeFactory.getShape("aMarker", shape.getFromX(), shape.getFromY(), shape.getToX(), shape.getToY(), Color.CORAL, 1, false);
             tmpRect.draw(gc);
         }
-
         for (Shape shape : shapes) {
             shape.draw(gc);
         }
@@ -112,7 +107,6 @@ public class Drawing {
 
     public void changeSize(Shape shape, double toX, double toY) {
         int index = shapes.indexOf(shape);
-
         if (index < 0) {
             return;
         }
@@ -122,43 +116,54 @@ public class Drawing {
         //notify observers
         notifyAllObservers();
     }
+    /**
+     * For undo-redo delete, we use recursion we include in the constructor,
+     * how often it should invoke the command, which is the size of the selected
+     * list and subtract with one because the client personally choose undo.
+     */
 
     public void removeSelected() {
-        for (Shape shape : selectedShapes) {
-            removeShape(shape);
+        
+        int numAutoPops = 0;
+        boolean doRecursion = false;
+        if(selectedShapes.size()>1){
+             numAutoPops = selectedShapes.size()-1;
+             doRecursion = true;
         }
-
+        else{
+             numAutoPops = 0;
+        }
+        int popIndex =0;
+        for (Shape shape : selectedShapes) {          
+             updateUndoStack(new UndoDelete(shape,this,popIndex,numAutoPops,doRecursion));
+             popIndex++;
+             removeShape(shape);
+          }
+        
         notifyAllObservers();
     }
 
-     public void undoAdd(){
+     public void undoCommand(){  
         if(!undoCommands.empty()){
             UndoCommand ua = (UndoCommand) undoCommands.pop();
             ua.undo();
         }
         
     }
-    public void redoAdd(){
-         if(!undoCommands.empty()){
-          RedoAdd ra = (RedoAdd) redoCommands.pop();
+    public void redoCommand(){
+         if(!redoCommands.empty()){
+          RedoCommand ra = (RedoCommand) redoCommands.pop();         
           ra.redo();   
          }
-        
     }
     
     public void repeat(Shape shape) {
-        
         shapes.add(shape);
         notifyAllObservers();
     }
 
-
-    public void clearOneImage(Shape shape, int index) {
+    public void removeShape(Shape shape) {
         shapes.remove(shape);
-        notifyAllObservers();
-    } void removeShape(Shape shape) {
-        int index = shapes.indexOf(shape);
-        shapes.remove(index);
         notifyAllObservers();
     }
 
@@ -187,7 +192,6 @@ public class Drawing {
         selectedShapes.forEach((shape) -> {
             shape.setFill(newVal);
         });
-
         notifyAllObservers();
     }
 
@@ -205,7 +209,6 @@ public class Drawing {
             selectedShapes.add(orig);
             System.out.println("orig: " + orig);
         }
-
         System.out.println("selectedShapes size: " + selectedShapes.size());
         notifyAllObservers();
     }
@@ -214,7 +217,23 @@ public class Drawing {
         shapes = new ArrayList<>();
         notifyAllObservers();
     }
-
+    
+   public void updateUndoStack(Shape newShape){
+       //we don't want the stack to recognize the marker thingy
+       if(!(newShape instanceof aMarker)){
+           undoCommands.add(new UndoAdd(newShape,this));
+       }
+   }
+  
+  public void updateUndoStack(UndoCommand undoCommand){
+        undoCommands.add(undoCommand);
+        
+   }
+   
+   public void updateRedoStack(RedoCommand redoCommand){
+       redoCommands.add(redoCommand);
+   }
+  
     @Override
     public String toString() {
         return "Drawing{" + "shapes=" + shapes + ", selectedShapes=" + selectedShapes + ", name=" + name + '}';

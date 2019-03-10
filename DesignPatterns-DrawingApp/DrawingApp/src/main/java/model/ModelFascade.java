@@ -5,6 +5,7 @@
  */
 package model;
 
+import com.kanonkod.drawingapp.command.UndoAdd;
 import databases.FirebaseHandler;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -151,6 +152,12 @@ public class ModelFascade extends Observer {
     }
 
     public void deselect() {
+        //here I can update the stacks
+       // this.drawing.
+        if(selectedShape!=null && !(selectedShape instanceof aMarker)){
+            drawing.updateUndoStack(new UndoAdd(selectedShape,drawing ));
+         //   drawing.updateUndoStack(selectedShape);     
+        }
         selectedShape = null;
     }
 

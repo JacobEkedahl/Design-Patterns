@@ -17,6 +17,7 @@ public class CircleLineDiagonal extends Shape{
     private Shape shape2 = null;
     
     public void init(){
+        //System.out.println("initCircle diagonal");
         if(shape1==null ){
              this.shape1 = ShapeFactory.getShape("aLine", super.getFromX(), super.getFromY(), super.getToX(), super.getToY(), super.getCol(), super.getStrokeWidth(), super.getFill());
          }
@@ -31,7 +32,7 @@ public class CircleLineDiagonal extends Shape{
              init();
              shape1.drawFill(gc);
              shape2.drawFill(gc);
- 
+             
     }
 
     @Override
@@ -39,12 +40,15 @@ public class CircleLineDiagonal extends Shape{
             init();
             shape1.drawHollow(gc);
             shape2.drawHollow(gc);
+          
 
     }
 
     @Override
     void changeSize(double newX, double newY) {
              init();
+             this.setEnd(newX, newY);
+             
              shape1.changeSize(newX, newY);
              shape2.changeSize(newX, newY);
              
