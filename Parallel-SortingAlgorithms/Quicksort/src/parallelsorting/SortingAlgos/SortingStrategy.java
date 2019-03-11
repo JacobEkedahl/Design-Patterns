@@ -11,13 +11,13 @@ import java.util.concurrent.RecursiveAction;
 
  public interface SortingStrategy {
      public void sort();
-     public long messure(int cores);
+     public void messure(int cores);
      public boolean isSorted();
 
     /**
      * 
      * @return the optimal threshold value
      * for the max amount of cores on the current machine
-     */
-    public int findOptimalThreshold();
+     */ 
+     public long findOptimalThreshold(int cores, int i);
  }
