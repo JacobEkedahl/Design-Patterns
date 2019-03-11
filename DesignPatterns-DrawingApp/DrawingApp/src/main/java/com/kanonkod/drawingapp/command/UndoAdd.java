@@ -18,6 +18,7 @@ public class UndoAdd implements UndoCommand{
     
     private Shape shape;
     private Drawing drawing;
+    private static final String type = "UndoAdd";
 
     public UndoAdd(Shape shape, Drawing model) {
         this.drawing = model;
@@ -30,6 +31,18 @@ public class UndoAdd implements UndoCommand{
         drawing.removeShape(shape);
         drawing.updateRedoStack(new RedoAdd(this.shape,this.drawing));
     }
+    
+    
+      @Override
+    public String getType(){
+        return type;
+    }
+    
+     @Override
+    public Shape getHost(){
+        return shape;
+    }
+    
 
     @Override
     public void execute() {

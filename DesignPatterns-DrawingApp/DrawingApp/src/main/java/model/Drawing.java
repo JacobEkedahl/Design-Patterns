@@ -233,6 +233,16 @@ public class Drawing {
    public void updateRedoStack(RedoCommand redoCommand){
        redoCommands.add(redoCommand);
    }
+
+    public Stack<Command> getUndoCommands() {
+        return undoCommands;
+    }
+
+    public Stack<Command> getRedoCommands() {
+        return redoCommands;
+    }
+   
+   
   
     @Override
     public String toString() {

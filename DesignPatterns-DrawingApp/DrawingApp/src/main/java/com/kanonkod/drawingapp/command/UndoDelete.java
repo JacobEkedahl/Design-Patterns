@@ -16,18 +16,19 @@ import model.interfaces.UndoCommand;
 public class UndoDelete implements UndoCommand {
     private Shape shape;
     private Drawing drawing;
-    private int dominoEffect;
+    private int numRecursion;
     private boolean doRecursion;
     private int limiter;
+    private static final String type = "UndoDelete";
     public UndoDelete(Shape shape, Drawing drawing) {
         this.shape = shape;
         this.drawing = drawing;
     }
-    public UndoDelete(Shape shape, Drawing drawing, int dominoEffect , int limiter, boolean doRecursion) {
+    public UndoDelete(Shape shape, Drawing drawing, int numRecursion , int limiter, boolean doRecursion) {
         this.shape = shape;
         this.drawing = drawing;
         this.limiter = limiter;
-        this.dominoEffect = dominoEffect;
+        this.numRecursion = numRecursion;
         this.doRecursion = doRecursion;
     }
     @Override
@@ -35,25 +36,45 @@ public class UndoDelete implements UndoCommand {
         Shape newShape = shape.createCopy(shape.getFromX(), shape.getFromY(), shape.getToX(), shape.getToY(), shape.getCol(),shape.getStrokeWidth(),shape.isFill());       
         drawing.repeat(newShape);
         
-        if((this.doRecursion) && this.dominoEffect>0){
-            drawing.updateRedoStack(new RedoDelete(newShape,drawing,this.dominoEffect,this.limiter,this.doRecursion)); 
+        if((this.doRecursion) && this.numRecursion>0){
+            drawing.updateRedoStack(new RedoDelete(newShape,drawing,this.numRecursion,this.limiter,this.doRecursion)); 
             drawing.undoCommand();
         }
-        else if((this.doRecursion) && this.dominoEffect ==0){
-            drawing.updateRedoStack(new RedoDelete(newShape,drawing,this.dominoEffect,this.limiter,this.doRecursion));
+        else if((this.doRecursion) && this.numRecursion ==0){
+            drawing.updateRedoStack(new RedoDelete(newShape,drawing,this.numRecursion,this.limiter,this.doRecursion));
         }
         else if(this.limiter==0 && !this.doRecursion){
-             drawing.updateRedoStack(new RedoDelete(newShape,drawing,this.dominoEffect,this.limiter,this.doRecursion));
+             drawing.updateRedoStack(new RedoDelete(newShape,drawing,this.numRecursion,this.limiter,this.doRecursion));
         }
          
     }
 
     @Override
     public String toString() {
-        return "UndoDelete{" + "dominoEffect=" + dominoEffect + ", limiter=" + limiter + '}';
+        return "UndoDelete{" + "dominoEffect=" + numRecursion + ", limiter=" + limiter + '}';
     }
     
+    @Override
+    public String getType(){
+        return type;
+    }
     
+    @Override
+    public Shape getHost(){
+        return shape;
+    }
+
+    public int getNumRecursion() {
+        return numRecursion;
+    }
+
+    public boolean isDoRecursion() {
+        return doRecursion;
+    }
+
+    public int getLimiter() {
+        return limiter;
+    }
 
     @Override
     public void execute() {

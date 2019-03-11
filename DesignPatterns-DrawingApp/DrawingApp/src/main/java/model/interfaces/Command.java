@@ -5,6 +5,8 @@
  */
 package model.interfaces;
 
+import model.Shape;
+
 /**
  *
  * @author fno
@@ -12,5 +14,7 @@ package model.interfaces;
 public interface Command {
     
     public void execute();
+    public String getType();
+    public Shape getHost();
     
 }

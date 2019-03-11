@@ -17,10 +17,10 @@ public class RedoDelete implements RedoCommand {
 
     private Shape shape;
     private Drawing drawing;
-    private int dominoFlag;
     private int limiter;
     private int index;
     private boolean doRecusion;
+    private static final String type = "RedoDelete";
     public RedoDelete(Shape shape, Drawing drawing) {
         this.shape = shape;
         this.drawing = drawing;
@@ -52,6 +52,31 @@ public class RedoDelete implements RedoCommand {
         
         //drawing.updateRedoStack(shape, this);
     }
+    
+      @Override
+    public String getType(){
+        return type;
+    }
+    
+     @Override
+    public Shape getHost(){
+        return shape;
+    }
+
+    public int getLimiter() {
+        return limiter;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public boolean isDoRecusion() {
+        return doRecusion;
+    }
+    
+    
+    
 
     @Override
     public void execute() {

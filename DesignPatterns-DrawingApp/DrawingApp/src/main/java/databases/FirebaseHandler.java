@@ -68,6 +68,7 @@ public class FirebaseHandler {
         DrawingDAO dbDrawing = new DrawingDAO(drawing);
         DocumentReference docRef = db.collection("drawings").document(drawing.getName());
         docRef.set(dbDrawing);
+        
     }
 
     public DrawingDAO getData(String name) throws InterruptedException, ExecutionException {

@@ -74,6 +74,7 @@ public class ModelFascade extends Observer {
     }
 
     public void saveData() {
+        System.out.println("saved data");
         try {
             db.addData(this.drawing);
         } catch (IllegalArgumentException ex) {
@@ -182,7 +183,6 @@ public class ModelFascade extends Observer {
         if (shapeToDraw == null) {
             return;
         }
-
         selectedShape = ShapeFactory.getShape(shapeToDraw, fromX, fromY, fromX, fromY, col, strokeWidth, fill);
         drawing.addShape(selectedShape);
     }
