@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 import javafx.scene.canvas.GraphicsContext;
-import model.interfaces.Command;
 import javafx.scene.paint.Color;
 import model.interfaces.Observer;
 import model.interfaces.RedoCommand;
@@ -26,8 +25,8 @@ import model.interfaces.UndoCommand;
 public class Drawing {
 
     List<Shape> shapes = new ArrayList<>();
-    private Stack<Command> undoCommands = new Stack<>();
-    private Stack<Command> redoCommands = new Stack<>();
+    private Stack<UndoCommand> undoCommands = new Stack<>();
+    private Stack<RedoCommand> redoCommands = new Stack<>();
     
     List<Shape> selectedShapes = new ArrayList<>();
     private String name = "";
@@ -117,38 +116,29 @@ public class Drawing {
         notifyAllObservers();
     }
     /**
-     * For undo-redo delete, we use recursion we include in the constructor,
-     * how often it should invoke the command, which is the size of the selected
-     * list and subtract with one because the client personally choose undo.
+     * 
+     * In case the drag-on selector boxes in several shape, we'll have the
+     * shapes shoved in a list for each instance of undodelete. and recreated
+     * with undodelete. 
      */
 
     public void removeSelected() {
         
-        int numAutoPops = 0;
-        boolean doRecursion = false;
-        if(selectedShapes.size()>1){
-             numAutoPops = selectedShapes.size()-1;
-             doRecursion = true;
+        if(!selectedShapes.isEmpty()){
+            updateUndoStack(new UndoDelete(new ArrayList<Shape>(selectedShapes),this));
         }
-        else{
-             numAutoPops = 0;
+        for (Shape shape : selectedShapes) {
+            removeShape(shape);
         }
-        int popIndex =0;
-        for (Shape shape : selectedShapes) {          
-             updateUndoStack(new UndoDelete(shape,this,popIndex,numAutoPops,doRecursion));
-             popIndex++;
-             removeShape(shape);
-          }
-        
+  
         notifyAllObservers();
     }
 
      public void undoCommand(){  
         if(!undoCommands.empty()){
-            UndoCommand ua = (UndoCommand) undoCommands.pop();
+            UndoCommand ua =  undoCommands.pop();
             ua.undo();
-        }
-        
+        } 
     }
     public void redoCommand(){
          if(!redoCommands.empty()){
@@ -156,7 +146,6 @@ public class Drawing {
           ra.redo();   
          }
     }
-    
     public void repeat(Shape shape) {
         shapes.add(shape);
         notifyAllObservers();
@@ -217,33 +206,31 @@ public class Drawing {
         shapes = new ArrayList<>();
         notifyAllObservers();
     }
-    
-   public void updateUndoStack(Shape newShape){
-       //we don't want the stack to recognize the marker thingy
-       if(!(newShape instanceof aMarker)){
-           undoCommands.add(new UndoAdd(newShape,this));
-       }
-   }
   
+  /**
+   * Add undocommand to the stack
+   * @param undoCommand 
+   */
   public void updateUndoStack(UndoCommand undoCommand){
         undoCommands.add(undoCommand);
         
    }
-   
+  /**
+   * Add redocommand to the stack
+   * @param undoCommand 
+   */
    public void updateRedoStack(RedoCommand redoCommand){
        redoCommands.add(redoCommand);
    }
 
-    public Stack<Command> getUndoCommands() {
+    public Stack<UndoCommand> getUndoCommands() {
         return undoCommands;
     }
 
-    public Stack<Command> getRedoCommands() {
+    public Stack<RedoCommand> getRedoCommands() {
         return redoCommands;
     }
-   
-   
-  
+     
     @Override
     public String toString() {
         return "Drawing{" + "shapes=" + shapes + ", selectedShapes=" + selectedShapes + ", name=" + name + '}';

@@ -33,20 +33,6 @@ public class UndoAdd implements UndoCommand{
     }
     
     
-      @Override
-    public String getType(){
-        return type;
-    }
     
-     @Override
-    public Shape getHost(){
-        return shape;
-    }
-    
-
-    @Override
-    public void execute() {
-      
-    }
     
 }

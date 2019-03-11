@@ -8,6 +8,7 @@ package com.kanonkod.drawingapp.command;
 import javafx.scene.paint.Color;
 import model.Drawing;
 import model.Shape;
+import model.ShapeFactory;
 import model.interfaces.RedoCommand;
 
 /**
@@ -26,25 +27,11 @@ public class RedoAdd implements RedoCommand{
     
     
     @Override
-    public void redo() {     
-        Shape newShape = shape.createCopy(shape.getFromX(), shape.getFromY(), shape.getToX(), shape.getToY(), shape.getCol(),shape.getStrokeWidth(),shape.isFill());       
+    public void redo() {   
+        Shape newShape = ShapeFactory.getShape(shape.getClass().getSimpleName(), shape.getFromX(), shape.getFromY(), shape.getToX(), shape.getToY(), shape.getCol(), shape.getStrokeWidth(), shape.getFill());//shape.createCopy(shape.getFromX(), shape.getFromY(), shape.getToX(), shape.getToY(), shape.getCol(),shape.getStrokeWidth(),shape.isFill());       
         drawing.repeat(newShape);
-        drawing.updateUndoStack(newShape);
+        drawing.updateUndoStack(new UndoAdd(newShape,this.drawing));
     }
     
-      @Override
-    public String getType(){
-        return type;
-    }
-    
-     @Override
-    public Shape getHost(){
-        return shape;
-    }
-    
-
-    @Override
-    public void execute() {
-    }
-    
+  
 }

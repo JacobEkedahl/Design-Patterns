@@ -5,6 +5,8 @@
  */
 package com.kanonkod.drawingapp.command;
 
+import java.util.ArrayList;
+import java.util.List;
 import model.Drawing;
 import model.Shape;
 import model.interfaces.RedoCommand;
@@ -15,72 +17,34 @@ import model.interfaces.RedoCommand;
  */
 public class RedoDelete implements RedoCommand {
 
-    private Shape shape;
+    private List<Shape> shapes;
     private Drawing drawing;
-    private int limiter;
-    private int index;
-    private boolean doRecusion;
-    private static final String type = "RedoDelete";
-    public RedoDelete(Shape shape, Drawing drawing) {
-        this.shape = shape;
+    
+   
+    public RedoDelete(List<Shape> shapes, Drawing drawing) {
+        this.shapes = shapes;
         this.drawing = drawing;
+        
     }
 
-    public RedoDelete(Shape shape, Drawing drawing,int reverseIndex , int delimit, boolean doRecursion) {
-        this.shape = shape;
-        this.drawing = drawing;
-        this.index = reverseIndex;
-        this.limiter = delimit;
-        this.doRecusion = doRecursion;
-    }
+   
 
     @Override
     public void redo() {
-        drawing.removeShape(shape);
-        if(this.limiter > 0 && this.index < this.limiter){
-            drawing.updateUndoStack(new UndoDelete(shape,drawing,this.index,this.limiter,this.doRecusion));
-            drawing.redoCommand();
+        this.drawing.updateUndoStack(new UndoDelete(new ArrayList<Shape>(shapes),this.drawing));
+        for(Shape s : shapes){
+            drawing.removeShape(s);
         }
-        else if(this.doRecusion && this.index == this.limiter){
-            drawing.updateUndoStack(new UndoDelete(shape,drawing,this.index,this.limiter,this.doRecusion));
-        }
-        if(this.limiter==0 && !this.doRecusion){
-            drawing.updateUndoStack(new UndoDelete(shape,drawing,this.index,this.limiter,this.doRecusion));
-        }
+        
         
        
         
         //drawing.updateRedoStack(shape, this);
     }
     
-      @Override
-    public String getType(){
-        return type;
-    }
+   
+
     
-     @Override
-    public Shape getHost(){
-        return shape;
-    }
-
-    public int getLimiter() {
-        return limiter;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public boolean isDoRecusion() {
-        return doRecusion;
-    }
-    
-    
-    
-
-    @Override
-    public void execute() {
-
-    }
+ 
     
 }

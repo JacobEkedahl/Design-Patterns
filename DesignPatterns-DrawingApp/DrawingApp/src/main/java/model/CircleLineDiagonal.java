@@ -13,45 +13,41 @@ import javafx.scene.paint.Color;
  * @author fno
  */
 public class CircleLineDiagonal extends Shape{
-    private Shape shape1 = null;
-    private Shape shape2 = null;
-    
+    private Shape lineComponent = null;
+    private Shape circleComponent = null;
+    /**
+     * Initialize the components
+     */
     public void init(){
-        //System.out.println("initCircle diagonal");
-        if(shape1==null ){
-             this.shape1 = ShapeFactory.getShape("aLine", super.getFromX(), super.getFromY(), super.getToX(), super.getToY(), super.getCol(), super.getStrokeWidth(), super.getFill());
+        if(lineComponent==null ){
+             this.lineComponent = ShapeFactory.getShape("aLine", super.getFromX(), super.getFromY(), super.getToX(), super.getToY(), super.getCol(), super.getStrokeWidth(), super.getFill());
          }
-        if(shape2==null ){
-           
-             this.shape2 = ShapeFactory.getShape("anOval", super.getFromX(), super.getFromY(), super.getToX(), super.getToY(), super.getCol(), super.getStrokeWidth(), super.getFill());
+        if(circleComponent==null ){
+             this.circleComponent = ShapeFactory.getShape("anOval", super.getFromX(), super.getFromY(), super.getToX(), super.getToY(), super.getCol(), super.getStrokeWidth(), super.getFill());
          }   
     }
+    
     
     @Override
     void drawFill(GraphicsContext gc) {
              init();
-             shape1.drawFill(gc);
-             shape2.drawFill(gc);
-             
+             lineComponent.draw(gc);
+             circleComponent.draw(gc);             
     }
 
     @Override
     void drawHollow(GraphicsContext gc) {  
             init();
-            shape1.drawHollow(gc);
-            shape2.drawHollow(gc);
-          
-
+            lineComponent.draw(gc);
+            circleComponent.draw(gc);
     }
 
     @Override
     void changeSize(double newX, double newY) {
              init();
              this.setEnd(newX, newY);
-             
-             shape1.changeSize(newX, newY);
-             shape2.changeSize(newX, newY);
-             
+             lineComponent.changeSize(newX, newY);
+             circleComponent.changeSize(newX, newY);        
     }
     
     

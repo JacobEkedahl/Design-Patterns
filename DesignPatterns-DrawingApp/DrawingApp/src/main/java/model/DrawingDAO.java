@@ -12,8 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 import javafx.scene.paint.Color;
-import model.interfaces.Command;
-
 /**
  *
  * @author Jacob
@@ -22,8 +20,7 @@ public class DrawingDAO {
 
     private String name;
     private List<ShapeDAO> shapes;
-  //  private List<CommandDao> commandUndos;
-  //  private List<CommandDao> commandRedos;
+
 
     private void initShapes(List<Shape> shapes) {
         this.shapes = new ArrayList<>();

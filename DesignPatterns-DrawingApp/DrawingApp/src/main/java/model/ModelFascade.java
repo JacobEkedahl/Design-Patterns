@@ -85,17 +85,7 @@ public class ModelFascade extends Observer {
         }
     }
 
-    /*
-    public void getData(String name) {
-        try {
-            System.out.println("name to get: " + name);
-            this.drawing.init(db.getData(name));
-        } catch (InterruptedException ex) {
-            Logger.getLogger(ModelFascade.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ExecutionException ex) {
-            Logger.getLogger(ModelFascade.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }*/
+    
 
     public static ModelFascade getInstance() {
         if (fascadeInstance == null) {
@@ -152,12 +142,13 @@ public class ModelFascade extends Observer {
         this.drawing.deselectAll();
     }
 
-    public void deselect() {
-        //here I can update the stacks
-       // this.drawing.
+    /**
+     * we update the undo stack when the user releases the mousebutton
+     */
+    public void deselect() {  
         if(selectedShape!=null && !(selectedShape instanceof aMarker)){
             drawing.updateUndoStack(new UndoAdd(selectedShape,drawing ));
-         //   drawing.updateUndoStack(selectedShape);     
+           
         }
         selectedShape = null;
     }
