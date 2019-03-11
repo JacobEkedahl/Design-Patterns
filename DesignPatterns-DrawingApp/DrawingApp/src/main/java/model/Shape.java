@@ -67,7 +67,7 @@ public abstract class Shape implements Cloneable {
         return (fromY > toY) ? fromY : toY;
     }
 
-     void draw(GraphicsContext gc) {
+    final void draw(GraphicsContext gc) {
         gc.setFill(col);
         gc.setStroke(col);
         gc.setLineWidth(strokeWidth);
@@ -78,13 +78,11 @@ public abstract class Shape implements Cloneable {
             drawHollow(gc);
         }
     }
-
     public void invertX() {
         double tmpX = fromX;
         this.fromX = this.toX;
         this.toX = this.fromX;
     }
-
     public void invertY() {
         double tmpY = fromY;
         this.fromY = this.toY;
@@ -182,9 +180,6 @@ public abstract class Shape implements Cloneable {
         
         return true;
     }
-    
-    
-
     public double getFromY() {
         return fromY;
     }
@@ -199,31 +194,10 @@ public abstract class Shape implements Cloneable {
     
     public void setFill(boolean newVal) {
         this.fill = newVal;
-    }
-    
+    }   
     public boolean isFill() {
         return this.fill;
-    }
-    public boolean isInsideAnotherShape(Shape aDifferentShape){
-        if(this.getFromX()> aDifferentShape.getFromX() && this.getFromY() > aDifferentShape.getFromY() && this.getToX() < aDifferentShape.getToX() && this.getToY() < aDifferentShape.getToY()){
-           return true;
-        }
-        return false;
-    }
-    
-    public boolean isCoveringAnotherShape(Shape aDifferentShape){
-         if(aDifferentShape.getFromX()> this.getFromX() && aDifferentShape.getFromY() > this.getFromY() && aDifferentShape.getToX() < this.getToX() && aDifferentShape.getToY() < this.getToY()){
-           return true;
-        }
-        return false;
-    }
-    
-    public boolean isOverlapping(Shape aDifferentShape){
-      //TODO: make another overlap
-        return false;
-    }
-    
-   
+    } 
     @Override
     public String toString() {
         return "Shape{" + "fromX=" + fromX + ", fromY=" + fromY + ", toX=" + toX + ", toY=" + toY + '}';

@@ -18,13 +18,11 @@ import model.interfaces.RedoCommand;
 public class RedoAdd implements RedoCommand{
     private Shape shape;
     private Drawing drawing;
-    private static final String type = "RedoAdd";
-
+    
     public RedoAdd(Shape shape, Drawing drawing) {
         this.shape = shape;
         this.drawing = drawing;
     }
-    
     
     @Override
     public void redo() {   
@@ -32,6 +30,4 @@ public class RedoAdd implements RedoCommand{
         drawing.repeat(newShape);
         drawing.updateUndoStack(new UndoAdd(newShape,this.drawing));
     }
-    
-  
 }

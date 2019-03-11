@@ -20,31 +20,19 @@ public class UndoDelete implements UndoCommand {
     private List<Shape> shapes;
     private Drawing drawing;
     private int doRepeat;
-    
-    
-   
     public UndoDelete(List<Shape> shapes, Drawing drawing) {
         this.shapes = shapes;
         this.drawing = drawing;
-        
     }
-  
     @Override
     public void undo() {
-        
         this.drawing.updateRedoStack(new RedoDelete(new ArrayList<Shape>(shapes),this.drawing));
-        
         for(Shape s : shapes){
             s = ShapeFactory.getShape(s.getClass().getSimpleName(),s.getFromX(), s.getFromY(), s.getToX(), s.getToY(), s.getCol(),s.getStrokeWidth(),s.isFill());  
             drawing.repeat(s);
          }
-        
-   
     }
-
     public int getDoRepeat() {
         return doRepeat;
     }
-
-    
 }

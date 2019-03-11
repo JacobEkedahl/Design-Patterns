@@ -31,8 +31,6 @@ public class anOval extends Shape {
     public void changeSize(double newX, double newY) {
         double width;
         double height;
-
-        
         if (drawRightX) {
             width = newX - super.getFromX();
             super.setToX(newX);

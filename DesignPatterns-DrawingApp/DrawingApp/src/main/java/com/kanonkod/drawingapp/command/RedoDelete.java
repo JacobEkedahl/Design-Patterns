@@ -19,32 +19,17 @@ public class RedoDelete implements RedoCommand {
 
     private List<Shape> shapes;
     private Drawing drawing;
-    
-   
+ 
     public RedoDelete(List<Shape> shapes, Drawing drawing) {
         this.shapes = shapes;
         this.drawing = drawing;
-        
     }
-
-   
-
+    
     @Override
     public void redo() {
         this.drawing.updateUndoStack(new UndoDelete(new ArrayList<Shape>(shapes),this.drawing));
         for(Shape s : shapes){
             drawing.removeShape(s);
         }
-        
-        
-       
-        
-        //drawing.updateRedoStack(shape, this);
     }
-    
-   
-
-    
- 
-    
 }
