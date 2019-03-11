@@ -35,10 +35,13 @@ public class Drawing {
 
     }
 
+    /**
+     * Parse database shape objects into model objects
+     * alert all observers on the position of the objects.
+     * @param dbDrawing 
+     */
     public void init(DrawingDAO dbDrawing) {
         this.name = dbDrawing.getName();
-       // selectedShapes.clear();
-       // this.shapes.clear();
         for (ShapeDAO shapeDAO : dbDrawing.getShapes()) {
             Shape newShape  = ShapeFactory.getShape(shapeDAO);
             if (!shapes.contains(newShape)) {
@@ -54,23 +57,31 @@ public class Drawing {
     //Object - Subject pattern with methods ------------------------
     List<Observer> observers = new ArrayList<Observer>();
 
+    /**
+     * execute observer function.
+     */
     public void notifyAllObservers() {
         for (Observer observer : observers) {
             observer.update();
         }
     }
 
+    /**
+     * attached to the controller
+     * @param observer 
+     */
     public void attach(Observer observer) {
         observers.add(observer);
     }
-
+   /**
+    * Add a chosen shape
+    * @param shape 
+    */
     public void addShape(Shape shape) {
         if (shape == null) {
             return;
         }
-        //notify observers
-        shapes.add(shape);
-        // notifyAllObservers();
+        shapes.add(shape);       
     }
 
     public String getName() {
@@ -80,7 +91,7 @@ public class Drawing {
     public void setName(String name) {
         this.name = name;
     }
-
+    
     public List<Shape> getShapes() {
         return shapes;
     }
@@ -104,6 +115,12 @@ public class Drawing {
 
     }
 
+    /**
+     * Responds to the dragging of the object by the user.
+     * @param shape
+     * @param toX
+     * @param toY 
+     */
     public void changeSize(Shape shape, double toX, double toY) {
         int index = shapes.indexOf(shape);
         if (index < 0) {
@@ -134,41 +151,64 @@ public class Drawing {
         notifyAllObservers();
     }
 
+    /**
+     * pop a stack and execute undo.
+     */
      public void undoCommand(){  
         if(!undoCommands.empty()){
             UndoCommand ua =  undoCommands.pop();
             ua.undo();
         } 
     }
+     /**
+     * pop a stack and execute redo.
+     */
     public void redoCommand(){
          if(!redoCommands.empty()){
           RedoCommand ra = (RedoCommand) redoCommands.pop();         
           ra.redo();   
          }
     }
+    /**
+     * make a shape visible, invoked by undo/redo action.
+     * @param shape 
+     */
     public void repeat(Shape shape) {
         shapes.add(shape);
         notifyAllObservers();
     }
 
+    /**
+     * remove a shape from the list and from the view
+     * @param shape 
+     */
     public void removeShape(Shape shape) {
         shapes.remove(shape);
         notifyAllObservers();
     }
 
+    /**
+     * when the aMarker shape is not in use.
+     */
     public void deselectAll() {
         selectedShapes.clear();
         notifyAllObservers();
     }
 
+    /**
+     * adjust the strokewidth of the shapes inside the marker box
+     * @param width 
+     */
     public void changeSelectedWidth(double width) {
         for (Shape shape : selectedShapes) {
             shape.setStrokeWidth(width);
         }
-
         notifyAllObservers();
     }
-
+    /**
+     * Change the color of the marked shape(s)
+     * @param newCol 
+     */
     public void changeSelectedColor(Color newCol) {
         selectedShapes.forEach((shape) -> {
             shape.setCol(newCol);
@@ -176,16 +216,21 @@ public class Drawing {
 
         notifyAllObservers();
     }
-
+    /**
+     * Toggle the paint-fill of the marked shape(s)
+     * @param newVal 
+     */
     public void changeSelectedFill(boolean newVal) {
         selectedShapes.forEach((shape) -> {
             shape.setFill(newVal);
         });
         notifyAllObservers();
     }
-
+    /**
+     * find all the object which are inside the marker area and add to selectedShapes
+     * @param shape 
+     */
     public void selectShapes(Shape shape) {
-        //find all the object which are inside the marker area and add to selectedShapes
         selectedShapes.clear();
         for (Shape orig : shapes) {
             if ((orig.getMinX() > shape.getMaxX()) //orig is to right of marker
@@ -201,7 +246,9 @@ public class Drawing {
         System.out.println("selectedShapes size: " + selectedShapes.size());
         notifyAllObservers();
     }
-
+    /**
+     * clears out all Shapes.
+     */
     public void clear() {
         shapes = new ArrayList<>();
         notifyAllObservers();
@@ -213,7 +260,6 @@ public class Drawing {
    */
   public void updateUndoStack(UndoCommand undoCommand){
         undoCommands.add(undoCommand);
-        
    }
   /**
    * Add redocommand to the stack
@@ -222,14 +268,7 @@ public class Drawing {
    public void updateRedoStack(RedoCommand redoCommand){
        redoCommands.add(redoCommand);
    }
-
-    public Stack<UndoCommand> getUndoCommands() {
-        return undoCommands;
-    }
-
-    public Stack<RedoCommand> getRedoCommands() {
-        return redoCommands;
-    }
+   
      
     @Override
     public String toString() {

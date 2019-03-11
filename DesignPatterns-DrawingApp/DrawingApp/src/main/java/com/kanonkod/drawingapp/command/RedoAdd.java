@@ -18,12 +18,18 @@ import model.interfaces.RedoCommand;
 public class RedoAdd implements RedoCommand{
     private Shape shape;
     private Drawing drawing;
-    
+    /**
+     * 
+     * @param shape
+     * @param drawing 
+     */
     public RedoAdd(Shape shape, Drawing drawing) {
         this.shape = shape;
         this.drawing = drawing;
     }
-    
+    /**
+     * uses ShapeFactory to restore the shape adds it to the undostack.
+     */
     @Override
     public void redo() {   
         Shape newShape = ShapeFactory.getShape(shape.getClass().getSimpleName(), shape.getFromX(), shape.getFromY(), shape.getToX(), shape.getToY(), shape.getCol(), shape.getStrokeWidth(), shape.getFill());//shape.createCopy(shape.getFromX(), shape.getFromY(), shape.getToX(), shape.getToY(), shape.getCol(),shape.getStrokeWidth(),shape.isFill());       

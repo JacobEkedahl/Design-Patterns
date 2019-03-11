@@ -19,11 +19,19 @@ import model.interfaces.UndoCommand;
 public class UndoDelete implements UndoCommand {
     private List<Shape> shapes;
     private Drawing drawing;
-    private int doRepeat;
+    /**
+     * 
+     * @param shapes : copied from the selected shapes
+     * @param drawing : the drawing instance
+     */
     public UndoDelete(List<Shape> shapes, Drawing drawing) {
         this.shapes = shapes;
         this.drawing = drawing;
     }
+    /**
+     * Copy an new list to the new RedoDelete instance, and delete the shapes currently on the
+     * canvas.
+     */
     @Override
     public void undo() {
         this.drawing.updateRedoStack(new RedoDelete(new ArrayList<Shape>(shapes),this.drawing));
@@ -32,7 +40,5 @@ public class UndoDelete implements UndoCommand {
             drawing.repeat(s);
          }
     }
-    public int getDoRepeat() {
-        return doRepeat;
-    }
+  
 }

@@ -19,12 +19,19 @@ public class RedoDelete implements RedoCommand {
 
     private List<Shape> shapes;
     private Drawing drawing;
- 
+    /**
+     * 
+     * @param shapes
+     * @param drawing 
+     */
     public RedoDelete(List<Shape> shapes, Drawing drawing) {
         this.shapes = shapes;
         this.drawing = drawing;
     }
-    
+    /**
+     * deletes the retrieved list of objects from the canvas, copies the list to undodelete,
+     * so it can still be restored.
+     */  
     @Override
     public void redo() {
         this.drawing.updateUndoStack(new UndoDelete(new ArrayList<Shape>(shapes),this.drawing));

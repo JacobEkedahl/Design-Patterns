@@ -18,11 +18,19 @@ public class UndoAdd implements UndoCommand{
     
     private Shape shape;
     private Drawing drawing;
-
+    /**
+     * 
+     * @param shape 
+     * @param model 
+     */
     public UndoAdd(Shape shape, Drawing model) {
         this.drawing = model;
         this.shape = shape;
     }
+    /**
+     * removes the shape from the canvas, adds the shape to 
+     * a new instance of Redo that will be added to the stack.
+     */
     @Override
     public void undo() {
         drawing.removeShape(shape);
