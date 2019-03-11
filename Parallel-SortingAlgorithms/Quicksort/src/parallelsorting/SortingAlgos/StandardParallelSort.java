@@ -27,15 +27,9 @@ public class StandardParallelSort implements SortingStrategy {
     }
 
     @Override
-    public long messure(int cores) {
+    public void messure(int cores) {
         float[] copyArr = (float[]) arr.clone();
-        System.gc();
-        long startTime = System.nanoTime();
         Arrays.parallelSort(copyArr);
-        long endTime = System.nanoTime();
-        long elapsedTime = endTime - startTime;
-
-        return elapsedTime;
     }
 
     @Override
@@ -50,8 +44,7 @@ public class StandardParallelSort implements SortingStrategy {
     }
 
     @Override
-    public int findOptimalThreshold() {
+    public long findOptimalThreshold(int cores, int i) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
 }

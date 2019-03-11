@@ -19,7 +19,7 @@ import parallelsorting.SortingAlgos.*;
  */
 public class MainMeasurement {
 
-    public static final int SIZE_ARRAY = (int) 100000000;
+    public static final int SIZE_ARRAY = (int) 1000000;
     private static final int MAXITER = 15;
     private static final int STARTITER = 5;
 
