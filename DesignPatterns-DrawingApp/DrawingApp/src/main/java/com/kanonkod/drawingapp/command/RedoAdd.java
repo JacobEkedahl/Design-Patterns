@@ -8,6 +8,7 @@ package com.kanonkod.drawingapp.command;
 import javafx.scene.paint.Color;
 import model.Drawing;
 import model.Shape;
+import model.ShapeFactory;
 import model.interfaces.RedoCommand;
 
 /**
@@ -17,31 +18,22 @@ import model.interfaces.RedoCommand;
 public class RedoAdd implements RedoCommand{
     private Shape shape;
     private Drawing drawing;
-    private int index;
-
-    public RedoAdd(Shape shape, Drawing drawing, int index) {
+    /**
+     * 
+     * @param shape
+     * @param drawing 
+     */
+    public RedoAdd(Shape shape, Drawing drawing) {
         this.shape = shape;
         this.drawing = drawing;
-        this.index = index;
     }
-    
-    
+    /**
+     * uses ShapeFactory to restore the shape adds it to the undostack.
+     */
     @Override
-    public void redo() {
-       
-        Shape newShape = shape.createCopy(shape.getFromX(), shape.getFromY(), shape.getToX(), shape.getToY(), shape.getCol(),shape.getStrokeWidth(),shape.isFill());
-        
-       
-        newShape.setFromX(shape.getFromX()+30);
-        newShape.setFromY(shape.getFromY()+30);
-        newShape.setToX(shape.getToX()+30);
-        newShape.setToY(shape.getToY()+30);
+    public void redo() {   
+        Shape newShape = ShapeFactory.getShape(shape.getClass().getSimpleName(), shape.getFromX(), shape.getFromY(), shape.getToX(), shape.getToY(), shape.getCol(), shape.getStrokeWidth(), shape.getFill());//shape.createCopy(shape.getFromX(), shape.getFromY(), shape.getToX(), shape.getToY(), shape.getCol(),shape.getStrokeWidth(),shape.isFill());       
         drawing.repeat(newShape);
+        drawing.updateUndoStack(new UndoAdd(newShape,this.drawing));
     }
-
-    @Override
-    public void execute() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
 }

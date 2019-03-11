@@ -78,13 +78,11 @@ public abstract class Shape implements Cloneable {
             drawHollow(gc);
         }
     }
-
     public void invertX() {
         double tmpX = fromX;
         this.fromX = this.toX;
         this.toX = this.fromX;
     }
-
     public void invertY() {
         double tmpY = fromY;
         this.fromY = this.toY;
@@ -182,9 +180,6 @@ public abstract class Shape implements Cloneable {
         
         return true;
     }
-    
-    
-
     public double getFromY() {
         return fromY;
     }
@@ -199,12 +194,10 @@ public abstract class Shape implements Cloneable {
     
     public void setFill(boolean newVal) {
         this.fill = newVal;
-    }
-    
+    }   
     public boolean isFill() {
         return this.fill;
-    }
-
+    } 
     @Override
     public String toString() {
         return "Shape{" + "fromX=" + fromX + ", fromY=" + fromY + ", toX=" + toX + ", toY=" + toY + '}';

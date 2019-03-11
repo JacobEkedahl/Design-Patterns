@@ -178,7 +178,8 @@ public class FXMLController extends Observer implements Initializable {
 
     @FXML
     private void undo(Event event) {
-        model.getDrawing().undoAdd();
+        //System.out.println("selected undo");
+        model.getDrawing().undoCommand();
     }
 
     @FXML
@@ -188,11 +189,12 @@ public class FXMLController extends Observer implements Initializable {
 
     @FXML
     private void redo(Event event) {
-        model.getDrawing().redoAdd();
+        model.getDrawing().redoCommand();
     }
 
     @FXML
     private void removeSelected(Event event) {
+        System.out.println("remove selected");
         this.model.removeSelected();
         model.deselectAll();
         this.save();
@@ -242,7 +244,6 @@ public class FXMLController extends Observer implements Initializable {
     private void initRedoUndo() {
         ImageView undoImg = new ImageView(new Image("images/undo.png"));
         ImageView redoImg = new ImageView(new Image("images/redo.png"));
-
         undoBtn.setGraphic(undoImg);
         redoBtn.setGraphic(redoImg);
     }
@@ -253,7 +254,6 @@ public class FXMLController extends Observer implements Initializable {
         for (String key : ShapeLoader.getShapeKeys()) {
             ToggleButton shapeBtn = new ToggleButton();
             shapeBtn.setToggleGroup(group);
-
             try {
                 Image image = new Image("shapes/" + key + ".png");
                 shapeBtn.setGraphic(new ImageView(image));

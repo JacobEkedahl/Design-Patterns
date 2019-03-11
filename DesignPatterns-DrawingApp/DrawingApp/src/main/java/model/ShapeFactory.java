@@ -23,6 +23,7 @@ public class ShapeFactory {
         return (Shape) shapeMap.get(shapeName).createCopy(fromX, fromY, toX, toY, col, strokeWidth, fill);
     }
     
+    
     public static Shape getShape(ShapeDAO s) {
         return (Shape) shapeMap.get(s.getType()).createCopy(s.getFromX(), s.getFromY(),
                 s.getToX(), s.getToY(), Color.rgb(s.getRed(), s.getGreen(), s.getBlue()), s.getStrokeWidth(), s.isFill());

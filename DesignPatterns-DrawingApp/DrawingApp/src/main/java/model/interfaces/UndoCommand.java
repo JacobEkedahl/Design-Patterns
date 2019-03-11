@@ -9,6 +9,6 @@ package model.interfaces;
  *
  * @author fno
  */
-public interface UndoCommand extends Command {
+public interface UndoCommand  {
     public void undo();
 }
