@@ -29,11 +29,14 @@ public class RedoAdd implements RedoCommand{
     }
     /**
      * uses ShapeFactory to restore the shape adds it to the undostack.
-     */
+     */ 
     @Override
     public void redo() {   
         Shape newShape = ShapeFactory.getShape(shape.getClass().getSimpleName(), shape.getFromX(), shape.getFromY(), shape.getToX(), shape.getToY(), shape.getCol(), shape.getStrokeWidth(), shape.getFill());//shape.createCopy(shape.getFromX(), shape.getFromY(), shape.getToX(), shape.getToY(), shape.getCol(),shape.getStrokeWidth(),shape.isFill());       
         drawing.repeat(newShape);
         drawing.updateUndoStack(new UndoAdd(newShape,this.drawing));
+        // 
+        //
+        
     }
 }

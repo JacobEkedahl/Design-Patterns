@@ -10,6 +10,7 @@ import com.kanonkod.drawingapp.command.RedoAdd;
 import com.kanonkod.drawingapp.command.UndoAdd;
 import com.kanonkod.drawingapp.command.UndoDelete;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 import javafx.scene.canvas.GraphicsContext;
@@ -140,17 +141,14 @@ public class Drawing {
      */
 
     public void removeSelected() {
-        
         if(!selectedShapes.isEmpty()){
             updateUndoStack(new UndoDelete(new ArrayList<Shape>(selectedShapes),this));
         }
         for (Shape shape : selectedShapes) {
             removeShape(shape);
         }
-  
         notifyAllObservers();
-    }
-
+    }    
     /**
      * pop a stack and execute undo.
      */
@@ -274,4 +272,6 @@ public class Drawing {
     public String toString() {
         return "Drawing{" + "shapes=" + shapes + ", selectedShapes=" + selectedShapes + ", name=" + name + '}';
     }
+
+   
 }

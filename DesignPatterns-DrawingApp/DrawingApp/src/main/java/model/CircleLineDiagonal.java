@@ -16,7 +16,7 @@ public class CircleLineDiagonal extends Shape{
      private Shape lineComponent = null;
     private Shape circleComponent = null;
     /**
-     * Initialize the components
+     * Initialize the components.
      */
     public void init(){
         if(lineComponent==null ){
@@ -40,15 +40,19 @@ public class CircleLineDiagonal extends Shape{
      */
     public void initDraw(GraphicsContext gc){
         init();
-        drawComponents(gc);
+        drawFillComponents(gc);
     }
     /**
      * execute draw methods on the components
      * @param gc 
      */
-    public void drawComponents(GraphicsContext gc){
-       this.circleComponent.draw(gc);
-       this.lineComponent.draw(gc);
+    public void drawFillComponents(GraphicsContext gc){
+       this.circleComponent.drawFill(gc);
+       this.lineComponent.drawFill(gc);
+    }
+    public void drawHollowComponents(GraphicsContext gc){
+       this.circleComponent.drawHollow(gc);
+       this.lineComponent.drawHollow(gc);
     }
     /**
      * initialize the components and update end coordinates
@@ -71,18 +75,19 @@ public class CircleLineDiagonal extends Shape{
     }
     @Override
     void drawFill(GraphicsContext gc) {
-         initDraw(gc);         
+         init();
+         drawFillComponents(gc);
     }
 
     @Override
     void drawHollow(GraphicsContext gc) {
-         initDraw(gc);
+         init();
+         drawHollowComponents(gc); 
+        
     }
     @Override
     void changeSize(double newX, double newY) {
          initChange(newX,newY);       
     }
-    
-    
-    
+
 }
