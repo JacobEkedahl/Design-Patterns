@@ -27,10 +27,7 @@ public class UndoAdd implements UndoCommand{
         this.drawing = model;
         this.shape = shape;
     }
-    
-    public Shape getShape(){
-        return shape;
-    }
+   
     /**
      * removes the shape from the canvas, adds the shape to 
      * a new instance of Redo that will be added to the stack.

@@ -8,16 +8,23 @@ package model;
 
 import com.kanonkod.drawingapp.command.RedoAdd;
 import com.kanonkod.drawingapp.command.UndoAdd;
+import com.kanonkod.drawingapp.command.UndoChange;
 import com.kanonkod.drawingapp.command.UndoDelete;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import propertychangers.ColorChange;
 import model.interfaces.Observer;
 import model.interfaces.RedoCommand;
 import model.interfaces.UndoCommand;
+import propertychangers.FillChange;
+import propertychangers.PropertyChange;
+import propertychangers.StrokeChange;
 
 /**
  *
@@ -198,6 +205,12 @@ public class Drawing {
      * @param width 
      */
     public void changeSelectedWidth(double width) {
+        if(selectedShapes!=null && !selectedShapes.isEmpty()){
+            StrokeChange stroke = new StrokeChange(0);
+            HashMap<Shape,PropertyChange> hmap = colorUndos(selectedShapes,stroke); 
+            UndoChange u = new UndoChange( new ArrayList<Shape>(selectedShapes),this,hmap);
+            updateUndoStack(u);  
+        }
         for (Shape shape : selectedShapes) {
             shape.setStrokeWidth(width);
         }
@@ -208,17 +221,30 @@ public class Drawing {
      * @param newCol 
      */
     public void changeSelectedColor(Color newCol) {
+        if(selectedShapes!=null && !selectedShapes.isEmpty()){
+           ColorChange colorChange = new ColorChange(Color.WHITE); 
+           HashMap<Shape,PropertyChange> hmap = colorUndos(selectedShapes,colorChange); 
+           UndoChange u = new UndoChange( new ArrayList<Shape>(selectedShapes),this,hmap);
+           updateUndoStack(u);   
+        }
+        System.out.println("adding new change to stack");
         selectedShapes.forEach((shape) -> {
             shape.setCol(newCol);
         });
-
         notifyAllObservers();
     }
     /**
      * Toggle the paint-fill of the marked shape(s)
      * @param newVal 
      */
-    public void changeSelectedFill(boolean newVal) {
+    public void changeSelectedFill(boolean newVal) {   
+         if(selectedShapes!=null &&  !selectedShapes.isEmpty()){
+             FillChange fill = new FillChange(true);
+             HashMap<Shape,PropertyChange> hmap = colorUndos(selectedShapes,fill); 
+             UndoChange u = new UndoChange( new ArrayList<Shape>(selectedShapes),this,hmap);
+             updateUndoStack(u);  
+         
+         }
         selectedShapes.forEach((shape) -> {
             shape.setFill(newVal);
         });
@@ -250,8 +276,7 @@ public class Drawing {
     public void clear() {
         shapes = new ArrayList<>();
         notifyAllObservers();
-    }
-  
+    }  
   /**
    * Add undocommand to the stack
    * @param undoCommand 
@@ -267,6 +292,20 @@ public class Drawing {
        redoCommands.add(redoCommand);
    }
    
+  
+   public Shape getPropetyFromBundle(List<Shape> currentShapes){
+       if(currentShapes != null&&!currentShapes.isEmpty()){
+           return currentShapes.get(0);
+       }
+       return null;
+   }
+   public HashMap<Shape,PropertyChange> colorUndos(List<Shape> shapes, PropertyChange pc){
+         HashMap<Shape,PropertyChange> colors = new HashMap<>();
+         for(Shape s : shapes){
+             colors.put(s,pc.getInstance(s));
+         }
+         return colors;
+   }
      
     @Override
     public String toString() {
