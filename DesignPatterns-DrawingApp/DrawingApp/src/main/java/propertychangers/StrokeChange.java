@@ -21,7 +21,7 @@ public class StrokeChange extends PropertyChange{
     public void doChange(Shape shape) {
         shape.setStrokeWidth(width);
     }
-
+    
     @Override
     public PropertyChange getInstance(Shape shape) {
           return new StrokeChange(shape.getStrokeWidth());

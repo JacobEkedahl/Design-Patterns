@@ -207,9 +207,7 @@ public class Drawing {
     public void changeSelectedWidth(double width) {
         if(selectedShapes!=null && !selectedShapes.isEmpty()){
             StrokeChange stroke = new StrokeChange(0);
-            HashMap<Shape,PropertyChange> hmap = colorUndos(selectedShapes,stroke); 
-            UndoChange u = new UndoChange( new ArrayList<Shape>(selectedShapes),this,hmap);
-            updateUndoStack(u);  
+            makeUndoChangePreservation(stroke);
         }
         for (Shape shape : selectedShapes) {
             shape.setStrokeWidth(width);
@@ -223,9 +221,7 @@ public class Drawing {
     public void changeSelectedColor(Color newCol) {
         if(selectedShapes!=null && !selectedShapes.isEmpty()){
            ColorChange colorChange = new ColorChange(Color.WHITE); 
-           HashMap<Shape,PropertyChange> hmap = colorUndos(selectedShapes,colorChange); 
-           UndoChange u = new UndoChange( new ArrayList<Shape>(selectedShapes),this,hmap);
-           updateUndoStack(u);   
+           makeUndoChangePreservation(colorChange);
         }
         System.out.println("adding new change to stack");
         selectedShapes.forEach((shape) -> {
@@ -240,10 +236,7 @@ public class Drawing {
     public void changeSelectedFill(boolean newVal) {   
          if(selectedShapes!=null &&  !selectedShapes.isEmpty()){
              FillChange fill = new FillChange(true);
-             HashMap<Shape,PropertyChange> hmap = colorUndos(selectedShapes,fill); 
-             UndoChange u = new UndoChange( new ArrayList<Shape>(selectedShapes),this,hmap);
-             updateUndoStack(u);  
-         
+             makeUndoChangePreservation(fill); 
          }
         selectedShapes.forEach((shape) -> {
             shape.setFill(newVal);
@@ -291,20 +284,39 @@ public class Drawing {
    public void updateRedoStack(RedoCommand redoCommand){
        redoCommands.add(redoCommand);
    }
-   
-  
+   /**
+    * 
+    * @param currentShapes
+    * @return 
+    */
    public Shape getPropetyFromBundle(List<Shape> currentShapes){
        if(currentShapes != null&&!currentShapes.isEmpty()){
            return currentShapes.get(0);
        }
        return null;
    }
-   public HashMap<Shape,PropertyChange> colorUndos(List<Shape> shapes, PropertyChange pc){
-         HashMap<Shape,PropertyChange> colors = new HashMap<>();
+   
+   /**
+    * 
+    * @param shapes: key for hashmap.
+    * @param pc : value for hashmap
+    * @return new hashmap.
+    */
+   public HashMap<Shape,PropertyChange> getPropertyHashMap(List<Shape> shapes, PropertyChange pc){
+         HashMap<Shape,PropertyChange> properties = new HashMap<>();
          for(Shape s : shapes){
-             colors.put(s,pc.getInstance(s));
+             properties.put(s,pc.getInstance(s));
          }
-         return colors;
+         return properties;
+   }
+   /**
+    * 
+    * @param property : hash map with shapes associating with a property that will change.
+    */
+   public void makeUndoChangePreservation(PropertyChange property){
+        HashMap<Shape,PropertyChange> hmap = getPropertyHashMap(selectedShapes,property); 
+        UndoChange u = new UndoChange(this,hmap);
+        updateUndoStack(u);  
    }
      
     @Override
@@ -312,5 +324,4 @@ public class Drawing {
         return "Drawing{" + "shapes=" + shapes + ", selectedShapes=" + selectedShapes + ", name=" + name + '}';
     }
 
-   
 }

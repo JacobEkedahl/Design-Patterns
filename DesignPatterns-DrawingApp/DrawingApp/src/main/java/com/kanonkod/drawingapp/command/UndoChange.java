@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javafx.scene.paint.Color;
 import model.Drawing;
 import model.Shape;
@@ -21,66 +22,52 @@ import model.interfaces.UndoCommand;
  * @author fno
  */
 public class UndoChange implements UndoCommand{
-    private List<Shape> shapes;
     private Drawing drawing;
     private PropertyChange  changer;
     private HashMap<Shape,PropertyChange> hmap;
-    //purple  //black
-   /* public UndoChange(List<Shape> shapes, Drawing drawing, PropertyChange property) {
-        this.shapes = shapes;
-        this.drawing = drawing;
-        this.changer = property;
-    }*/
-     public UndoChange(List<Shape> shapes, Drawing drawing, HashMap<Shape,PropertyChange> hash) {
-        this.shapes = shapes;
+    
+     public UndoChange( Drawing drawing, HashMap<Shape,PropertyChange> hash) { 
         this.drawing = drawing;
         this.hmap = hash;
     }
     @Override
     public void undo() {
-       
-        
-       
-        //use property to change something   
-      /*  p = changer.getInstance(shapes.get(0));
-        this.drawing.updateRedoStack(new RedoChange(new ArrayList<Shape>(shapes),this.drawing,p));
-        for(Shape s: shapes){
-            changer.doChange(s);       
-        }
+        HashMap<Shape,PropertyChange> newMap = fillHashMap();
+        this.drawing.updateRedoStack(new RedoChange(this.drawing,newMap));
+        doChanges();
         this.drawing.notifyAllObservers();
-        
-        
-        
-         HashMap<Shape,PropertyChange> colors = new HashMap<>();
-         for(Shape s : shapes){
-             colors.put(s,new ColorChange(s.getCol()));
-         }
-         return colors;
-        */
-        for (Map.Entry<Shape, PropertyChange> entry : hmap.entrySet()) {
-                    
-		    //System.out.println(entry.getKey() + " = " + entry.getValue());
-	}
 
-      
+    }
+    /**
+     * takes a value from the hashmap so we know what strategy to use
+     * @return 
+     */
+    public PropertyChange sample(){
+       List<PropertyChange> values = hmap.entrySet().stream().map(Map.Entry::getValue).collect(Collectors.toList());
+       return values.get(0);
+    }
+    /**
+     * 
+     * @return 
+     */
+    public HashMap<Shape,PropertyChange> fillHashMap(){
         HashMap<Shape,PropertyChange> newMap = new HashMap<>();
-        for(Shape s : shapes){
-            newMap.put(s, sample().getInstance(s));
-        }
-        this.drawing.updateRedoStack(new RedoChange(new ArrayList<Shape>(shapes),this.drawing,newMap));
-        Iterator<Shape> iter = shapes.iterator();
+          for (Map.Entry<Shape, PropertyChange> entry : hmap.entrySet()) {
+                 newMap.put(entry.getKey(), sample().getInstance(entry.getKey()));
+	}
+        return newMap;  
+    }
+    /**
+     * 
+     */
+    public void doChanges(){
+        List<Shape> thisList = hmap.entrySet().stream().map(Map.Entry::getKey).collect(Collectors.toList());
+        Iterator<Shape> iter = thisList.iterator();
         while(iter.hasNext()){
             Shape tmp = iter.next();
             PropertyChange p = hmap.get(tmp);
             p.doChange(tmp);
         }
-        
-        this.drawing.notifyAllObservers();
-         
-       // this.drawing.updateRedoStack(new RedoChange(new ArrayList<Shape>(shapes),this.drawing));
-    }
-    public PropertyChange sample(){
-       return hmap.get(this.shapes.get(0));
     }
     
 }

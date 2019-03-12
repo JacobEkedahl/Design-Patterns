@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import model.Drawing;
 import model.Shape;
 import model.interfaces.RedoCommand;
@@ -22,47 +24,42 @@ public class RedoChange implements RedoCommand {
     private List<Shape> shapes;
     private Drawing drawing;
     private HashMap<Shape,PropertyChange> hmap;
-    public RedoChange(List<Shape> shapes, Drawing drawing, HashMap<Shape, PropertyChange> hmap) {
-        this.shapes = shapes;
+    public RedoChange(Drawing drawing, HashMap<Shape, PropertyChange> hmap) {
         this.drawing = drawing;
         this.hmap = hmap;
     }
-    
-    //private PropertyChange property;
-    
-    /*public RedoChange(List<Shape> shapes, Drawing drawing, PropertyChange property) {
-        this.shapes = shapes;
-        this.drawing = drawing;
-        this.property = property;
-    }*/
-    
-
+    /**
+     * 
+     */
     @Override
-    public void redo() {
-        
+    public void redo() {       
+        HashMap<Shape,PropertyChange> newMap = fillHashMap();
+        this.drawing.updateUndoStack(new UndoChange(this.drawing,newMap));
+        doChanges();
+        this.drawing.notifyAllObservers();     
+    }
+    /**
+     * get property type
+     * @return 
+     */
+     public PropertyChange sample(){
+       List<PropertyChange> values = hmap.entrySet().stream().map(Map.Entry::getValue).collect(Collectors.toList());
+       return values.get(0);
+    }
+    public HashMap<Shape,PropertyChange> fillHashMap(){
         HashMap<Shape,PropertyChange> newMap = new HashMap<>();
-        for(Shape s : shapes){
-            newMap.put(s, sample().getInstance(s));
-        }
-        
-        this.drawing.updateUndoStack(new UndoChange(new ArrayList<Shape>(shapes),this.drawing,newMap));
-        Iterator<Shape> iter = shapes.iterator();
+          for (Map.Entry<Shape, PropertyChange> entry : hmap.entrySet()) {
+                 newMap.put(entry.getKey(), sample().getInstance(entry.getKey()));
+	}
+        return newMap;  
+    }
+    public void doChanges(){
+        List<Shape> thisList = hmap.entrySet().stream().map(Map.Entry::getKey).collect(Collectors.toList());
+        Iterator<Shape> iter = thisList.iterator();
         while(iter.hasNext()){
             Shape tmp = iter.next();
             PropertyChange p = hmap.get(tmp);
             p.doChange(tmp);
         }
-         this.drawing.notifyAllObservers();
-        /*PropertyChange p = null;
-        //use property to change something   
-        p = property.getInstance(shapes.get(0));
-//        this.drawing.updateUndoStack(new UndoChange(new ArrayList<Shape>(shapes),this.drawing,p));
-        for(Shape s: shapes){
-            property.doChange(s);       
-        }
-       */
-    }
-    public PropertyChange sample(){
-       return hmap.get(this.shapes.get(0));
     }
 }
