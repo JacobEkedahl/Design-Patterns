@@ -10,7 +10,6 @@ import com.kanonkod.drawingapp.command.RedoAdd;
 import com.kanonkod.drawingapp.command.UndoAdd;
 import com.kanonkod.drawingapp.command.UndoChange;
 import com.kanonkod.drawingapp.command.UndoDelete;
-import com.kanonkod.drawingapp.command.undoredostate.UndoRedoHandler;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,15 +35,12 @@ public class Drawing {
     List<Shape> shapes = new ArrayList<>();
     private Stack<UndoCommand> undoCommands = new Stack<>();
     private Stack<RedoCommand> redoCommands = new Stack<>();
-    private UndoRedoHandler  handler;
     private boolean undoFlag;
     List<Shape> selectedShapes = new ArrayList<>();
     private String name = "";
 
     public Drawing() {
-        //handler = new UndoRedoHandler(this);
         undoFlag = false;
-  
     }
 
     /**
@@ -167,7 +163,6 @@ public class Drawing {
             UndoCommand ua =  undoCommands.pop();
             ua.undo();
             this.undoFlag = true;
-        //    handleUndoRedoEvent(UndoRedoHandler.CanvasEvent.DID_UNDO);
         } 
         else{
             this.undoFlag = false;
@@ -178,7 +173,6 @@ public class Drawing {
      * pop a stack and execute redo.
      */
     public void redoCommand(){
-        // handleUndoRedoEvent(UndoRedoHandler.CanvasEvent.REDO);
          if(!redoCommands.empty()){
           RedoCommand ra = (RedoCommand) redoCommands.pop();         
           ra.redo();   
@@ -332,9 +326,6 @@ public class Drawing {
         updateUndoStack(u);  
    }
    
-   public void handleUndoRedoEvent(UndoRedoHandler.CanvasEvent event){
-       this.handler.handleUndoRedoEvent(event,this);
-   }
    public void clearRedoStack(){
        this.redoCommands = new Stack<>(); 
    }
@@ -342,12 +333,6 @@ public class Drawing {
        this.undoFlag = flag; 
    }
    public boolean getUndoFlag(){
-        return this.undoFlag;
-   }
-    public void setRedoFlag(boolean flag){
-       this.undoFlag = flag; 
-   }
-   public boolean getRedoFlag(){
         return this.undoFlag;
    }
    

@@ -6,7 +6,6 @@
 package model;
 
 import com.kanonkod.drawingapp.command.UndoAdd;
-import com.kanonkod.drawingapp.command.undoredostate.UndoRedoHandler;
 import databases.FirebaseHandler;
 import java.io.IOException;
 import java.util.ArrayList;
