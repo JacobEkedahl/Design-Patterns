@@ -10,6 +10,7 @@ import com.kanonkod.drawingapp.command.RedoAdd;
 import com.kanonkod.drawingapp.command.UndoAdd;
 import com.kanonkod.drawingapp.command.UndoChange;
 import com.kanonkod.drawingapp.command.UndoDelete;
+import com.kanonkod.drawingapp.command.undoredostate.UndoRedoHandler;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,12 +36,15 @@ public class Drawing {
     List<Shape> shapes = new ArrayList<>();
     private Stack<UndoCommand> undoCommands = new Stack<>();
     private Stack<RedoCommand> redoCommands = new Stack<>();
-    
+    private UndoRedoHandler  handler;
+    private boolean undoFlag;
     List<Shape> selectedShapes = new ArrayList<>();
     private String name = "";
 
     public Drawing() {
-
+        //handler = new UndoRedoHandler(this);
+        undoFlag = false;
+  
     }
 
     /**
@@ -58,7 +62,6 @@ public class Drawing {
                 
             }
         }
-
         notifyAllObservers();
     }
 
@@ -163,15 +166,25 @@ public class Drawing {
         if(!undoCommands.empty()){
             UndoCommand ua =  undoCommands.pop();
             ua.undo();
+            this.undoFlag = true;
+        //    handleUndoRedoEvent(UndoRedoHandler.CanvasEvent.DID_UNDO);
         } 
+        else{
+            this.undoFlag = false;
+            System.out.println("undo stack empty");
+        }
     }
      /**
      * pop a stack and execute redo.
      */
     public void redoCommand(){
+        // handleUndoRedoEvent(UndoRedoHandler.CanvasEvent.REDO);
          if(!redoCommands.empty()){
           RedoCommand ra = (RedoCommand) redoCommands.pop();         
           ra.redo();   
+         }
+         else{
+             System.out.println("redo stack empty or flag false");
          }
     }
     /**
@@ -317,6 +330,29 @@ public class Drawing {
         HashMap<Shape,PropertyChange> hmap = getPropertyHashMap(selectedShapes,property); 
         UndoChange u = new UndoChange(this,hmap);
         updateUndoStack(u);  
+   }
+   
+   public void handleUndoRedoEvent(UndoRedoHandler.CanvasEvent event){
+       this.handler.handleUndoRedoEvent(event,this);
+   }
+   public void clearRedoStack(){
+       this.redoCommands = new Stack<>(); 
+   }
+   public void setUndoFlag(boolean flag){
+       this.undoFlag = flag; 
+   }
+   public boolean getUndoFlag(){
+        return this.undoFlag;
+   }
+    public void setRedoFlag(boolean flag){
+       this.undoFlag = flag; 
+   }
+   public boolean getRedoFlag(){
+        return this.undoFlag;
+   }
+   
+   public boolean isUndoStackEmpty(){
+       return this.undoCommands.isEmpty();
    }
      
     @Override
