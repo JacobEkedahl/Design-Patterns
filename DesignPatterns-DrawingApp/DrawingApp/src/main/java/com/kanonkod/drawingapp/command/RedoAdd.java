@@ -32,11 +32,8 @@ public class RedoAdd implements RedoCommand{
      */ 
     @Override
     public void redo() {   
-        Shape newShape = ShapeFactory.getShape(shape.getClass().getSimpleName(), shape.getFromX(), shape.getFromY(), shape.getToX(), shape.getToY(), shape.getCol(), shape.getStrokeWidth(), shape.getFill());//shape.createCopy(shape.getFromX(), shape.getFromY(), shape.getToX(), shape.getToY(), shape.getCol(),shape.getStrokeWidth(),shape.isFill());       
+        Shape newShape = ShapeFactory.getShape(shape.getClass().getSimpleName(), shape.getFromX(), shape.getFromY(), shape.getToX(), shape.getToY(), shape.getCol(), shape.getStrokeWidth(), shape.getFill());
         drawing.repeat(newShape);
         drawing.updateUndoStack(new UndoAdd(newShape,this.drawing));
-        // 
-        //
-        
     }
 }

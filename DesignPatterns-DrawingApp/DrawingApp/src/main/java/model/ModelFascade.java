@@ -220,6 +220,11 @@ public class ModelFascade extends Observer {
     @Override
     public void update() {
         this.drawing.init(db.getDrawing());
-        //retrieve the data from the database
+    
+    }
+
+    @Override
+    public void addToDB() {       
+        saveData();
     }
 }

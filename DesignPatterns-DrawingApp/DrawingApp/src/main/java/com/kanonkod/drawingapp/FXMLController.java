@@ -300,7 +300,13 @@ public class FXMLController extends Observer implements Initializable {
 
     @Override
     public void update() {
+        
         //the drawing has been changed, clear and draw it
         model.draw(canvas.getGraphicsContext2D());
+    }
+
+    @Override
+    public void addToDB() {
+   
     }
 }

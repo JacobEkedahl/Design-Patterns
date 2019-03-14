@@ -38,6 +38,7 @@ public class Drawing {
     private boolean undoFlag;
     List<Shape> selectedShapes = new ArrayList<>();
     private String name = "";
+    
 
     public Drawing() {
         undoFlag = false;
@@ -68,10 +69,16 @@ public class Drawing {
      * execute observer function.
      */
     public void notifyAllObservers() {
+       
         for (Observer observer : observers) {
             observer.update();
         }
     }
+    public void notifyUndoForDB(){
+        for (Observer observer : observers) {
+            observer.addToDB();
+        }
+   } 
 
     /**
      * attached to the controller
@@ -195,6 +202,7 @@ public class Drawing {
      * @param shape 
      */
     public void removeShape(Shape shape) {
+        System.out.println("should notify observer");
         shapes.remove(shape);
         notifyAllObservers();
     }
@@ -339,7 +347,7 @@ public class Drawing {
    public boolean isUndoStackEmpty(){
        return this.undoCommands.isEmpty();
    }
-     
+    
     @Override
     public String toString() {
         return "Drawing{" + "shapes=" + shapes + ", selectedShapes=" + selectedShapes + ", name=" + name + '}';

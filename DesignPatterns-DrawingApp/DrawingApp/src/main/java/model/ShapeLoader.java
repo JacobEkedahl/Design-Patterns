@@ -52,7 +52,6 @@ public class ShapeLoader {
             if (tmpFile.exists()) {
                 continue;
             }
-
             gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
             Shape shape = ShapeFactory.getShape(key, 2, 2, 23, 23, Color.BLACK, 1, false);
             shape.draw(gc);

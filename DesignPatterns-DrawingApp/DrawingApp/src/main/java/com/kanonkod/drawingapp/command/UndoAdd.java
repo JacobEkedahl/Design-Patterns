@@ -35,6 +35,7 @@ public class UndoAdd implements UndoCommand{
     @Override
     public void undo() {
         drawing.removeShape(shape);
+      //  this.drawing.notifyAllObservers();
         drawing.updateRedoStack(new RedoAdd(this.shape,this.drawing));
     }
 }
