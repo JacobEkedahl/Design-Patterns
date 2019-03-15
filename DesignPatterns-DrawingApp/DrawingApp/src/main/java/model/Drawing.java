@@ -6,16 +6,15 @@
  */
 package model;
 
-import com.kanonkod.drawingapp.command.RedoAdd;
-import com.kanonkod.drawingapp.command.UndoAdd;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 import javafx.scene.canvas.GraphicsContext;
-import model.interfaces.Command;
 import javafx.scene.paint.Color;
+import model.Operations.Command;
+import model.Operations.DeleteShapeCommand;
 import model.interfaces.Observer;
-import model.interfaces.UndoCommand;
 
 /**
  *
@@ -23,31 +22,71 @@ import model.interfaces.UndoCommand;
  */
 public class Drawing {
 
-    List<Shape> shapes = new ArrayList<>();
-     Stack<Command> undoCommands = new Stack<>();
-     Stack<Command> redoCommands = new Stack<>();
-    
-    List<Shape> selectedShapes = new ArrayList<>();
+    ArrayList<Shape> shapes = new ArrayList<>();
+    ArrayList<Shape> selectedShapes = new ArrayList<>();
+    Stack<Command> commandStack = new Stack<>();
+    private int undoRedoPointer = -1;
     private String name = "";
 
     public Drawing() {
-
     }
 
     public void init(DrawingDAO dbDrawing) {
         this.name = dbDrawing.getName();
-       // selectedShapes.clear();
-       // this.shapes.clear();
         for (ShapeDAO shapeDAO : dbDrawing.getShapes()) {
-            Shape newShape  = ShapeFactory.getShape(shapeDAO);
+            Shape newShape = ShapeFactory.getShape(shapeDAO);
             if (!shapes.contains(newShape)) {
                 shapes.add(newShape);
             } else {
-                
+
             }
         }
 
         notifyAllObservers();
+    }
+
+    public void undo() {
+        if (commandStack.size() <= 0 || undoRedoPointer < 0 || undoRedoPointer >= commandStack.size()) {
+            return;
+        }
+        
+        Command command = commandStack.get(undoRedoPointer);
+        shapes = command.unExecute((ArrayList<Shape>) shapes.clone());
+        undoRedoPointer--;
+        System.out.println("undo: " + undoRedoPointer);
+        notifyAllObservers();
+    }
+
+    public void redo() {
+        if (undoRedoPointer >= commandStack.size() - 1) {
+            return;
+        }
+
+        undoRedoPointer++;
+        Command command = commandStack.get(undoRedoPointer);
+        shapes = command.execute((ArrayList<Shape>) shapes.clone());
+        System.out.println("redo: " + shapes.size());
+
+        notifyAllObservers();
+    }
+
+    private void removeCommand() {
+       // deleteElementsAfterPointer(undoRedoPointer);
+        Command command = new DeleteShapeCommand(selectedShapes);
+        shapes = command.execute(shapes);
+        commandStack.push(command);
+        undoRedoPointer++;
+        System.out.println("removeCommand: " + undoRedoPointer);
+    }
+
+    private void deleteElementsAfterPointer(int undoRedoPointer) {
+        if (commandStack.size() <= 0 || undoRedoPointer < 0) {
+            return;
+        }
+
+        for (int i = commandStack.size() - 1; i >= undoRedoPointer; i--) {
+            commandStack.remove(i);
+        }
     }
 
     //Object - Subject pattern with methods ------------------------
@@ -67,9 +106,7 @@ public class Drawing {
         if (shape == null) {
             return;
         }
-        //notify observers
-        undoCommands.add(new UndoAdd(shape,this,shapes.size()-1));
-        redoCommands.add(new RedoAdd(shape,this,shapes.size()-1));
+
         shapes.add(shape);
         // notifyAllObservers();
     }
@@ -125,38 +162,18 @@ public class Drawing {
 
     public void removeSelected() {
         for (Shape shape : selectedShapes) {
-            removeShape(shape);
+            if (shape instanceof aMarker) {
+                int index = shapes.indexOf(shape);
+                shapes.remove(index);
+            }
         }
 
+        removeCommand();
         notifyAllObservers();
     }
 
-     public void undoAdd(){
-        if(!undoCommands.empty()){
-            UndoCommand ua = (UndoCommand) undoCommands.pop();
-            ua.undo();
-        }
-        
-    }
-    public void redoAdd(){
-         if(!undoCommands.empty()){
-          RedoAdd ra = (RedoAdd) redoCommands.pop();
-          ra.redo();   
-         }
-        
-    }
-    
-    public void repeat(Shape shape) {
-        
-        shapes.add(shape);
-        notifyAllObservers();
-    }
-
-
-    public void clearOneImage(Shape shape, int index) {
-        shapes.remove(shape);
-        notifyAllObservers();
-    } void removeShape(Shape shape) {
+    public void removeShape(Shape shape) {
+        System.out.println("removed: " + shape);
         int index = shapes.indexOf(shape);
         shapes.remove(index);
         notifyAllObservers();

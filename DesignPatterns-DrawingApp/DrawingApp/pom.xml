@@ -115,6 +115,7 @@
     <dependencies>
         <!-- https://mvnrepository.com/artifact/com.google.firebase/firebase-admin -->
         <dependency>
+            <optional>true</optional>
             <groupId>com.google.firebase</groupId>
             <artifactId>firebase-admin</artifactId>
             <version>6.6.0</version>
@@ -122,6 +123,7 @@
 
         <!-- https://mvnrepository.com/artifact/org.reflections/reflections -->
         <dependency>
+            <optional>true</optional>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
             <version>0.9.9-RC1</version>

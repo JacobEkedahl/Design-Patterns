@@ -47,6 +47,16 @@ public abstract class Shape implements Cloneable {
         return null;
     }
     
+    public Shape createCopy() {
+        try {
+            return (Shape) this.clone();
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(Shape.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;
+    }
+    
     public boolean getFill() {
         return fill;
     }

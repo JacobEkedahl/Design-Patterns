@@ -5,7 +5,9 @@
  */
 package model;
 
-import databases.FirebaseHandler;
+import databases.Database;
+import databases.FirebaseDb;
+import databases.TempDb;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +33,7 @@ public class ModelFascade extends Observer {
     private Color col;
     private double strokeWidth;
     private boolean fill;
-    private FirebaseHandler db = null;
+    private Database db = null;
 
     private ModelFascade() {
         fill = false;
@@ -46,10 +48,18 @@ public class ModelFascade extends Observer {
     private void attachDrawingToDb() {
         db.attach(this);
     }
+    
+    public void undo() {
+        this.drawing.undo();
+    }
+    
+    public void redo() {
+        this.drawing.redo();
+    }
 
     private void initDb() {
         try {
-            db = new FirebaseHandler();
+            db = new TempDb();
         } catch (IOException ex) {
             Logger.getLogger(ModelFascade.class.getName()).log(Level.SEVERE, null, ex);
         }
