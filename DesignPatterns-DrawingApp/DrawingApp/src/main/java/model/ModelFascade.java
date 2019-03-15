@@ -6,6 +6,7 @@
 package model;
 
 import com.kanonkod.drawingapp.command.UndoAdd;
+import com.kanonkod.drawingapp.command.UndoComposite;
 import databases.FirebaseHandler;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -150,6 +151,7 @@ public class ModelFascade extends Observer {
             this.drawing.removeShape(selectedShape);
         }
     }
+   
     /**
      * next Shape drawn will have a different strokewidth.
      * @param newWidth 
@@ -182,12 +184,7 @@ public class ModelFascade extends Observer {
 
     public void deselect() {  
         if(selectedShape!=null && !(selectedShape instanceof aMarker)){
-            drawing.updateUndoStack(new UndoAdd(selectedShape,drawing ));
-            if(drawing.getUndoFlag() && !drawing.isUndoStackEmpty()){
-                drawing.clearRedoStack();
-                System.out.println("cleared redo stack");
-            }
-            
+           addToUndoStack(selectedShape);     
         }
         selectedShape = null;
     }
@@ -197,7 +194,13 @@ public class ModelFascade extends Observer {
     }
 
     public void selectShape(String shape) {
-        shapeToDraw = shape;
+        if(shape.equals("Composite")){
+            System.out.println("making composite");
+            makeComposite(shape);
+            shapeToDraw = null;
+        }else{
+            shapeToDraw = shape;
+        }       
     }
 
     public void setFill(boolean newVal) {
@@ -213,15 +216,38 @@ public class ModelFascade extends Observer {
         if (shapeToDraw == null) {
             return;
         }
+        
         selectedShape = ShapeFactory.getShape(shapeToDraw, fromX, fromY, fromX, fromY, col, strokeWidth, fill);
-        drawing.addShape(selectedShape);
+        if (!(selectedShape instanceof Composite)) {
+             drawing.addShape(selectedShape);
+        } 
+    }
+    
+    private void makeComposite(String composite){
+        
+       List<Shape> selectedShapes = this.drawing.getSelectedShapes();     
+       double[] minXY = this.drawing.getTopLeft();
+       double[] maxXY = this.drawing.getBotRight();
+       Composite newComposite = (Composite)ShapeFactory.getShape(composite,minXY[0] , minXY[1], maxXY[0], maxXY[1], col, strokeWidth, fill);
+       newComposite.addShapes(selectedShapes);
+       this.drawing.addShape(newComposite);
+       this.drawing.removeSelected();
+       this.drawing.deselectAll();
+       this.drawing.updateUndoStack(new UndoComposite(newComposite,this.drawing));
     }
 
     @Override
     public void update() {
         this.drawing.init(db.getDrawing());
-    
     }
+    
+    public void addToUndoStack(Shape selectedShape){
+        drawing.updateUndoStack(new UndoAdd(selectedShape,this.drawing ));
+            if(drawing.getUndoFlag() && !drawing.isUndoStackEmpty()){
+                drawing.clearRedoStack();
+                System.out.println("cleared redo stack");
+            }
+    }    
 
     @Override
     public void addToDB() {       

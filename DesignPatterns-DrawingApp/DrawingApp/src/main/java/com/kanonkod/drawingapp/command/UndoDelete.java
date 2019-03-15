@@ -7,6 +7,7 @@ package com.kanonkod.drawingapp.command;
 
 import java.util.ArrayList;
 import java.util.List;
+import model.Composite;
 import model.Drawing;
 import model.Shape;
 import model.ShapeFactory;
@@ -35,9 +36,9 @@ public class UndoDelete implements UndoCommand {
     @Override
     public void undo() {
         this.drawing.updateRedoStack(new RedoDelete(new ArrayList<Shape>(shapes),this.drawing));
-        for(Shape s : shapes){
-            s = ShapeFactory.getShape(s.getClass().getSimpleName(),s.getFromX(), s.getFromY(), s.getToX(), s.getToY(), s.getCol(),s.getStrokeWidth(),s.isFill());  
-            drawing.repeat(s);
+        for(Shape s : shapes){         
+              s = ShapeFactory.getShape(s.getClass().getSimpleName(),s.getFromX(), s.getFromY(), s.getToX(), s.getToY(), s.getCol(),s.getStrokeWidth(),s.isFill());  
+              drawing.repeat(s);
          }
     }
   

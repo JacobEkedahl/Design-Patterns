@@ -36,7 +36,7 @@ public class Drawing {
     private Stack<UndoCommand> undoCommands = new Stack<>();
     private Stack<RedoCommand> redoCommands = new Stack<>();
     private boolean undoFlag;
-    List<Shape> selectedShapes = new ArrayList<>();
+    private ArrayList<Shape> selectedShapes = new ArrayList<>();
     private String name = "";
     
 
@@ -202,7 +202,6 @@ public class Drawing {
      * @param shape 
      */
     public void removeShape(Shape shape) {
-        System.out.println("should notify observer");
         shapes.remove(shape);
         notifyAllObservers();
     }
@@ -285,6 +284,11 @@ public class Drawing {
         shapes = new ArrayList<>();
         notifyAllObservers();
     }  
+    
+    public List<Shape> getSelectedShapes(){
+        return (List<Shape>)selectedShapes.clone();
+    }
+    
   /**
    * Add undocommand to the stack
    * @param undoCommand 
@@ -346,6 +350,44 @@ public class Drawing {
    
    public boolean isUndoStackEmpty(){
        return this.undoCommands.isEmpty();
+   }
+   
+   public double[] getTopLeft(){
+       double minX = Double.MAX_VALUE;
+       double minY = Double.MAX_VALUE;
+       
+       for(Shape s : selectedShapes){
+           if(s.getMinX() < minX){
+               minX = s.getMinX();
+           }
+           if(s.getMinY() < minY){
+               minY = s.getMinY();
+           }
+       }
+       
+       double[] result = new double[2];
+       result[0] = minX;
+       result[1] = minY;
+       return result;
+   } 
+   
+   public double[] getBotRight(){
+       double maxX = Double.MIN_VALUE;
+       double maxY = Double.MIN_VALUE;
+       
+       for(Shape s : selectedShapes){
+           if(s.getMaxX() > maxX){
+               maxX = s.getMaxX();
+           }
+           if(s.getMaxY() > maxY){
+               maxY = s.getMaxY();
+           }
+       }
+       
+       double[] result = new double[2];
+       result[0] = maxX;
+       result[1] = maxY;
+       return result;
    }
     
     @Override
