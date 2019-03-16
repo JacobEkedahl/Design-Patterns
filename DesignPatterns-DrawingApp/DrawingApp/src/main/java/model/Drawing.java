@@ -13,6 +13,7 @@ import java.util.Stack;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import model.Operations.AddShapeCommand;
+import model.Operations.ChangeWidthCommand;
 import model.Operations.Command;
 import model.Operations.DeleteShapeCommand;
 import model.interfaces.Observer;
@@ -78,11 +79,15 @@ public class Drawing {
     }
 
     private void removeCommand() {
-        addCommand(new DeleteShapeCommand(selectedShapes));
+        addCommand(new DeleteShapeCommand((ArrayList<Shape>) selectedShapes.clone()));
     }
 
     private void addShapeCommand(Shape shape) {
         addCommand(new AddShapeCommand(shape));
+    }
+    
+    private void changeWidthCommand(double width) {
+        addCommand(new ChangeWidthCommand((ArrayList<Shape>) selectedShapes.clone(), width));
     }
 
     //Object - Subject pattern with methods ------------------------
@@ -103,13 +108,12 @@ public class Drawing {
             return;
         }
 
+        //does not want to be able to redo/undo the marker
         if (shape instanceof aMarker) {
             shapes.add(shape);
         } else {
             addShapeCommand(shape);
         }
-
-        // notifyAllObservers();
     }
 
     public String getName() {
@@ -187,10 +191,7 @@ public class Drawing {
     }
 
     public void changeSelectedWidth(double width) {
-        for (Shape shape : selectedShapes) {
-            shape.setStrokeWidth(width);
-        }
-
+        changeWidthCommand(width);
         notifyAllObservers();
     }
 
