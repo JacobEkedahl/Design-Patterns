@@ -32,7 +32,6 @@
                             <items>
                                 <MenuItem id="menuItem" mnemonicParsing="false" onAction="#createNew" text="New" />
                                 <MenuItem mnemonicParsing="false" onAction="#openDrawing" text="Open" />
-                                <MenuItem mnemonicParsing="false" onAction="#saveDrawing" text="Save" />
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" onAction="#showAbout" text="About">

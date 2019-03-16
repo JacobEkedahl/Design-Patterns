@@ -19,7 +19,6 @@ public abstract class Command {
     ShapeMementos mementos;
 
     public abstract ArrayList<Shape> execute(ArrayList<Shape> orig);
-
     public abstract ArrayList<Shape> unExecute(ArrayList<Shape> orig);
 
     ArrayList<Shape> copy(ArrayList<Shape> orig) {
@@ -31,5 +30,4 @@ public abstract class Command {
 
         return res;
     }
-
 }

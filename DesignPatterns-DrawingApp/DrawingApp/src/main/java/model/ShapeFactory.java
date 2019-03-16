@@ -17,14 +17,25 @@ import org.reflections.Reflections;
  * @author Jacob
  */
 public class ShapeFactory {
+
     private static HashMap<String, Shape> shapeMap = ShapeLoader.getShapeTypes();
-    
+
     public static Shape getShape(String shapeName, double fromX, double fromY, double toX, double toY, Color col, double strokeWidth, boolean fill) {
         return (Shape) shapeMap.get(shapeName).createCopy(fromX, fromY, toX, toY, col, strokeWidth, fill);
     }
-    
+
     public static Shape getShape(ShapeDAO s) {
         return (Shape) shapeMap.get(s.getType()).createCopy(s.getFromX(), s.getFromY(),
                 s.getToX(), s.getToY(), Color.rgb(s.getRed(), s.getGreen(), s.getBlue()), s.getStrokeWidth(), s.isFill());
+    }
+
+    public static ShapeDAO getShapeDAO(Shape shape) {
+        String shapeName = shape.getClass().getSimpleName();
+        int red = (int) (255 * shape.getCol().getRed());
+        int green = (int) (255 * shape.getCol().getGreen());
+        int blue = (int) (255 * shape.getCol().getBlue());
+        ShapeDAO newShape = new ShapeDAO(shapeName, shape.getFromX(), shape.getFromY(), shape.getToX(), shape.getToY(), red, green, blue, shape.getStrokeWidth(), shape.getFill());
+
+        return newShape;
     }
 }

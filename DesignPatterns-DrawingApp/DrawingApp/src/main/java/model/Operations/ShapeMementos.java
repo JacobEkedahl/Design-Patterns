@@ -16,8 +16,6 @@ import model.Shape;
 public class ShapeMementos {
     ArrayList<Shape> shapes;
     
-    
-    
     public ArrayList<Shape> getState() {
         return shapes;
     }

@@ -39,20 +39,6 @@ public class Drawing {
     public Drawing() {
     }
 
-    public void init(DrawingDAO dbDrawing) {
-        this.name = dbDrawing.getName();
-        for (ShapeDAO shapeDAO : dbDrawing.getShapes()) {
-            Shape newShape = ShapeFactory.getShape(shapeDAO);
-            if (!shapes.contains(newShape)) {
-                shapes.add(newShape);
-            } else {
-
-            }
-        }
-
-        notifyAllObservers();
-    }
-
     public void undo() {
         if (undoStack.size() == 0) {
             return;

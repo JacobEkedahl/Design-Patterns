@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javax.naming.ConfigurationException;
 import model.interfaces.Observer;
 
 /**
@@ -59,7 +60,7 @@ public class ModelFascade extends Observer {
 
     private void initDb() {
         try {
-            db = new TempDb();
+            db = new FirebaseDb();
         } catch (IOException ex) {
             Logger.getLogger(ModelFascade.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -81,29 +82,6 @@ public class ModelFascade extends Observer {
         this.drawing.setName(newName);
         this.db.setUpDbListener(newName);
     }
-
-    public void saveData() {
-        try {
-            db.addData(this.drawing);
-        } catch (IllegalArgumentException ex) {
-            //show popup for saving a name
-            throw new IllegalArgumentException("Error: " + ex.getMessage());
-        } catch (InterruptedException | ExecutionException ex) {
-            Logger.getLogger(ModelFascade.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    /*
-    public void getData(String name) {
-        try {
-            System.out.println("name to get: " + name);
-            this.drawing.init(db.getData(name));
-        } catch (InterruptedException ex) {
-            Logger.getLogger(ModelFascade.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ExecutionException ex) {
-            Logger.getLogger(ModelFascade.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }*/
 
     public static ModelFascade getInstance() {
         if (fascadeInstance == null) {
@@ -181,18 +159,22 @@ public class ModelFascade extends Observer {
         this.strokeWidth = width;
     }
 
-    public void addShape(double fromX, double fromY) {
+    public void addShape(double fromX, double fromY) throws ConfigurationException {
+        if (this.drawing.getName() == "") {
+            throw new ConfigurationException("Name has not been set");
+        }
+        
         if (shapeToDraw == null) {
             return;
         }
 
         selectedShape = ShapeFactory.getShape(shapeToDraw, fromX, fromY, fromX, fromY, col, strokeWidth, fill);
         drawing.addShape(selectedShape);
+        db.addShape(selectedShape, drawing.getName());
     }
 
     @Override
     public void update() {
-        this.drawing.init(db.getDrawing());
-        //retrieve the data from the database
+        //this.drawing.init(db.getDrawing());
     }
 }

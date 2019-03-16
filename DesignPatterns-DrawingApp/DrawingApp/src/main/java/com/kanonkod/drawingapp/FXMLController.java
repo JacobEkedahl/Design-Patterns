@@ -50,6 +50,7 @@ import static javafx.scene.paint.Color.color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
+import javax.naming.ConfigurationException;
 import model.Drawing;
 import model.anOval;
 import model.ModelFascade;
@@ -109,10 +110,15 @@ public class FXMLController extends Observer implements Initializable {
     //add shape, mouse pressed
     @FXML
     private void saveFrom(MouseEvent event) {
-        double fromX = event.getX();
-        double fromY = event.getY();
-        model.deselectAll();
-        model.addShape(fromX, fromY);
+        try {
+            double fromX = event.getX();
+            double fromY = event.getY();
+            model.deselectAll();
+            model.addShape(fromX, fromY);
+        } catch (ConfigurationException ex) {
+            this.createNew();
+        }
+
     }
 
     //mouse released, deselect
@@ -121,7 +127,6 @@ public class FXMLController extends Observer implements Initializable {
         model.deselectAll();
         model.handleMarker();
         model.deselect();
-        save();
     }
 
     @FXML
@@ -130,7 +135,6 @@ public class FXMLController extends Observer implements Initializable {
 
         model.changeSelectedColor(colorPicker.getValue());
         model.setColor(colorPicker.getValue());
-        this.save();
     }
 
     @FXML
@@ -141,7 +145,6 @@ public class FXMLController extends Observer implements Initializable {
 
         model.changeSelectedWidth(value);
         model.setWidth(value);
-        this.save();
     }
 
     @FXML
@@ -171,12 +174,6 @@ public class FXMLController extends Observer implements Initializable {
     }
 
     @FXML
-    private void saveDrawing(Event event) {
-        //save to db
-        this.save();
-    }
-
-    @FXML
     private void undo(Event event) {
         model.undo();
     }
@@ -195,7 +192,6 @@ public class FXMLController extends Observer implements Initializable {
     private void removeSelected(Event event) {
         this.model.removeSelected();
         model.deselectAll();
-        this.save();
     }
 
     @FXML
@@ -203,7 +199,7 @@ public class FXMLController extends Observer implements Initializable {
         boolean newVal = ((CheckBox) event.getSource()).isSelected();
         model.changeSelectedFill(newVal);
         model.setFill(newVal);
-        save();
+        //  save();
     }
 
     @Override
@@ -217,15 +213,6 @@ public class FXMLController extends Observer implements Initializable {
         initThrascan();
         initColorPicker();
         //  mapCanvasToParent();
-    }
-
-    private void save() {
-        try {
-            model.saveData();
-        } catch (IllegalArgumentException ex) {
-            this.createNew();
-            model.saveData();
-        }
     }
 
     //init colorpicker with color black
@@ -281,7 +268,6 @@ public class FXMLController extends Observer implements Initializable {
 
     private void clear() {
         model.clearDrawing();
-        this.save();
     }
 
     private void createNew() {

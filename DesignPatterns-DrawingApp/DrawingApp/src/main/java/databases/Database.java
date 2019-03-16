@@ -8,7 +8,7 @@ package databases;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import model.Drawing;
-import model.DrawingDAO;
+import model.Shape;
 import model.interfaces.Observer;
 
 /**
@@ -16,10 +16,9 @@ import model.interfaces.Observer;
  * @author Jacob
  */
 public abstract class Database {
-    public abstract void addData(Drawing drawing) throws InterruptedException, ExecutionException ;
-    public abstract DrawingDAO getData(String name) throws InterruptedException, ExecutionException;
+    public abstract void addShape(Shape shape, String drawingID);
+    public abstract void removeShape(Shape shape, String drawingID);
     public abstract List<String> getNames() throws InterruptedException, ExecutionException;
-    public abstract DrawingDAO getDrawing();
     public abstract void setUpDbListener(String name);
     public abstract void notifyAllObservers();
     public abstract void attach(Observer observer);

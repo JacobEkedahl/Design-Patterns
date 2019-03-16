@@ -9,6 +9,7 @@ import com.google.api.core.ApiFuture;
 import java.io.FileInputStream;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.CollectionReference;
+import com.google.cloud.firestore.DocumentChange;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.EventListener;
@@ -31,11 +32,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import java.util.concurrent.ExecutionException;
 import model.Drawing;
-import model.DrawingDAO;
+import model.Operations.Command;
 import model.Shape;
 import model.ShapeDAO;
+import model.ShapeFactory;
 import model.interfaces.Observer;
 
 /**
@@ -44,7 +47,7 @@ import model.interfaces.Observer;
  */
 public class FirebaseDb extends Database {
 
-    private DrawingDAO updatedDrawing;
+    Stack<Command> commands = new Stack<>();
     List<Observer> observers = new ArrayList<>();
     Firestore db = null;
 
@@ -59,34 +62,6 @@ public class FirebaseDb extends Database {
         FirebaseApp.initializeApp(options);
 
         db = FirestoreClient.getFirestore();
-    }
-
-    public void addData(Drawing drawing) throws InterruptedException, ExecutionException {
-        if (drawing.getName() == "") {
-            throw new IllegalArgumentException();
-        }
-        DrawingDAO dbDrawing = new DrawingDAO(drawing);
-        DocumentReference docRef = db.collection("drawings").document(drawing.getName());
-        docRef.set(dbDrawing);
-    }
-
-    public DrawingDAO getData(String name) throws InterruptedException, ExecutionException {
-        DocumentReference docRef = db.collection("drawings").document(name);
-
-        ApiFuture<DocumentSnapshot> future = docRef.get();
-        // block on response
-        DocumentSnapshot document = future.get();
-        DrawingDAO drawing = null;
-        if (document.exists()) {
-            // convert document to POJO
-            System.out.println("drawingDao: " + document.getClass().toGenericString());
-            drawing = document.toObject(DrawingDAO.class);
-            System.out.println(drawing);
-        } else {
-            throw new NullPointerException();
-        }
-        // [END fs_get_doc_as_entity]
-        return drawing;
     }
 
     public List<String> getNames() throws InterruptedException, ExecutionException {
@@ -118,38 +93,39 @@ public class FirebaseDb extends Database {
 
     }
 
-    public synchronized DrawingDAO getDrawing() {
-        return this.updatedDrawing;
-    }
-
-    private synchronized void setDrawing(DrawingDAO drawing) {
-        this.updatedDrawing = drawing;
-        notifyAllObservers();
-    }
-
     public void setUpDbListener(String name) {
         System.out.println("setting up listener!");
         //remove all listeners
         removeListener();
 
-        DocumentReference docRef = db.collection("drawings").document(name);
-        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot snapshot,
-                    @Nullable FirestoreException e) {
-                if (e != null) {
-                    System.err.println("Listen failed: " + e);
-                    return;
-                }
+        db.collection("drawings")
+                .whereEqualTo("name", name)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot snapshots,
+                            @Nullable FirestoreException e) {
+                        if (e != null) {
+                            System.err.println("Listen failed: " + e);
+                            return;
+                        }
 
-                if (snapshot != null && snapshot.exists()) {
-                    System.out.println("Current data: " + snapshot.getData());
-                    setDrawing(snapshot.toObject(DrawingDAO.class));
-                } else {
-                    System.out.print("Current data: null");
-                }
-            }
-        });
+                        for (DocumentChange dc : snapshots.getDocumentChanges()) {
+                            switch (dc.getType()) {
+                                case ADDED:
+                                    System.out.println("New shape: " + dc.getDocument().getData());
+                                    break;
+                                case MODIFIED:
+                                    System.out.println("Modified shape: " + dc.getDocument().getData());
+                                    break;
+                                case REMOVED:
+                                    System.out.println("Removed shape: " + dc.getDocument().getData());
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                });
     }
 
     public void notifyAllObservers() {
@@ -160,5 +136,20 @@ public class FirebaseDb extends Database {
 
     public void attach(Observer observer) {
         observers.add(observer);
+    }
+
+    @Override
+    public void addShape(Shape shape, String drawingID) {
+        if (drawing.getName() == "") {
+            throw new IllegalArgumentException();
+        }
+        ShapeDAO newShape = ShapeFactory.getShapeDAO(shape);
+        DocumentReference docRef = db.collection("drawings").document(drawing.getName());
+        docRef.set(dbDrawing);
+    }
+
+    @Override
+    public void removeShape(Shape shape, String drawingID) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
