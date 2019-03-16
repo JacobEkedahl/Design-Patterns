@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import javafx.scene.paint.Color;
 import model.Shape;
 import model.interfaces.ChangeStrategy;
+import model.interfaces.ShapeListener;
 
 /**
  *
@@ -36,8 +37,24 @@ public class ChangeCommand extends Command {
         }
 
         orig.addAll(myShapes);
-
+        updateDb();
+        
         return orig;
+    }
+
+    private void updateDb() {
+
+        switch (strategy.getStrategy()) {
+            case FILL:
+                listener.updateFill(myShapes);
+                break;
+            case COLOR:
+                listener.updateColor(myShapes);
+                break;
+            case WIDTH:
+                listener.updateWidth(myShapes);
+                break;
+        }
     }
 
     @Override

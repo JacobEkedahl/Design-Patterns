@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import javafx.scene.paint.Color;
 import model.Drawing;
 import model.Shape;
 import model.interfaces.Observer;
@@ -48,13 +49,32 @@ public class TempDb extends Database {
     }
 
     @Override
-    public void addShape(Shape shape, String drawingID) {
+    public void updateColor(ArrayList<Shape> shapes) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void removeShape(Shape shape, String drawingID) {
+    public void updateWidth(ArrayList<Shape> shapes) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public void updateFill(ArrayList<Shape> shapes) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void updateSize(Shape shape) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void newShape(ArrayList<Shape> shapes) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void removeShape(ArrayList<Shape> shapes) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

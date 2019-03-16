@@ -21,6 +21,7 @@ import model.Operations.Command;
 import model.Operations.DeleteShapeCommand;
 import model.interfaces.ChangeStrategy;
 import model.interfaces.Observer;
+import model.interfaces.ShapeListener;
 
 /**
  *
@@ -32,11 +33,17 @@ public class Drawing {
     ArrayList<Shape> selectedShapes = new ArrayList<>();
     Stack<Command> undoStack = new Stack<>();
     Stack<Command> redoStack = new Stack<>();
+    ShapeListener shapeListener;
 
     private int undoRedoPointer = -1;
     private String name = "";
 
     public Drawing() {
+    }
+
+    //this listener is then added to the commands
+    public void attachShapeListener(ShapeListener listener) {
+        shapeListener = listener;
     }
 
     public void undo() {
@@ -64,6 +71,7 @@ public class Drawing {
     }
 
     private void addCommand(Command command) {
+        command.attach(shapeListener);
         shapes = command.execute((ArrayList<Shape>) shapes.clone());
         undoStack.push(command);
         redoStack.clear();
@@ -147,6 +155,7 @@ public class Drawing {
 
         Shape shapeToChange = shapes.get(index);
         shapeToChange.changeSize(toX, toY);
+        shapeListener.updateSize(shape);
         notifyAllObservers();
     }
 
@@ -179,25 +188,23 @@ public class Drawing {
         System.out.println("selectedShapes size: " + selectedShapes.size());
         notifyAllObservers();
     }
-    
+
     private ArrayList<Shape> markers = new ArrayList<>();
 
     //is called from the views update method
     public void drawAll(GraphicsContext gc) {
         gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
-        System.out.println("is drawing!");
 
         for (Shape shape : selectedShapes) {
             //draw rect around
             Shape tmpRect = ShapeFactory.getShape("aMarker", shape.getFromX(), shape.getFromY(), shape.getToX(), shape.getToY(), Color.CORAL, 1, false);
             tmpRect.draw(gc);
-          //  markers.add(shape);
+            //  markers.add(shape);
         }
 
         for (Shape shape : shapes) {
             shape.draw(gc);
         }
-
     }
 
     public void clear() {

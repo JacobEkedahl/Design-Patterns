@@ -3,16 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package model.interfaces;
-
-import model.ChangeStrategies.StrategyType;
-import model.Shape;
+package model.ChangeStrategies;
 
 /**
  *
  * @author Jacob
  */
-public interface ChangeStrategy {
-    public void change(Shape shape);
-    public StrategyType getStrategy();
+public enum StrategyType {
+    COLOR, FILL, WIDTH;
 }

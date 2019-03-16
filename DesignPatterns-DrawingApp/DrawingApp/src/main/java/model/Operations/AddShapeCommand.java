@@ -7,6 +7,7 @@ package model.Operations;
 
 import java.util.ArrayList;
 import model.Shape;
+import model.interfaces.ShapeListener;
 
 /**
  *
@@ -24,6 +25,7 @@ public class AddShapeCommand extends Command {
         mementos = new ShapeMementos();
         mementos.setState((ArrayList<Shape>) myShapes.clone());
         orig.addAll(myShapes);
+        listener.newShape(myShapes);
 
         return orig;
     }
@@ -31,9 +33,9 @@ public class AddShapeCommand extends Command {
     @Override
     public ArrayList<Shape> unExecute(ArrayList<Shape> orig) {
         orig.removeAll(mementos.getState());
+        listener.removeShape(mementos.getState());
         myShapes = mementos.getState();
 
         return orig;
     }
-
 }

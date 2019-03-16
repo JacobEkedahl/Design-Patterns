@@ -6,6 +6,7 @@
 package model;
 
 import java.util.Objects;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.canvas.GraphicsContext;
@@ -18,6 +19,7 @@ import javafx.scene.paint.Color;
 //DO NOT CHANGE NAME OF THIS CLASS
 public abstract class Shape implements Cloneable {
 
+    private String id;
     private double fromX, fromY;
     private double toX, toY;
     private Color col;
@@ -29,6 +31,19 @@ public abstract class Shape implements Cloneable {
     abstract void drawHollow(GraphicsContext gc);
 
     abstract void changeSize(double newX, double newY);
+    
+    public String getId() {
+        return id;
+    }
+    
+    public void setId(String id) {
+        this.id = id;
+    }
+    
+    public void generateId() {
+        id = UUID.randomUUID().toString();
+        System.out.println("generated id: " + id);
+    }
 
     public Shape createCopy(double fromX, double fromY, double toX, double toY, Color col, double strokeWidth, boolean fill) {
         this.fromX = fromX;
@@ -192,8 +207,6 @@ public abstract class Shape implements Cloneable {
         
         return true;
     }
-    
-    
 
     public double getFromY() {
         return fromY;

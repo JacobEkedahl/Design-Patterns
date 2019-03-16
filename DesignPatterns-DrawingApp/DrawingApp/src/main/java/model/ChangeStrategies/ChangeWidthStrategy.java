@@ -14,8 +14,9 @@ import model.interfaces.ChangeStrategy;
  * @author Jacob
  */
 public class ChangeWidthStrategy implements ChangeStrategy {
-    
+
     private double width;
+
     public ChangeWidthStrategy(double width) {
         this.width = width;
     }
@@ -24,5 +25,10 @@ public class ChangeWidthStrategy implements ChangeStrategy {
     public void change(Shape shape) {
         shape.setStrokeWidth(width);
     }
-    
+
+    @Override
+    public StrategyType getStrategy() {
+        return StrategyType.WIDTH;
+    }
+
 }

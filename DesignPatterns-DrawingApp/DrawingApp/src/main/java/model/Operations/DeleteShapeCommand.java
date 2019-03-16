@@ -8,6 +8,7 @@ package model.Operations;
 import java.util.ArrayList;
 import java.util.List;
 import model.Shape;
+import model.interfaces.ShapeListener;
 
 /**
  *
@@ -29,12 +30,16 @@ public class DeleteShapeCommand extends Command {
             orig.remove(index);
         }
         
+        listener.removeShape(myShapes);
+
         return orig;
     }
 
     @Override
     public ArrayList<Shape> unExecute(ArrayList<Shape> orig) {
         orig.addAll(mementos.getState());
+        listener.newShape(mementos.getState());
+        
         myShapes = mementos.getState();
         return orig;
     }

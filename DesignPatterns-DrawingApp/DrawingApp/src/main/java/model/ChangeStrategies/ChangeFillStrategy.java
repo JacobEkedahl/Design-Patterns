@@ -13,8 +13,9 @@ import model.interfaces.ChangeStrategy;
  * @author Jacob
  */
 public class ChangeFillStrategy implements ChangeStrategy {
-    
+
     private boolean fill;
+
     public ChangeFillStrategy(boolean fill) {
         this.fill = fill;
     }
@@ -23,5 +24,10 @@ public class ChangeFillStrategy implements ChangeStrategy {
     public void change(Shape shape) {
         shape.setFill(fill);
     }
-    
+
+    @Override
+    public StrategyType getStrategy() {
+        return StrategyType.FILL;
+    }
+
 }

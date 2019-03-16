@@ -34,12 +34,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.ExecutionException;
+import javafx.scene.paint.Color;
 import model.Drawing;
 import model.Operations.Command;
 import model.Shape;
 import model.ShapeDAO;
 import model.ShapeFactory;
 import model.interfaces.Observer;
+import model.interfaces.ShapeListener;
 
 /**
  *
@@ -90,10 +92,12 @@ public class FirebaseDb extends Database {
 
 // Stop listening to changes
         registration.remove();
-
     }
 
+    private String name;
+
     public void setUpDbListener(String name) {
+        this.name = name;
         System.out.println("setting up listener!");
         //remove all listeners
         removeListener();
@@ -139,17 +143,57 @@ public class FirebaseDb extends Database {
     }
 
     @Override
-    public void addShape(Shape shape, String drawingID) {
-        if (drawing.getName() == "") {
+    public void newShape(ArrayList<Shape> shapes) {
+        System.out.println("NEW SHAPE");
+        if (name == "") {
             throw new IllegalArgumentException();
         }
-        ShapeDAO newShape = ShapeFactory.getShapeDAO(shape);
-        DocumentReference docRef = db.collection("drawings").document(drawing.getName());
-        docRef.set(dbDrawing);
+
+        for (Shape shape : shapes) {
+            ShapeDAO newShape = ShapeFactory.getShapeDAO(shape, name);
+            db.collection("drawings").document(shape.getId()).set(newShape);
+        }
     }
 
     @Override
-    public void removeShape(Shape shape, String drawingID) {
+    public void removeShape(ArrayList<Shape> shapes) {
+        for (Shape shape : shapes) {
+            db.collection("drawings").document(shape.getId()).delete();
+        }
+    }
+
+    @Override
+    public void updateColor(ArrayList<Shape> shapes) {
+        for (Shape shape : shapes) {
+
+            DocumentReference docRef = db.collection("drawings").document(shape.getId());
+
+            int red = (int) (255 * shape.getCol().getRed());
+            int green = (int) (255 * shape.getCol().getGreen());
+            int blue = (int) (255 * shape.getCol().getBlue());
+
+            docRef.update("red", red);
+            docRef.update("green", green);
+            docRef.update("blue", blue);
+        }
+    }
+
+    @Override
+    public void updateWidth(ArrayList<Shape> shapes) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public void updateFill(ArrayList<Shape> shapes) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void updateSize(Shape shape) {
+        DocumentReference docRef = db.collection("drawings").document(shape.getId());
+
+        docRef.update("toX", shape.getToX());
+        docRef.update("toY", shape.getToY());
+    }
+
 }

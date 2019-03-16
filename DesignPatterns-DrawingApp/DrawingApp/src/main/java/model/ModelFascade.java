@@ -43,10 +43,15 @@ public class ModelFascade extends Observer {
         drawing = new Drawing();
         shapeToDraw = null;
         initDb();
-        attachDrawingToDb();
+        attachModelToDb();
+        attachDbToDrawing();
+    }
+    
+    private void attachDbToDrawing() {
+        this.drawing.attachShapeListener(db);
     }
 
-    private void attachDrawingToDb() {
+    private void attachModelToDb() {
         db.attach(this);
     }
     
@@ -169,8 +174,8 @@ public class ModelFascade extends Observer {
         }
 
         selectedShape = ShapeFactory.getShape(shapeToDraw, fromX, fromY, fromX, fromY, col, strokeWidth, fill);
+        selectedShape.generateId();
         drawing.addShape(selectedShape);
-        db.addShape(selectedShape, drawing.getName());
     }
 
     @Override

@@ -24,5 +24,10 @@ public class ChangeColStrategy implements ChangeStrategy {
     public void change(Shape shape) {
         shape.setCol(col);
     }
+
+    @Override
+    public StrategyType getStrategy() {
+        return StrategyType.COLOR;
+    }
     
 }

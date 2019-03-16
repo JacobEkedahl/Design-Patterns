@@ -13,6 +13,8 @@ import javafx.scene.paint.Color;
  */
 public class ShapeDAO {
 
+    private String id;
+    private String name;
     private String type;
     private double fromX, fromY;
     private double toX, toY;
@@ -20,7 +22,9 @@ public class ShapeDAO {
     private double strokeWidth;
     private boolean fill;
 
-    public ShapeDAO(String type, double fromX, double fromY, double toX, double toY, int red, int green, int blue, double strokeWidth, boolean fill) {
+    public ShapeDAO(String id, String name, String type, double fromX, double fromY, double toX, double toY, int red, int green, int blue, double strokeWidth, boolean fill) {
+        this.id = id;
+        this.name = name;
         this.type = type;
         this.fromX = fromX;
         this.fromY = fromY;
@@ -32,6 +36,26 @@ public class ShapeDAO {
         this.strokeWidth = strokeWidth;
         this.fill = fill;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+    
+    
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    
 
     public int getRed() {
         return red;

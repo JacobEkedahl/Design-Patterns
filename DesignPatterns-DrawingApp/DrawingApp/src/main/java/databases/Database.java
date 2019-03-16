@@ -7,17 +7,17 @@ package databases;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import javafx.scene.paint.Color;
 import model.Drawing;
 import model.Shape;
 import model.interfaces.Observer;
+import model.interfaces.ShapeListener;
 
 /**
  *
  * @author Jacob
  */
-public abstract class Database {
-    public abstract void addShape(Shape shape, String drawingID);
-    public abstract void removeShape(Shape shape, String drawingID);
+public abstract class Database implements ShapeListener {
     public abstract List<String> getNames() throws InterruptedException, ExecutionException;
     public abstract void setUpDbListener(String name);
     public abstract void notifyAllObservers();
