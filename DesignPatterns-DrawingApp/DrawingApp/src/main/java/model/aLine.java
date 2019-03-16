@@ -25,9 +25,10 @@ public class aLine extends Shape {
     public void changeSize(double newX, double newY) {
         super.setEnd(newX, newY);
     }
-
     @Override
     void drawFill(GraphicsContext gc) {
         drawHollow(gc);
     }
+
+   
 }

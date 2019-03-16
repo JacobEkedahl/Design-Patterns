@@ -48,6 +48,10 @@ public class FirebaseHandler {
     List<Observer> observers = new ArrayList<>();
     Firestore db = null;
 
+    /**
+     * Sets up a connection with the firebase back-end.
+     * @throws IOException 
+     */
     public FirebaseHandler() throws IOException {
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
         InputStream is = classloader.getResourceAsStream("drawing-app-13f43-firebase-adminsdk-i43u0-41097af969.json");
@@ -60,7 +64,12 @@ public class FirebaseHandler {
 
         db = FirestoreClient.getFirestore();
     }
-
+    /**
+     * Adds data to the database
+     * @param drawing
+     * @throws InterruptedException
+     * @throws ExecutionException 
+     */
     public void addData(Drawing drawing) throws InterruptedException, ExecutionException {
         if (drawing.getName() == "") {
             throw new IllegalArgumentException();
@@ -68,8 +77,15 @@ public class FirebaseHandler {
         DrawingDAO dbDrawing = new DrawingDAO(drawing);
         DocumentReference docRef = db.collection("drawings").document(drawing.getName());
         docRef.set(dbDrawing);
+        
     }
-
+    /**
+     * 
+     * @param name name of file that containts the shape
+     * @return the database entity
+     * @throws InterruptedException
+     * @throws ExecutionException 
+     */
     public DrawingDAO getData(String name) throws InterruptedException, ExecutionException {
         DocumentReference docRef = db.collection("drawings").document(name);
 
@@ -88,7 +104,12 @@ public class FirebaseHandler {
         // [END fs_get_doc_as_entity]
         return drawing;
     }
-
+    /**
+     * 
+     * @return
+     * @throws InterruptedException
+     * @throws ExecutionException 
+     */
     public List<String> getNames() throws InterruptedException, ExecutionException {
         List<String> result = new ArrayList<>();
         //asynchronously retrieve all documents
@@ -157,7 +178,6 @@ public class FirebaseHandler {
             observer.update();
         }
     }
-
     public void attach(Observer observer) {
         observers.add(observer);
     }

@@ -6,6 +6,7 @@
 package model.interfaces;
 
 import model.Drawing;
+import model.Shape;
 
 /**
  *
@@ -14,4 +15,5 @@ import model.Drawing;
 public abstract class Observer {
     public Object subject;
     public abstract void update();
+    public abstract void addToDB();
 }

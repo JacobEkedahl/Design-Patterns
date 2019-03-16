@@ -3,14 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package model.interfaces;
+package propertychangers;
+
+import model.Shape;
 
 /**
  *
  * @author fno
  */
-public interface Command {
-    
-    public void execute();
-    
+public abstract class PropertyChange {
+    public abstract void doChange(Shape shape);
+   
+    public abstract PropertyChange getInstance(Shape shape);
 }

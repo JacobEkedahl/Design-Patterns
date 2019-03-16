@@ -5,6 +5,8 @@
  */
 package model;
 
+import com.kanonkod.drawingapp.command.UndoAdd;
+import com.kanonkod.drawingapp.command.UndoComposite;
 import databases.FirebaseHandler;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,6 +35,9 @@ public class ModelFascade extends Observer {
     private boolean fill;
     private FirebaseHandler db = null;
 
+    /**
+     * Constructor defines default settings of drawing shapes.
+     */
     private ModelFascade() {
         fill = false;
         col = Color.BLACK;
@@ -42,11 +47,15 @@ public class ModelFascade extends Observer {
         initDb();
         attachDrawingToDb();
     }
-
+    /**
+     * Attach the modelfacade with FireBaseHandler.
+     */
     private void attachDrawingToDb() {
         db.attach(this);
     }
-
+    /**
+     * Initialise FireBaseHandler so that the database is accessible.
+     */
     private void initDb() {
         try {
             db = new FirebaseHandler();
@@ -54,7 +63,10 @@ public class ModelFascade extends Observer {
             Logger.getLogger(ModelFascade.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    /**
+     * get names of saved files.
+     * @return : names of saved files
+     */
     public List<String> getNames() {
         try {
             return db.getNames();
@@ -66,13 +78,20 @@ public class ModelFascade extends Observer {
 
         return null;
     }
-
+    /**
+     * saves to file.
+     * @param newName : new name for drawing file
+     */
     public void setName(String newName) {
         this.drawing.setName(newName);
         this.db.setUpDbListener(newName);
     }
 
+    /**
+     * data is saved when a new shape has been drawn.
+     */
     public void saveData() {
+        System.out.println("saved data");
         try {
             db.addData(this.drawing);
         } catch (IllegalArgumentException ex) {
@@ -82,19 +101,10 @@ public class ModelFascade extends Observer {
             Logger.getLogger(ModelFascade.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
-    /*
-    public void getData(String name) {
-        try {
-            System.out.println("name to get: " + name);
-            this.drawing.init(db.getData(name));
-        } catch (InterruptedException ex) {
-            Logger.getLogger(ModelFascade.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ExecutionException ex) {
-            Logger.getLogger(ModelFascade.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }*/
-
+    /**
+     * 
+     * @return instance of this class 
+     */
     public static ModelFascade getInstance() {
         if (fascadeInstance == null) {
             fascadeInstance = new ModelFascade();
@@ -103,45 +113,67 @@ public class ModelFascade extends Observer {
         return fascadeInstance;
     }
 
+    /**
+     * draws every Shape selected by the user.
+     * @param gc 
+     */
     public void draw(GraphicsContext gc) {
         drawing.drawAll(gc);
     }
-
+    /**
+     * X & Y coordinates reflect the user on-drag action.
+     * @param toX
+     * @param toY 
+     */
     public void setEnd(double toX, double toY) {
         if (selectedShape == null) {
             return;
         }
-
         this.drawing.changeSize(selectedShape, toX, toY);
     }
-
+    /**
+     * Changes color
+     * @param col 
+     */ 
     public void setColor(Color col) {
         this.col = col;
     }
-
+    /**
+     * empties out the list of Shapes and clears them from the canvas.
+     */
     public void clearDrawing() {
         this.drawing.clear();
     }
-
+    
     public void handleMarker() {
         if (selectedShape instanceof aMarker) {
             this.drawing.selectShapes(selectedShape);
             this.drawing.removeShape(selectedShape);
         }
     }
-
+   
+    /**
+     * next Shape drawn will have a different strokewidth.
+     * @param newWidth 
+     */
     public void changeSelectedWidth(double newWidth) {
         this.drawing.changeSelectedWidth(newWidth);
     }
-
+    /**
+     * next Shape draw will have a toggled fill
+     * @param newVal 
+     */
     public void changeSelectedFill(boolean newVal) {
         this.drawing.changeSelectedFill(newVal);
     }
-
+    /**
+     * change the color of the shape
+     * @param newCol 
+     */
     public void changeSelectedColor(Color newCol) {
         this.drawing.changeSelectedColor(newCol);
     }
-
+    
     public void removeSelected() {
         this.drawing.removeSelected();
     }
@@ -150,7 +182,10 @@ public class ModelFascade extends Observer {
         this.drawing.deselectAll();
     }
 
-    public void deselect() {
+    public void deselect() {  
+        if(selectedShape!=null && !(selectedShape instanceof aMarker)){
+           addToUndoStack(selectedShape);     
+        }
         selectedShape = null;
     }
 
@@ -159,7 +194,13 @@ public class ModelFascade extends Observer {
     }
 
     public void selectShape(String shape) {
-        shapeToDraw = shape;
+        if(shape.equals("Composite")){
+            System.out.println("making composite");
+            makeComposite(shape);
+            shapeToDraw = null;
+        }else{
+            shapeToDraw = shape;
+        }       
     }
 
     public void setFill(boolean newVal) {
@@ -175,14 +216,41 @@ public class ModelFascade extends Observer {
         if (shapeToDraw == null) {
             return;
         }
-
+        
         selectedShape = ShapeFactory.getShape(shapeToDraw, fromX, fromY, fromX, fromY, col, strokeWidth, fill);
-        drawing.addShape(selectedShape);
+        if (!(selectedShape instanceof Composite)) {
+             drawing.addShape(selectedShape);
+        } 
+    }
+    
+    private void makeComposite(String composite){
+        
+       List<Shape> selectedShapes = this.drawing.getSelectedShapes();     
+       double[] minXY = this.drawing.getTopLeft();
+       double[] maxXY = this.drawing.getBotRight();
+       Composite newComposite = (Composite)ShapeFactory.getShape(composite,minXY[0] , minXY[1], maxXY[0], maxXY[1], col, strokeWidth, fill);
+       newComposite.addShapes(selectedShapes);
+       this.drawing.addShape(newComposite);
+       this.drawing.removeSelected();
+       this.drawing.deselectAll();
+       this.drawing.updateUndoStack(new UndoComposite(newComposite,this.drawing));
     }
 
     @Override
     public void update() {
         this.drawing.init(db.getDrawing());
-        //retrieve the data from the database
+    }
+    
+    public void addToUndoStack(Shape selectedShape){
+        drawing.updateUndoStack(new UndoAdd(selectedShape,this.drawing ));
+            if(drawing.getUndoFlag() && !drawing.isUndoStackEmpty()){
+                drawing.clearRedoStack();
+                System.out.println("cleared redo stack");
+            }
+    }    
+
+    @Override
+    public void addToDB() {       
+        saveData();
     }
 }

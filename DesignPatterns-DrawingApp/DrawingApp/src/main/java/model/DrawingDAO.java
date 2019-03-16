@@ -5,11 +5,13 @@
  */
 package model;
 
+import com.kanonkod.drawingapp.command.RedoDelete;
+import com.kanonkod.drawingapp.command.UndoDelete;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Stack;
 import javafx.scene.paint.Color;
-
 /**
  *
  * @author Jacob
@@ -18,6 +20,7 @@ public class DrawingDAO {
 
     private String name;
     private List<ShapeDAO> shapes;
+
 
     private void initShapes(List<Shape> shapes) {
         this.shapes = new ArrayList<>();
@@ -30,6 +33,8 @@ public class DrawingDAO {
             this.shapes.add(newShape);
         }
     }
+    
+   
 
     public DrawingDAO() {
     }
@@ -54,6 +59,6 @@ public class DrawingDAO {
     public void setShapes(List<ShapeDAO> shapes) {
         this.shapes = shapes;
     }
-    
+
     
 }

@@ -36,62 +36,27 @@ public class QuicksortTask extends RecursiveAction implements SortingStrategy {
     }
 
     @Override
-    public int findOptimalThreshold() {
-        int currMin = Integer.MAX_VALUE;
-        long minVal = Long.MAX_VALUE;
-        long currTotal = 0;
-        int totalRuns = 15 - 5;
-        int cores = Runtime.getRuntime().availableProcessors();
+    public long findOptimalThreshold(int cores, int i) {
         System.out.println("Quicksort threshold");
         System.out.println("average,threshold");
 
-        for (int i = 100; i <= 100000; i += 1000) {
-            for (int j = 1; j <= 15; j++) {
-                System.gc();
-                ForkJoinPool pool = new ForkJoinPool(cores);
-                QuicksortTask rootTask = new QuicksortTask((float[]) arr.clone(), 0, arr.length - 1, i);
-
-                long startTime = System.nanoTime();
-                pool.invoke(rootTask);
-                long endTime = System.nanoTime();
-
-                long elapsedTime = endTime - startTime;
-                if (j >= 5) {
-                    currTotal += elapsedTime;
-                }
-
-                pool.shutdown();
-                System.gc();
-            }
-
-            long avg = currTotal / totalRuns;
-
-            System.out.println(avg + "," + i);
-            //System.out.println("avg: " + avg + ", min: " + minVal + ", i:" + i + ", currmin: " + currMin);
-            if (avg < minVal) {
-                minVal = avg;
-                currMin = i;
-            }
-            currTotal = 0;
-        }
-
-        return currMin;
-    }
-
-    @Override
-    public long messure(int cores) {
-        System.gc();
         ForkJoinPool pool = new ForkJoinPool(cores);
-        QuicksortTask rootTask = new QuicksortTask((float[]) arr.clone(), 0, arr.length - 1);
+        QuicksortTask rootTask = new QuicksortTask((float[]) arr.clone(), 0, arr.length - 1, i);
 
         long startTime = System.nanoTime();
         pool.invoke(rootTask);
         long endTime = System.nanoTime();
 
-        long elapsedTime = endTime - startTime;
-
         pool.shutdown();
-        return elapsedTime;
+        return endTime - startTime;
+    }
+
+    @Override
+    public void messure(int cores) {
+        ForkJoinPool pool = new ForkJoinPool(cores);
+        QuicksortTask rootTask = new QuicksortTask((float[]) arr.clone(), 0, arr.length - 1);
+        pool.invoke(rootTask);
+        pool.shutdown();
     }
 
     @Override

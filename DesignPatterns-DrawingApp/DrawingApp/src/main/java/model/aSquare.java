@@ -35,7 +35,6 @@ public class aSquare extends Shape {
         redoPoints();
         gc.fillPolygon(xPoints, yPoints, corners);
     }
-
     private void redoPoints() {
         //do not draw any points on init
         if (super.getFromX() == super.getToX() && super.getFromY() == super.getToY()) {

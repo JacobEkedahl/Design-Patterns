@@ -9,7 +9,7 @@ package model.interfaces;
  *
  * @author fno
  */
-public interface RedoCommand extends Command{
+public interface RedoCommand {
     
     public void redo();
     
