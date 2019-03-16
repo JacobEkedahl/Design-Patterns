@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Stack;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import model.Operations.AddShapeCommand;
 import model.Operations.Command;
 import model.Operations.DeleteShapeCommand;
 import model.interfaces.Observer;
@@ -24,7 +25,9 @@ public class Drawing {
 
     ArrayList<Shape> shapes = new ArrayList<>();
     ArrayList<Shape> selectedShapes = new ArrayList<>();
-    Stack<Command> commandStack = new Stack<>();
+    Stack<Command> undoStack = new Stack<>();
+    Stack<Command> redoStack = new Stack<>();
+
     private int undoRedoPointer = -1;
     private String name = "";
 
@@ -46,47 +49,40 @@ public class Drawing {
     }
 
     public void undo() {
-        if (commandStack.size() <= 0 || undoRedoPointer < 0 || undoRedoPointer >= commandStack.size()) {
+        if (undoStack.size() == 0) {
             return;
         }
-        
-        Command command = commandStack.get(undoRedoPointer);
+
+        Command command = undoStack.pop();
         shapes = command.unExecute((ArrayList<Shape>) shapes.clone());
-        undoRedoPointer--;
-        System.out.println("undo: " + undoRedoPointer);
+        redoStack.push(command);
         notifyAllObservers();
     }
 
     public void redo() {
-        if (undoRedoPointer >= commandStack.size() - 1) {
+        if (redoStack.size() == 0) {
             return;
         }
 
-        undoRedoPointer++;
-        Command command = commandStack.get(undoRedoPointer);
+        Command command = redoStack.pop();
         shapes = command.execute((ArrayList<Shape>) shapes.clone());
-        System.out.println("redo: " + shapes.size());
+        undoStack.push(command);
 
         notifyAllObservers();
     }
 
-    private void removeCommand() {
-       // deleteElementsAfterPointer(undoRedoPointer);
-        Command command = new DeleteShapeCommand(selectedShapes);
-        shapes = command.execute(shapes);
-        commandStack.push(command);
-        undoRedoPointer++;
-        System.out.println("removeCommand: " + undoRedoPointer);
+    private void addCommand(Command command) {
+        shapes = command.execute((ArrayList<Shape>) shapes.clone());
+        undoStack.push(command);
+        redoStack.clear();
     }
 
-    private void deleteElementsAfterPointer(int undoRedoPointer) {
-        if (commandStack.size() <= 0 || undoRedoPointer < 0) {
-            return;
-        }
+    private void removeCommand() {
+        addCommand(new DeleteShapeCommand(selectedShapes));
+    }
 
-        for (int i = commandStack.size() - 1; i >= undoRedoPointer; i--) {
-            commandStack.remove(i);
-        }
+    private void addShapeCommand(Shape shape) {
+        addCommand(new AddShapeCommand(shape));
     }
 
     //Object - Subject pattern with methods ------------------------
@@ -107,7 +103,12 @@ public class Drawing {
             return;
         }
 
-        shapes.add(shape);
+        if (shape instanceof aMarker) {
+            shapes.add(shape);
+        } else {
+            addShapeCommand(shape);
+        }
+
         // notifyAllObservers();
     }
 
@@ -165,6 +166,7 @@ public class Drawing {
             if (shape instanceof aMarker) {
                 int index = shapes.indexOf(shape);
                 shapes.remove(index);
+                System.out.println("removed marker at index: " + index);
             }
         }
 
