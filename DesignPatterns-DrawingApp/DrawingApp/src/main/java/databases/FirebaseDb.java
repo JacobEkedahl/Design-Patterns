@@ -49,7 +49,6 @@ import model.interfaces.ShapeListener;
  */
 public class FirebaseDb extends Database {
 
-    Stack<Command> commands = new Stack<>();
     List<Observer> observers = new ArrayList<>();
     Firestore db = null;
 
@@ -180,12 +179,18 @@ public class FirebaseDb extends Database {
 
     @Override
     public void updateWidth(ArrayList<Shape> shapes) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        for (Shape shape : shapes) {
+            DocumentReference docRef = db.collection("drawings").document(shape.getId());
+            docRef.update("strokeWidth", shape.getStrokeWidth());
+        }
     }
 
     @Override
     public void updateFill(ArrayList<Shape> shapes) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        for (Shape shape : shapes) {
+            DocumentReference docRef = db.collection("drawings").document(shape.getId());
+            docRef.update("fill", shape.getFill());
+        }
     }
 
     @Override

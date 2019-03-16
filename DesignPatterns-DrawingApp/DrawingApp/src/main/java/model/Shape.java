@@ -170,42 +170,7 @@ public abstract class Shape implements Cloneable {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Shape other = (Shape) obj;
-        if (Double.doubleToLongBits(this.fromX) != Double.doubleToLongBits(other.fromX)) {
-            return false;
-        }
-        if (Double.doubleToLongBits(this.fromY) != Double.doubleToLongBits(other.fromY)) {
-            return false;
-        }
-        if (Double.doubleToLongBits(this.toX) != Double.doubleToLongBits(other.toX)) {
-            return false;
-        }
-        if (Double.doubleToLongBits(this.toY) != Double.doubleToLongBits(other.toY)) {
-            return false;
-        }
-        if (Double.doubleToLongBits(this.strokeWidth) != Double.doubleToLongBits(other.strokeWidth)) {
-            return false;
-        }
-        if (this.fill != other.fill) {
-            return false;
-        }
-        if (!this.getClass().getSimpleName().equals(obj.getClass().getSimpleName())) {
-            return false;
-        }
-        if (!Objects.equals(this.col, other.col)) {
-            return false;
-        }
-        
-        return true;
+        return ((Shape) obj).getId() == this.id;
     }
 
     public double getFromY() {

@@ -18,6 +18,12 @@ import model.interfaces.ShapeListener;
  * @author Jacob
  */
 public abstract class Database implements ShapeListener {
+    ShapeListener drawing;
+    
+    public void attach(ShapeListener listener) {
+        this.drawing = listener;
+    }
+    
     public abstract List<String> getNames() throws InterruptedException, ExecutionException;
     public abstract void setUpDbListener(String name);
     public abstract void notifyAllObservers();

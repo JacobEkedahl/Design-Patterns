@@ -27,7 +27,7 @@ import model.interfaces.ShapeListener;
  *
  * @author Jacob
  */
-public class Drawing {
+public class Drawing implements ShapeListener {
 
     ArrayList<Shape> shapes = new ArrayList<>();
     ArrayList<Shape> selectedShapes = new ArrayList<>();
@@ -54,6 +54,7 @@ public class Drawing {
         selectedShapes.clear();
         Command command = undoStack.pop();
         shapes = command.unExecute((ArrayList<Shape>) shapes.clone());
+        updateSelected();
         redoStack.push(command);
         notifyAllObservers();
     }
@@ -66,6 +67,7 @@ public class Drawing {
         Command command = redoStack.pop();
         shapes = command.execute((ArrayList<Shape>) shapes.clone());
         undoStack.push(command);
+        updateSelected();
 
         notifyAllObservers();
     }
@@ -73,8 +75,19 @@ public class Drawing {
     private void addCommand(Command command) {
         command.attach(shapeListener);
         shapes = command.execute((ArrayList<Shape>) shapes.clone());
+        updateSelected();
         undoStack.push(command);
         redoStack.clear();
+    }
+    
+    private void updateSelected() {
+        ArrayList<Shape> newSelected = new ArrayList<>();
+        for (Shape shape : selectedShapes) {
+            int index = shapes.indexOf(shape);
+            newSelected.add(shapes.get(index));
+        }
+        
+        selectedShapes = newSelected;
     }
 
     //Object - Subject pattern with methods ------------------------
@@ -215,5 +228,35 @@ public class Drawing {
     @Override
     public String toString() {
         return "Drawing{" + "shapes=" + shapes + ", selectedShapes=" + selectedShapes + ", name=" + name + '}';
+    }
+
+    @Override
+    public void newShape(ArrayList<Shape> shapes) {
+        
+    }
+
+    @Override
+    public void removeShape(ArrayList<Shape> shapes) {
+        
+    }
+
+    @Override
+    public void updateColor(ArrayList<Shape> shapes) {
+        
+    }
+
+    @Override
+    public void updateWidth(ArrayList<Shape> shapes) {
+        
+    }
+
+    @Override
+    public void updateFill(ArrayList<Shape> shapes) {
+        
+    }
+
+    @Override
+    public void updateSize(Shape shape) {
+        
     }
 }
