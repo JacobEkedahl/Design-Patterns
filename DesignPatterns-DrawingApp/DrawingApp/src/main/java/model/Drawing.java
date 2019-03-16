@@ -12,10 +12,14 @@ import java.util.List;
 import java.util.Stack;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import model.ChangeStrategies.ChangeColStrategy;
+import model.ChangeStrategies.ChangeFillStrategy;
+import model.ChangeStrategies.ChangeWidthStrategy;
 import model.Operations.AddShapeCommand;
-import model.Operations.ChangeWidthCommand;
+import model.Operations.ChangeCommand;
 import model.Operations.Command;
 import model.Operations.DeleteShapeCommand;
+import model.interfaces.ChangeStrategy;
 import model.interfaces.Observer;
 
 /**
@@ -54,6 +58,7 @@ public class Drawing {
             return;
         }
 
+        selectedShapes.clear();
         Command command = undoStack.pop();
         shapes = command.unExecute((ArrayList<Shape>) shapes.clone());
         redoStack.push(command);
@@ -78,18 +83,6 @@ public class Drawing {
         redoStack.clear();
     }
 
-    private void removeCommand() {
-        addCommand(new DeleteShapeCommand((ArrayList<Shape>) selectedShapes.clone()));
-    }
-
-    private void addShapeCommand(Shape shape) {
-        addCommand(new AddShapeCommand(shape));
-    }
-    
-    private void changeWidthCommand(double width) {
-        addCommand(new ChangeWidthCommand((ArrayList<Shape>) selectedShapes.clone(), width));
-    }
-
     //Object - Subject pattern with methods ------------------------
     List<Observer> observers = new ArrayList<Observer>();
 
@@ -101,19 +94,6 @@ public class Drawing {
 
     public void attach(Observer observer) {
         observers.add(observer);
-    }
-
-    public void addShape(Shape shape) {
-        if (shape == null) {
-            return;
-        }
-
-        //does not want to be able to redo/undo the marker
-        if (shape instanceof aMarker) {
-            shapes.add(shape);
-        } else {
-            addShapeCommand(shape);
-        }
     }
 
     public String getName() {
@@ -136,20 +116,40 @@ public class Drawing {
         return observers;
     }
 
-    //is called from the views update method
-    public void drawAll(GraphicsContext gc) {
-        gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
-
-        for (Shape shape : selectedShapes) {
-            //draw rect around
-            Shape tmpRect = ShapeFactory.getShape("aMarker", shape.getFromX(), shape.getFromY(), shape.getToX(), shape.getToY(), Color.CORAL, 1, false);
-            tmpRect.draw(gc);
+    public void addShape(Shape shape) {
+        if (shape == null) {
+            return;
         }
 
-        for (Shape shape : shapes) {
-            shape.draw(gc);
+        //does not want to be able to redo/undo the marker
+        if (shape instanceof aMarker) {
+            shapes.add(shape);
+        } else {
+            addCommand(new AddShapeCommand(shape));
         }
+    }
 
+    public void removeSelected() {
+        addCommand(new DeleteShapeCommand((ArrayList<Shape>) selectedShapes.clone()));
+        notifyAllObservers();
+    }
+
+    public void changeSelectedWidth(double width) {
+        ChangeStrategy widthStrategy = new ChangeWidthStrategy(width);
+        addCommand(new ChangeCommand((ArrayList<Shape>) selectedShapes.clone(), widthStrategy));
+        notifyAllObservers();
+    }
+
+    public void changeSelectedColor(Color newCol) {
+        ChangeStrategy colStrategy = new ChangeColStrategy(newCol);
+        addCommand(new ChangeCommand((ArrayList<Shape>) selectedShapes.clone(), colStrategy));
+        notifyAllObservers();
+    }
+
+    public void changeSelectedFill(boolean newVal) {
+        ChangeStrategy fillStrategy = new ChangeFillStrategy(newVal);
+        addCommand(new ChangeCommand((ArrayList<Shape>) selectedShapes.clone(), fillStrategy));
+        notifyAllObservers();
     }
 
     public void changeSize(Shape shape, double toX, double toY) {
@@ -161,25 +161,10 @@ public class Drawing {
 
         Shape shapeToChange = shapes.get(index);
         shapeToChange.changeSize(toX, toY);
-        //notify observers
-        notifyAllObservers();
-    }
-
-    public void removeSelected() {
-        for (Shape shape : selectedShapes) {
-            if (shape instanceof aMarker) {
-                int index = shapes.indexOf(shape);
-                shapes.remove(index);
-                System.out.println("removed marker at index: " + index);
-            }
-        }
-
-        removeCommand();
         notifyAllObservers();
     }
 
     public void removeShape(Shape shape) {
-        System.out.println("removed: " + shape);
         int index = shapes.indexOf(shape);
         shapes.remove(index);
         notifyAllObservers();
@@ -187,27 +172,6 @@ public class Drawing {
 
     public void deselectAll() {
         selectedShapes.clear();
-        notifyAllObservers();
-    }
-
-    public void changeSelectedWidth(double width) {
-        changeWidthCommand(width);
-        notifyAllObservers();
-    }
-
-    public void changeSelectedColor(Color newCol) {
-        selectedShapes.forEach((shape) -> {
-            shape.setCol(newCol);
-        });
-
-        notifyAllObservers();
-    }
-
-    public void changeSelectedFill(boolean newVal) {
-        selectedShapes.forEach((shape) -> {
-            shape.setFill(newVal);
-        });
-
         notifyAllObservers();
     }
 
@@ -228,6 +192,26 @@ public class Drawing {
 
         System.out.println("selectedShapes size: " + selectedShapes.size());
         notifyAllObservers();
+    }
+    
+    private ArrayList<Shape> markers = new ArrayList<>();
+
+    //is called from the views update method
+    public void drawAll(GraphicsContext gc) {
+        gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+        System.out.println("is drawing!");
+
+        for (Shape shape : selectedShapes) {
+            //draw rect around
+            Shape tmpRect = ShapeFactory.getShape("aMarker", shape.getFromX(), shape.getFromY(), shape.getToX(), shape.getToY(), Color.CORAL, 1, false);
+            tmpRect.draw(gc);
+          //  markers.add(shape);
+        }
+
+        for (Shape shape : shapes) {
+            shape.draw(gc);
+        }
+
     }
 
     public void clear() {

@@ -14,10 +14,22 @@ import model.Shape;
  * @author Jacob
  */
 public abstract class Command {
+
     ArrayList<Shape> myShapes;
     ShapeMementos mementos;
-        
+
     public abstract ArrayList<Shape> execute(ArrayList<Shape> orig);
+
     public abstract ArrayList<Shape> unExecute(ArrayList<Shape> orig);
-    
+
+    ArrayList<Shape> copy(ArrayList<Shape> orig) {
+        ArrayList<Shape> res = new ArrayList<>();
+
+        for (Shape shape : orig) {
+            res.add(shape.createCopy());
+        }
+
+        return res;
+    }
+
 }

@@ -22,7 +22,6 @@ public class DeleteShapeCommand extends Command {
     @Override
     public ArrayList<Shape> execute(ArrayList<Shape> orig) {
         mementos = new ShapeMementos();
-        System.out.println("inside delete command: " + myShapes.size());
         mementos.setState((ArrayList<Shape>) myShapes.clone());
 
         for (Shape s : myShapes) {

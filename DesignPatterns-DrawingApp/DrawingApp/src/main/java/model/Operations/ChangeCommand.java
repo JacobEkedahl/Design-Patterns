@@ -6,19 +6,22 @@
 package model.Operations;
 
 import java.util.ArrayList;
+import javafx.scene.paint.Color;
 import model.Shape;
+import model.interfaces.ChangeStrategy;
 
 /**
  *
  * @author Jacob
  */
-public class ChangeWidthCommand extends Command {
+public class ChangeCommand extends Command {
 
-    private double width;
+    private Color col;
+    private ChangeStrategy strategy;
 
-    public ChangeWidthCommand(ArrayList<Shape> selectedShapes, double width) {
+    public ChangeCommand(ArrayList<Shape> selectedShapes, ChangeStrategy strategy) {
         myShapes = copy(selectedShapes);
-        this.width = width;
+        this.strategy = strategy;
     }
 
     @Override
@@ -29,10 +32,9 @@ public class ChangeWidthCommand extends Command {
         orig.removeAll(myShapes);
 
         for (Shape shape : myShapes) {
-            shape.setStrokeWidth(width);
+            strategy.change(shape);
         }
 
-        System.out.println("execute mementos: " + printWidth(mementos.getState()));
         orig.addAll(myShapes);
 
         return orig;
@@ -40,31 +42,11 @@ public class ChangeWidthCommand extends Command {
 
     @Override
     public ArrayList<Shape> unExecute(ArrayList<Shape> orig) {
-        System.out.println("unexecute mementos: " + printWidth(mementos.getState()));
         orig.removeAll(myShapes);
 
         orig.addAll(mementos.getState());
         myShapes = mementos.getState();
 
         return orig;
-    }
-
-    private ArrayList<Shape> copy(ArrayList<Shape> orig) {
-        ArrayList<Shape> res = new ArrayList<>();
-
-        for (Shape shape : orig) {
-            res.add(shape.createCopy());
-        }
-
-        return res;
-    }
-
-    private String printWidth(ArrayList<Shape> shapes) {
-        String res = "";
-        for (Shape s : shapes) {
-            res += s.getStrokeWidth() + " : ";
-        }
-
-        return res;
     }
 }
