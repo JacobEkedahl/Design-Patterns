@@ -37,18 +37,6 @@ public class TempDb extends Database {
     }
 
     @Override
-    public void notifyAllObservers() {
-        for (Observer observer : observers) {
-            observer.update();
-        }
-    }
-
-    @Override
-    public void attach(Observer observer) {
-        observers.add(observer);
-    }
-
-    @Override
     public void updateColor(ArrayList<Shape> shapes) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

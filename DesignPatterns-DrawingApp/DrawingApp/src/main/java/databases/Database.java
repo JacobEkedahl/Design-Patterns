@@ -12,21 +12,22 @@ import model.Drawing;
 import model.Shape;
 import model.interfaces.Observer;
 import model.interfaces.ShapeListener;
+import model.interfaces.ShapeReplacer;
 
 /**
  *
  * @author Jacob
  */
 public abstract class Database implements ShapeListener {
-    ShapeListener drawing;
+    //The drawing which will receive updates from the database in form of deleted shapes, new shapes, modified shapes
+    ShapeReplacer drawing;
     
-    public void attach(ShapeListener listener) {
+    public void attach(ShapeReplacer listener) {
         this.drawing = listener;
     }
     
+    //Will return all the names of the drawings inside the database (used when user clicks open button in menu)
     public abstract List<String> getNames() throws InterruptedException, ExecutionException;
     public abstract void setUpDbListener(String name);
-    public abstract void notifyAllObservers();
-    public abstract void attach(Observer observer);
     
 }

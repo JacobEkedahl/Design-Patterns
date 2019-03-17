@@ -22,12 +22,13 @@ import model.Operations.DeleteShapeCommand;
 import model.interfaces.ChangeStrategy;
 import model.interfaces.Observer;
 import model.interfaces.ShapeListener;
+import model.interfaces.ShapeReplacer;
 
 /**
  *
  * @author Jacob
  */
-public class Drawing implements ShapeListener {
+public class Drawing implements ShapeReplacer {
 
     ArrayList<Shape> shapes = new ArrayList<>();
     ArrayList<Shape> selectedShapes = new ArrayList<>();
@@ -79,14 +80,16 @@ public class Drawing implements ShapeListener {
         undoStack.push(command);
         redoStack.clear();
     }
-    
+
     private void updateSelected() {
         ArrayList<Shape> newSelected = new ArrayList<>();
         for (Shape shape : selectedShapes) {
             int index = shapes.indexOf(shape);
-            newSelected.add(shapes.get(index));
+            if (index != -1) {
+                newSelected.add(shapes.get(index));
+            }
         }
-        
+
         selectedShapes = newSelected;
     }
 
@@ -111,29 +114,17 @@ public class Drawing implements ShapeListener {
         this.name = name;
     }
 
-    public List<Shape> getShapes() {
-        return shapes;
-    }
-
-    public void setObservers(List<Observer> observers) {
-        this.observers = observers;
-    }
-
-    public List<Observer> getObservers() {
-        return observers;
-    }
-
     public void addShape(Shape shape) {
         if (shape == null) {
             return;
         }
 
-        //does not want to be able to redo/undo the marker
         if (shape instanceof aMarker) {
             shapes.add(shape);
         } else {
             addCommand(new AddShapeCommand(shape));
         }
+
     }
 
     public void removeSelected() {
@@ -168,8 +159,17 @@ public class Drawing implements ShapeListener {
 
         Shape shapeToChange = shapes.get(index);
         shapeToChange.changeSize(toX, toY);
-        shapeListener.updateSize(shape);
         notifyAllObservers();
+    }
+
+    public void changeSizeFinished(Shape shape) {
+        if (shape instanceof aMarker) {
+            System.out.println("not uploading a marker");
+            return;
+        } 
+        
+        System.out.println("finished id: " + shape.getId());
+        shapeListener.updateSize(shape);
     }
 
     public void removeShape(Shape shape) {
@@ -195,9 +195,11 @@ public class Drawing implements ShapeListener {
                 continue;
             }
             selectedShapes.add(orig);
-            System.out.println("orig: " + orig);
         }
 
+        for (Shape selShape : selectedShapes) {
+            System.out.print("shape id: " + selShape.getId() + ", ");
+        }
         System.out.println("selectedShapes size: " + selectedShapes.size());
         notifyAllObservers();
     }
@@ -231,32 +233,29 @@ public class Drawing implements ShapeListener {
     }
 
     @Override
-    public void newShape(ArrayList<Shape> shapes) {
-        
+    public void newShape(Shape shape) {
+        if (!shapes.contains(shape)) {
+            System.out.println("shapeid: " + shape.getId());
+            shapes.add(shape);
+            notifyAllObservers();
+        }
     }
 
     @Override
-    public void removeShape(ArrayList<Shape> shapes) {
-        
+    public void modify(Shape shape) {
+        if (shapes.contains(shape)) {
+            System.out.println("modifying in drawing..");
+            int index = shapes.indexOf(shape);
+            shapes.set(index, shape);
+            notifyAllObservers();
+        }
     }
 
     @Override
-    public void updateColor(ArrayList<Shape> shapes) {
-        
-    }
-
-    @Override
-    public void updateWidth(ArrayList<Shape> shapes) {
-        
-    }
-
-    @Override
-    public void updateFill(ArrayList<Shape> shapes) {
-        
-    }
-
-    @Override
-    public void updateSize(Shape shape) {
-        
+    public void remove(Shape shape) {
+        if (shapes.contains(shape)) {
+            shapes.remove(shape);
+            notifyAllObservers();
+        }
     }
 }

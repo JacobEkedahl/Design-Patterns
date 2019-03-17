@@ -124,6 +124,7 @@ public class FXMLController extends Observer implements Initializable {
     //mouse released, deselect
     @FXML
     private void saveTo(MouseEvent event) {
+        model.updateFinishedSize();
         model.deselectAll();
         model.handleMarker();
         model.deselect();

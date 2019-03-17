@@ -38,7 +38,17 @@ public class ChangeCommand extends Command {
 
         orig.addAll(myShapes);
         updateDb();
-        
+
+        return orig;
+    }
+
+    @Override
+    public ArrayList<Shape> unExecute(ArrayList<Shape> orig) {
+        orig.removeAll(myShapes);
+        orig.addAll(mementos.getState());
+        myShapes = mementos.getState();
+        updateDb();
+
         return orig;
     }
 
@@ -57,13 +67,4 @@ public class ChangeCommand extends Command {
         }
     }
 
-    @Override
-    public ArrayList<Shape> unExecute(ArrayList<Shape> orig) {
-        orig.removeAll(myShapes);
-
-        orig.addAll(mementos.getState());
-        myShapes = mementos.getState();
-
-        return orig;
-    }
 }

@@ -170,7 +170,7 @@ public abstract class Shape implements Cloneable {
 
     @Override
     public boolean equals(Object obj) {
-        return ((Shape) obj).getId() == this.id;
+        return ((Shape) obj).getId().equals(this.id);
     }
 
     public double getFromY() {

@@ -11,7 +11,9 @@ import model.Shape;
 import model.interfaces.ShapeListener;
 
 /**
- *
+ * All the commands executed and put on the undo and redo stack are implemented
+ * by extending this command.
+ * Contains a log of what the shape looked before the execution/unexecution for reversal functionality
  * @author Jacob
  */
 public abstract class Command {

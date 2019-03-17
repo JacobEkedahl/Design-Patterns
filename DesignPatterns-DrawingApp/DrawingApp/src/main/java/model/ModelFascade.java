@@ -43,18 +43,14 @@ public class ModelFascade extends Observer {
         drawing = new Drawing();
         shapeToDraw = null;
         initDb();
-        attachModelToDb();
-        attachDbToDrawing();
+        connectDbWithDrawing();
     }
     
-    private void attachDbToDrawing() {
+    private void connectDbWithDrawing() {
         this.drawing.attachShapeListener(db);
+        this.db.attach(drawing);
     }
 
-    private void attachModelToDb() {
-        db.attach(this);
-    }
-    
     public void undo() {
         this.drawing.undo();
     }
@@ -81,6 +77,10 @@ public class ModelFascade extends Observer {
         }
 
         return null;
+    }
+    
+    public void updateFinishedSize() {
+        this.drawing.changeSizeFinished(selectedShape);
     }
 
     public void setName(String newName) {

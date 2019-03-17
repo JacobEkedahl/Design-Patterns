@@ -10,7 +10,7 @@ import java.util.List;
 import model.Shape;
 
 /**
- *
+ * Is a log object which contains the previous state of the shape changed
  * @author Jacob
  */
 public class ShapeMementos {

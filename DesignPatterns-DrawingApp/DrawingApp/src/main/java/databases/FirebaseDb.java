@@ -29,9 +29,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 import java.util.concurrent.ExecutionException;
 import javafx.scene.paint.Color;
@@ -66,15 +70,16 @@ public class FirebaseDb extends Database {
     }
 
     public List<String> getNames() throws InterruptedException, ExecutionException {
-        List<String> result = new ArrayList<>();
-        //asynchronously retrieve all documents
+        Set<String> map = new HashSet<>();
         ApiFuture<QuerySnapshot> future = db.collection("drawings").get();
-// future.get() blocks on response
+
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
         for (QueryDocumentSnapshot document : documents) {
-            result.add(document.getId());
+            map.add(document.getString("name"));
         }
 
+        List<String> result = new ArrayList<>(map);
+        Collections.sort(result);
         return result;
     }
 
@@ -113,15 +118,23 @@ public class FirebaseDb extends Database {
                         }
 
                         for (DocumentChange dc : snapshots.getDocumentChanges()) {
+                            //  System.out.println("Retrieved something from db");
+                            ShapeDAO dao = dc.getDocument().toObject(ShapeDAO.class);
+                            Shape shape = ShapeFactory.getShape(dao);
+                            shape.setId(dc.getDocument().getId());
+
                             switch (dc.getType()) {
                                 case ADDED:
-                                    System.out.println("New shape: " + dc.getDocument().getData());
+                                    System.out.println("from db, adding");
+                                    drawing.newShape(shape);
                                     break;
                                 case MODIFIED:
-                                    System.out.println("Modified shape: " + dc.getDocument().getData());
+                                    System.out.println("from db, modifying - " + shape + ":" + shape.getId());
+                                    drawing.modify(shape);
                                     break;
                                 case REMOVED:
-                                    System.out.println("Removed shape: " + dc.getDocument().getData());
+                                    System.out.println("from db, removed");
+                                    drawing.remove(shape);
                                     break;
                                 default:
                                     break;
@@ -129,16 +142,6 @@ public class FirebaseDb extends Database {
                         }
                     }
                 });
-    }
-
-    public void notifyAllObservers() {
-        for (Observer observer : observers) {
-            observer.update();
-        }
-    }
-
-    public void attach(Observer observer) {
-        observers.add(observer);
     }
 
     @Override
@@ -197,8 +200,10 @@ public class FirebaseDb extends Database {
     public void updateSize(Shape shape) {
         DocumentReference docRef = db.collection("drawings").document(shape.getId());
 
-        docRef.update("toX", shape.getToX());
-        docRef.update("toY", shape.getToY());
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("toX", shape.getToX());
+        updates.put("toY", shape.getToY());
+        
+        docRef.update(updates);
     }
-
 }
