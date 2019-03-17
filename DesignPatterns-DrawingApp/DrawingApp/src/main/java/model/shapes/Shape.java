@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package model;
+package model.shapes;
 
-import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,20 +25,20 @@ public abstract class Shape implements Cloneable {
     private double strokeWidth;
     private boolean fill;
 
-    abstract void drawFill(GraphicsContext gc);
+    abstract public void drawFill(GraphicsContext gc);
 
-    abstract void drawHollow(GraphicsContext gc);
+    abstract public void drawHollow(GraphicsContext gc);
 
-    abstract void changeSize(double newX, double newY);
-    
+    abstract public void changeSize(double newX, double newY);
+
     public String getId() {
         return id;
     }
-    
+
     public void setId(String id) {
         this.id = id;
     }
-    
+
     public void generateId() {
         id = UUID.randomUUID().toString();
         System.out.println("generated id: " + id);
@@ -61,38 +60,38 @@ public abstract class Shape implements Cloneable {
         }
         return null;
     }
-    
+
     public Shape createCopy() {
         try {
             return (Shape) this.clone();
         } catch (CloneNotSupportedException ex) {
             Logger.getLogger(Shape.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return null;
     }
-    
+
     public boolean getFill() {
         return fill;
     }
-    
+
     public double getMinX() {
         return (fromX < toX) ? fromX : toX;
     }
-    
+
     public double getMinY() {
         return (fromY < toY) ? fromY : toY;
     }
-        
+
     public double getMaxX() {
         return (fromX > toX) ? fromX : toX;
     }
-    
+
     public double getMaxY() {
         return (fromY > toY) ? fromY : toY;
     }
 
-    final void draw(GraphicsContext gc) {
+    public final void draw(GraphicsContext gc) {
         gc.setFill(col);
         gc.setStroke(col);
         gc.setLineWidth(strokeWidth);
@@ -184,11 +183,11 @@ public abstract class Shape implements Cloneable {
     public double getToY() {
         return toY;
     }
-    
+
     public void setFill(boolean newVal) {
         this.fill = newVal;
     }
-    
+
     public boolean isFill() {
         return this.fill;
     }

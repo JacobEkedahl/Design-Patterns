@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package databases;
+package datalayer;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import javafx.scene.paint.Color;
 import model.Drawing;
-import model.Shape;
+import model.shapes.Shape;
 import model.interfaces.Observer;
 import model.interfaces.ShapeListener;
 import model.interfaces.ShapeReplacer;

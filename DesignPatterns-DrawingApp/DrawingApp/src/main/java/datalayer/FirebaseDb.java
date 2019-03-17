@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package databases;
+package datalayer;
 
 import com.google.api.core.ApiFuture;
 import java.io.FileInputStream;
@@ -40,9 +40,8 @@ import java.util.Stack;
 import java.util.concurrent.ExecutionException;
 import javafx.scene.paint.Color;
 import model.Drawing;
-import model.Operations.Command;
-import model.Shape;
-import model.ShapeDAO;
+import model.operations.Command;
+import model.shapes.Shape;
 import model.ShapeFactory;
 import model.interfaces.Observer;
 import model.interfaces.ShapeListener;

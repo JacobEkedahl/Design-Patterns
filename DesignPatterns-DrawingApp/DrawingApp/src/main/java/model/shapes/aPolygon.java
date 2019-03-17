@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package model;
+package model.shapes;
 
 import javafx.scene.canvas.GraphicsContext;
 
@@ -11,14 +11,14 @@ import javafx.scene.canvas.GraphicsContext;
  *
  * @author Jacob
  */
-public class aSquare extends Shape {
+public class aPolygon extends Shape {
 
-    private static final int corners = 4;
+    private static final int corners = 6;
     double[] xPoints;
     double[] yPoints;
 
     @Override
-    void drawHollow(GraphicsContext gc) {
+    public void drawHollow(GraphicsContext gc) {
         redoPoints();
         gc.strokePolygon(xPoints, yPoints, corners);
     }
@@ -31,7 +31,7 @@ public class aSquare extends Shape {
     }
 
     @Override
-    void drawFill(GraphicsContext gc) {
+    public void drawFill(GraphicsContext gc) {
         redoPoints();
         gc.fillPolygon(xPoints, yPoints, corners);
     }

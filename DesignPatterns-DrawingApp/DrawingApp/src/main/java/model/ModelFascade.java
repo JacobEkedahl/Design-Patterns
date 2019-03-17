@@ -5,11 +5,11 @@
  */
 package model;
 
-import databases.Database;
-import databases.FirebaseDb;
-import databases.TempDb;
+import model.shapes.aMarker;
+import model.shapes.Shape;
+import datalayer.Database;
+import datalayer.FirebaseDb;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;

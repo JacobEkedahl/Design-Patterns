@@ -5,8 +5,8 @@
  */
 package model.interfaces;
 
-import model.ChangeStrategies.StrategyType;
-import model.Shape;
+import model.changeStrategies.StrategyType;
+import model.shapes.Shape;
 
 /**
  *

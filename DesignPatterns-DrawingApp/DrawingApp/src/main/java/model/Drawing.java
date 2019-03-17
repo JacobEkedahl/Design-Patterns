@@ -6,19 +6,20 @@
  */
 package model;
 
+import model.shapes.aMarker;
+import model.shapes.Shape;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import model.ChangeStrategies.ChangeColStrategy;
-import model.ChangeStrategies.ChangeFillStrategy;
-import model.ChangeStrategies.ChangeWidthStrategy;
-import model.Operations.AddShapeCommand;
-import model.Operations.ChangeCommand;
-import model.Operations.Command;
-import model.Operations.DeleteShapeCommand;
+import model.changeStrategies.ChangeColStrategy;
+import model.changeStrategies.ChangeFillStrategy;
+import model.changeStrategies.ChangeWidthStrategy;
+import model.operations.AddShapeCommand;
+import model.operations.ChangeCommand;
+import model.operations.Command;
+import model.operations.DeleteShapeCommand;
 import model.interfaces.ChangeStrategy;
 import model.interfaces.Observer;
 import model.interfaces.ShapeListener;
