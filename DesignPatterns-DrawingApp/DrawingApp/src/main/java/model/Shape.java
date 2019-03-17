@@ -5,7 +5,6 @@
  */
 package model;
 
-import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;

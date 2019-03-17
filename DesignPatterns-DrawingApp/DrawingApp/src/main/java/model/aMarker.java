@@ -5,11 +5,8 @@
  */
 package model;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.*;
 
 /**
  *

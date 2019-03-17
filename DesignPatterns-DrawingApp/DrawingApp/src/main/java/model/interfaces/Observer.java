@@ -5,8 +5,6 @@
  */
 package model.interfaces;
 
-import model.Drawing;
-
 /**
  *
  * @author Jacob

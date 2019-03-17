@@ -9,8 +9,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import javafx.scene.paint.Color;
-import model.Drawing;
 import model.Shape;
 import model.interfaces.Observer;
 

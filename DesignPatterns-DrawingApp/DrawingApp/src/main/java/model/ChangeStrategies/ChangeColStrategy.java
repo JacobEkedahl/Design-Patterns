@@ -15,7 +15,7 @@ import model.interfaces.ChangeStrategy;
  */
 public class ChangeColStrategy implements ChangeStrategy {
     
-    private Color col;
+    private final Color col;
     public ChangeColStrategy(Color col) {
         this.col = col;
     }

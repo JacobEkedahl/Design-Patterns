@@ -5,7 +5,6 @@
  */
 package model.ChangeStrategies;
 
-import javafx.scene.paint.Color;
 import model.Shape;
 import model.interfaces.ChangeStrategy;
 
@@ -15,7 +14,7 @@ import model.interfaces.ChangeStrategy;
  */
 public class ChangeWidthStrategy implements ChangeStrategy {
 
-    private double width;
+    private final double width;
 
     public ChangeWidthStrategy(double width) {
         this.width = width;

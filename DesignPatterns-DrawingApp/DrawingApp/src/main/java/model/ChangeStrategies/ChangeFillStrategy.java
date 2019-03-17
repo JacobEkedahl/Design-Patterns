@@ -14,7 +14,7 @@ import model.interfaces.ChangeStrategy;
  */
 public class ChangeFillStrategy implements ChangeStrategy {
 
-    private boolean fill;
+    private final boolean fill;
 
     public ChangeFillStrategy(boolean fill) {
         this.fill = fill;

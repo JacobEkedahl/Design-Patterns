@@ -7,7 +7,6 @@ package model.Operations;
 
 import java.util.ArrayList;
 import model.Shape;
-import model.interfaces.ShapeListener;
 
 /**
  *

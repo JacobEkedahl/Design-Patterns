@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import javafx.scene.paint.Color;
 import model.Shape;
 import model.interfaces.ChangeStrategy;
-import model.interfaces.ShapeListener;
 
 /**
  *

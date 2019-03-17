@@ -7,9 +7,7 @@ package model;
 
 import databases.Database;
 import databases.FirebaseDb;
-import databases.TempDb;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;

@@ -5,7 +5,6 @@
  */
 package model.interfaces;
 
-import java.util.ArrayList;
 import model.Shape;
 
 /**
