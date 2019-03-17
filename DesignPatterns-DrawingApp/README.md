@@ -13,9 +13,9 @@ mvn clean install
 Make sure to create a class that inherits from Shape. Implement the abstract methods. Run the application once to generate the image which is automatically generated inside upon start [resources/shapes](https://github.com/JacobEkedahl/Design-Patterns/tree/master/DesignPatterns-DrawingApp/DrawingApp/src/main/resources/shapes).
 
 ## Setup:
-- Optimally add the admin SDK to your preffered server using this [guide](https://firebase.google.com/docs/admin/setup?authuser=0)
+- Optimally add the admin SDK to your prefered server using this [guide](https://firebase.google.com/docs/admin/setup?authuser=0)
 
-- Otherwise you can [setup a firestore] https://firebase.google.com/docs/firestore/quickstart
+- Otherwise you can [setup a firestore](https://firebase.google.com/docs/firestore/quickstart)
 - Generate a secret, jsonfile and add it under [resources](https://github.com/JacobEkedahl/Design-Patterns/tree/master/DesignPatterns-DrawingApp/DrawingApp/src/main/resources).
 - Reference the secret in [FirebaseDb](https://github.com/JacobEkedahl/Design-Patterns/blob/master/DesignPatterns-DrawingApp/DrawingApp/src/main/java/databases/FirebaseDb.java) constructor instead of the current.
 
