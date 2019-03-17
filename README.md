@@ -35,4 +35,4 @@ Where the design patterns are used is explained below
 
 ## More information
 
-Please visit the documentation of the applications [DrawingApp](https://github.com/JacobEkedahl/Design-Patterns/tree/master/DesignPatterns-DrawingApp) and [Parallel-SortingAlgorithms Report](https://github.com/JacobEkedahl/Design-Patterns/blob/master/Parallel-SortingAlgorithms/Documentation/Functional_Programming___Lab_1.pdf) within this repository to read and find out more.
+Please visit the documentation of the applications [DrawingApp](https://github.com/JacobEkedahl/Design-Patterns/tree/master/DesignPatterns-DrawingApp) and [Parallel-SortingAlgorithms Report](https://github.com/JacobEkedahl/Design-Patterns/blob/master/Parallel-SortingAlgorithms/Documentation/Report.pdf) within this repository to read and find out more.
