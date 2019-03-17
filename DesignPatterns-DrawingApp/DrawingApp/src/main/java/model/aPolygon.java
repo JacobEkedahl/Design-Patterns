@@ -3,22 +3,27 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package model.shapes;
+package model;
 
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.*;
 
 /**
  *
  * @author Jacob
  */
-public class aTriangle extends Shape {
+public class aPolygon extends Shape {
 
-    private static final int corners = 3;
+    private static final int corners = 6;
     double[] xPoints;
     double[] yPoints;
 
     @Override
-    public void drawHollow(GraphicsContext gc) {
+    void drawHollow(GraphicsContext gc) {
         redoPoints();
         gc.strokePolygon(xPoints, yPoints, corners);
     }
@@ -31,7 +36,7 @@ public class aTriangle extends Shape {
     }
 
     @Override
-    public void drawFill(GraphicsContext gc) {
+    void drawFill(GraphicsContext gc) {
         redoPoints();
         gc.fillPolygon(xPoints, yPoints, corners);
     }

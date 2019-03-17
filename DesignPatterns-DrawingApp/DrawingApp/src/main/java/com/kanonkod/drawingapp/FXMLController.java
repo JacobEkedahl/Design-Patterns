@@ -1,4 +1,4 @@
-package com.kanonkod.drawingapp.controller;
+package com.kanonkod.drawingapp;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -52,10 +52,10 @@ import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 import javax.naming.ConfigurationException;
 import model.Drawing;
-import model.shapes.anOval;
+import model.anOval;
 import model.ModelFascade;
-import model.shapes.aLine;
-import model.shapes.Shape;
+import model.aLine;
+import model.Shape;
 import model.ShapeLoader;
 import model.interfaces.Observer;
 

@@ -1,4 +1,4 @@
-package com.kanonkod.drawingapp.controller;
+package com.kanonkod.drawingapp;
 
 /*
  * To change this license header, choose License Headers in Project Properties.

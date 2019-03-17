@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package datalayer;
+package model;
 
 import javafx.scene.paint.Color;
 
