@@ -4,12 +4,12 @@
 
 ## Introduction
 
-This repository displays design patterns with use cases as well as an parallel programming use case.
+This repository displays two different applications in which suitable design patterns has been implemented in various forms.
 One of the applications is a drawing application which uses firestore as backend and facilitates simultaneous use of same drawing online.
-The other one showcase the performance of a parallised implementation of MergeSort and QuickSort as well as testing the threshold values for when to stop dividing a task into smaller tasks.
+The other one showcases the performance of a parallised implementation of MergeSort and QuickSort as well as testing for and finding a reasonable threshold value for when to stop dividing a task into smaller tasks.
 
 ## Design patterns used
-Where the design patterns are used is explained below
+Where in the applications the design patterns are used is explained below
 ### Strategy
 - Used in [Parallel-SortingAlgorithms](https://github.com/JacobEkedahl/Design-Patterns/tree/master/Parallel-SortingAlgorithms). All the sorting algorithms tested implements the Strategy interface. The Sorter class gets one of the implemented sortingalgorithms as input in the form of a SortingStrategy and either sorts, measure the performance of the sorting algorithm or finding a reasonable threshold value.
 
